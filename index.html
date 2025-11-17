@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clipfy - Video Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            padding: 40px;
+        }
+        h1 {
+            color: #e50914;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .code-block {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid #333;
+        }
+        code {
+            color: #4ec9b0;
+            font-family: 'Courier New', monospace;
+        }
+        .highlight {
+            color: #e50914;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 Clipfy Video Gallery</h1>
+        <p>Welcome to Clipfy! This is your video gallery homepage.</p>
+        
+        <div class="code-block">
+            <p><strong>To generate your video pages:</strong></p>
+            <code>python generator.py</code>
+        </div>
+        
+        <p>The generator script will:</p>
+        <ul style="text-align: left; max-width: 500px; margin: 20px auto; line-height: 2;">
+            <li>✓ Read video data from generator.py</li>
+            <li>✓ Generate individual video pages in <span class="highlight">v/</span> folder</li>
+            <li>✓ Create this index page with all videos</li>
+        </ul>
+        
+        <p style="margin-top: 40px; font-size: 14px;">
+            Add your videos in <span class="highlight">generator.py</span> and thumbnails in <span class="highlight">thumbs/</span> folder, then run the script!
+        </p>
+    </div>
+</body>
+</html>
