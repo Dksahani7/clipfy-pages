@@ -1,71 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{VIDEO_TITLE}} - Clipfy</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: #000;
-            color: #fff;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .video-player {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            background: #111;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        video {
-            width: 100%;
-            display: block;
-        }
-        .video-info {
-            padding: 20px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .back-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #e50914;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        .back-btn:hover {
-            background: #c40812;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>{{TITLE}}</title>
+
+  <!-- Twitter Player Card -->
+  <meta name="twitter:card" content="player">
+  <meta name="twitter:title" content="{{TITLE}}">
+  <meta name="twitter:description" content="{{DESCRIPTION}}">
+  <meta name="twitter:image" content="{{THUMB_URL}}">
+  <meta name="twitter:player" content="{{PAGE_URL}}">
+  <meta name="twitter:player:width" content="720">
+  <meta name="twitter:player:height" content="405">
+
+  <!-- IMPORTANT: Actual MP4 link -->
+  <meta name="twitter:player:stream" content="{{VIDEO_URL}}">
+  <meta name="twitter:player:stream:content_type" content="video/mp4">
+
+  <style>
+    body{
+      margin:0;
+      background:#000;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+    video{
+      width:100%;
+      max-width:720px;
+      border-radius:10px;
+      background:#000;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="video-player">
-            <video controls autoplay>
-                <source src="{{VIDEO_URL}}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="video-info">
-                <h1>{{VIDEO_TITLE}}</h1>
-                <p>{{VIDEO_DESCRIPTION}}</p>
-                <a href="../index.html" class="back-btn">← Back to Home</a>
-            </div>
-        </div>
-    </div>
+
+  <video controls autoplay playsinline src="{{VIDEO_URL}}"></video>
+
 </body>
 </html>
