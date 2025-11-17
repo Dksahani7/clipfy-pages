@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{VIDEO_TITLE}} - Clipfy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .video-player {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #111;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        video {
+            width: 100%;
+            display: block;
+        }
+        .video-info {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #e50914;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .back-btn:hover {
+            background: #c40812;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-player">
+            <video controls autoplay>
+                <source src="{{VIDEO_URL}}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h1>{{VIDEO_TITLE}}</h1>
+                <p>{{VIDEO_DESCRIPTION}}</p>
+                <a href="../index.html" class="back-btn">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
