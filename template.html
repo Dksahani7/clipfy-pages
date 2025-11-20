@@ -13,17 +13,36 @@
 <meta name="twitter:player" content="{{PLAYER_URL}}" />
 <meta name="twitter:player:width" content="720" />
 <meta name="twitter:player:height" content="405" />
+
 <meta name="twitter:player:stream" content="{{VIDEO_URL}}" />
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 
+<!-- OPEN GRAPH (VERY IMPORTANT FOR TWITTER INLINE) -->
+<meta property="og:type" content="video.other" />
+<meta property="og:video" content="{{VIDEO_URL}}" />
+<meta property="og:video:secure_url" content="{{VIDEO_URL}}" />
+<meta property="og:video:type" content="video/mp4" />
+<meta property="og:title" content="Clipfy Video" />
+<meta property="og:description" content="Watch this video" />
+<meta property="og:url" content="{{PLAYER_URL}}" />
+
 <style>
-body { margin: 0; background: #000; display: flex; justify-content:center; align-items:center; height:100vh; }
-video { width:100%; max-width:720px; }
+body { 
+    margin: 0; 
+    background: #000; 
+    display: flex; 
+    justify-content:center; 
+    align-items:center; 
+    height:100vh; 
+}
+video { 
+    width:100%; 
+    max-width:720px; 
+}
 </style>
 
 </head>
-
 <body>
-  <video controls autoplay playsinline src="{{VIDEO_URL}}"></video>
+    <video controls autoplay playsinline src="{{VIDEO_URL}}"></video>
 </body>
 </html>
