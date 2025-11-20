@@ -6,10 +6,18 @@
 
 <title>Clipfy Video</title>
 
-<!-- Twitter Player Card -->
-<meta name="twitter:card" content="player" />
+<!-- ****** THUMBNAIL PREVIEW ****** -->
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Clipfy Video" />
 <meta name="twitter:description" content="Watch this video" />
+<meta name="twitter:image" content="{{THUMB_URL}}" />
+
+<!-- OG Thumbnail -->
+<meta property="og:image" content="{{THUMB_URL}}" />
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+
+<!-- ****** TWITTER PLAYER ****** -->
 <meta name="twitter:player" content="{{PLAYER_URL}}" />
 <meta name="twitter:player:width" content="720" />
 <meta name="twitter:player:height" content="405" />
@@ -17,7 +25,7 @@
 <meta name="twitter:player:stream" content="{{VIDEO_URL}}" />
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 
-<!-- OPEN GRAPH (VERY IMPORTANT FOR TWITTER INLINE) -->
+<!-- ****** OPEN GRAPH VIDEO ****** -->
 <meta property="og:type" content="video.other" />
 <meta property="og:video" content="{{VIDEO_URL}}" />
 <meta property="og:video:secure_url" content="{{VIDEO_URL}}" />
