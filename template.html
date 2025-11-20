@@ -4,29 +4,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clipfy Player</title>
 
-<!-- ⭐ TWITTER-ONLY META SYSTEM (Clean + Working) -->
-
-<!-- Thumbnail (with play button overlay) -->
+<!-- Thumbnail Preview -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Clipfy Video" />
 <meta name="twitter:description" content="Watch this video" />
 <meta name="twitter:image" content="{{THUMB_URL_OVERLAY}}" />
 
-<!-- Player (In-App Twitter Video) -->
-<meta name="twitter:player" content="{{PLAYER_URL}}" />
-<meta name="twitter:player:width" content="720" />
-<meta name="twitter:player:height" content="405" />
-<meta name="twitter:player:stream" content="{{VIDEO_URL}}" />
-<meta name="twitter:player:stream:content_type" content="video/mp4" />
+<!-- Open Graph (for preview) -->
+<meta property="og:image" content="{{THUMB_URL_OVERLAY}}" />
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
 
-
-<meta property="og:title" content="Clipfy Video" />
-<meta property="og:description" content="Watch this video" />
-<meta property="og:image" content="{{THUMB_URL}}" />
-<meta property="og:image:width" content="1280" />
-<meta property="og:image:height" content="720" />
-
-<!-- Player (Click hone ke baad In-App Video chalega) -->
+<!-- Player metadata (Twitter loads AFTER click) -->
 <meta name="twitter:player" content="{{PLAYER_URL}}" />
 <meta name="twitter:player:width" content="720" />
 <meta name="twitter:player:height" content="405" />
