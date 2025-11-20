@@ -4,18 +4,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clipfy Player</title>
 
-<!-- Thumbnail Preview -->
+<!-- ⭐ FINAL FIXED META SYSTEM (Thumbnail + Player both work) -->
+
+<!-- Thumbnail Preview (Timeline me Dikhega) -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Clipfy Video" />
 <meta name="twitter:description" content="Watch this video" />
-  <meta name="twitter:image" content="https://clipfy.store/cdn-cgi/image/overlay=https://pub-51338658718349efb6e5193255e4131b.r2.dev/play.png,overlay-width=250,overlay-height=250,overlay-gravity=center/{{THUMB_URL}}" />
-<!-- Open Graph (for preview) -->
-<meta property="og:image" content="{{THUMB_URL}}" />
-<meta property="og:image:width" content="1280">  <!-- Open Graph (for preview) -->
-    <meta property="og:image" content="https://clipfy.store/cdn-cgi/image/overlay=https://pub-51338658718349efb6e5193255e4131b.r2.dev/play.png,overlay-width=250,overlay-height=250,overlay-gravity=center/{{THUMB_URL}}" />
-<meta property="og:image:height" content="720">
+<meta name="twitter:image" content="{{THUMB_URL}}" />
 
-<!-- Player metadata (Twitter loads AFTER click) -->
+<!-- Open Graph for FB / WhatsApp / Instagram -->
+<meta property="og:title" content="Clipfy Video" />
+<meta property="og:description" content="Watch this video" />
+<meta property="og:image" content="{{THUMB_URL}}" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
+
+<!-- Player (Click hone ke baad In-App Video chalega) -->
 <meta name="twitter:player" content="{{PLAYER_URL}}" />
 <meta name="twitter:player:width" content="720" />
 <meta name="twitter:player:height" content="405" />
@@ -153,7 +157,7 @@ const likesEl = document.getElementById('likes');
 const viewsEl = document.getElementById('views');
 const likeBtn = document.getElementById('likeBtn');
 const shareBtn = document.getElementById('shareBtn');
-const const fakePlay = document.getElementById('fakePlay');
+const fakePlay = document.getElementById('fakePlay');
 player = document.getElementById('player');
 
 let liked = false;
