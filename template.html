@@ -4,15 +4,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clipfy Player</title>
 
-<!-- ⭐ FINAL FIXED META SYSTEM (Thumbnail + Player both work) -->
+<!-- ⭐ TWITTER-ONLY META SYSTEM (Clean + Working) -->
 
-<!-- Thumbnail Preview (Timeline me Dikhega) -->
+<!-- Thumbnail (with play button overlay) -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Clipfy Video" />
 <meta name="twitter:description" content="Watch this video" />
-<meta name="twitter:image" content="{{THUMB_URL}}" />
+<meta name="twitter:image" content="{{THUMB_URL_OVERLAY}}" />
 
-<!-- Open Graph for FB / WhatsApp / Instagram -->
+<!-- Player (In-App Twitter Video) -->
+<meta name="twitter:player" content="{{PLAYER_URL}}" />
+<meta name="twitter:player:width" content="720" />
+<meta name="twitter:player:height" content="405" />
+<meta name="twitter:player:stream" content="{{VIDEO_URL}}" />
+<meta name="twitter:player:stream:content_type" content="video/mp4" />
+
+
 <meta property="og:title" content="Clipfy Video" />
 <meta property="og:description" content="Watch this video" />
 <meta property="og:image" content="{{THUMB_URL}}" />
