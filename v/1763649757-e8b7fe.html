@@ -1,0 +1,271 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clipfy Player</title>
+
+<!-- Thumbnail Preview -->
+<!-- Thumbnail Preview -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Clipfy Video" />
+<meta name="twitter:description" content="Watch this video" />
+<meta name="twitter:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/5562421a3ddd4a4f810ddca342af1914.jpg" />
+
+<!-- Open Graph (for preview) -->
+<meta property="og:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/5562421a3ddd4a4f810ddca342af1914.jpg" />
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+
+<!-- Player metadata (Twitter loads AFTER click) -->
+<meta name="twitter:player" content="https://clipfy.store/v/1763649757-e8b7fe.html" />
+<meta name="twitter:player:width" content="720" />
+<meta name="twitter:player:height" content="405" />
+<meta name="twitter:player:stream" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/videos/b485258943384ddb831a8074ab0e3214.mp4" />
+<meta name="twitter:player:stream:content_type" content="video/mp4" />
+
+
+<style>
+body {
+  background:#0f141a;
+  color:white;
+  font-family:Arial, sans-serif;
+  padding:0;
+  margin:0;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:20px;
+}
+
+.post {
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.post .dp {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#555;
+}
+
+.title {
+  margin-top:4px;
+  font-size:14px;
+  color:#aaa;
+}
+
+.video-box {
+  width:100%;
+  height:70vh; /* fixed video area */
+  padding:0;
+  position:relative;
+  overflow:hidden;
+}
+
+video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:0; /* full bleed */
+}
+
+video {
+  width:100%;
+  border-radius:12px;
+}
+
+.stats {
+  display:flex;
+  gap:12px;
+  padding:12px;
+  font-size:14px;
+  align-items:center;
+}
+
+.stat-btn { cursor:pointer; user-select:none; }
+
+.cta { display:none }
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div>X</div>
+  <div>⋯</div>
+</div>
+
+<div class="post">
+  <div class="dp"></div>
+  <div>
+    <div style="font-weight:700;">Video</div>
+    <div class="title" id="timeAgo">Loading...</div>
+  </div>
+</div>
+
+<div class="video-box" style="position:relative;">
+
+  <!-- Fake Blue Play Button (Twitter-style) -->
+  <div id="fakePlay" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:20; width:70px; height:70px; border-radius:50%; background:#1d9bf0; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.4); cursor:pointer;">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff">
+      <path d="M8 5v14l11-7z"></path>
+    </svg>
+  </div>
+
+  <!-- Fake Twitter Video Badge -->
+  <div style="position:absolute; z-index:10; margin:10px; background:rgba(0,0,0,0.55); padding:6px 10px; border-radius:6px; font-size:13px; display:flex; align-items:center; gap:4px;">
+    <span style="font-weight:700;">▶ X Video</span>
+  </div>
+  <video id="player" playsinline controls autoplay muted>
+    <source src="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/videos/b485258943384ddb831a8074ab0e3214.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="stats">
+  <div id="likeBtn" class="stat-btn">❤️ <span id="likes">0</span></div>
+  <div>👁️ <span id="views">0</span></div>
+  <div style="margin-left:auto; font-size:14px; cursor:pointer;" id="shareBtn">🔗 Share</div>
+</div>
+
+<script>
+/*
+  Usage (bot should replace placeholders):
+  - {{VIDEO_ID}} : unique id for this video/page
+  - {{API_BASE}} : your Worker endpoint, e.g. https://clipfy.workers.dev
+
+  This page will:
+  - call GET {{API_BASE}}/stats?video_id={{VIDEO_ID}} to fetch counts
+  - call POST {{API_BASE}}/hit to increment view on first load
+  - call POST {{API_BASE}}/like to toggle like from user
+  Notes: Worker expects a KV namespace bound to CLIPFY_STATS.
+*/
+
+const VIDEO_ID = '{{VIDEO_ID}}';
+const API_BASE = '{{API_BASE}}'; // e.g. https://your-workers-domain.workers.dev
+
+const likesEl = document.getElementById('likes');
+const viewsEl = document.getElementById('views');
+const likeBtn = document.getElementById('likeBtn');
+const shareBtn = document.getElementById('shareBtn');
+const fakePlay = document.getElementById('fakePlay');
+player = document.getElementById('player');
+
+let liked = false;
+
+async function fetchStats(){
+  try{
+    const res = await fetch(`${API_BASE}/stats?video_id=${encodeURIComponent(VIDEO_ID)}`);
+    if(!res.ok) return;
+    const j = await res.json();
+    likesEl.textContent = j.likes || 0;
+    viewsEl.textContent = j.views || 0;
+  }catch(e){console.log('stat fetch err',e)}
+}
+
+// Increment view once when user first interacts or autoplay plays
+let viewCounted = false;
+function countViewOnce(){
+  if(viewCounted) return; viewCounted = true;
+  fetch(`${API_BASE}/hit`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({video_id:VIDEO_ID, type:'view'})}).catch(()=>{});
+}
+
+// Try to count view after play event or after short timeout
+fakePlay.addEventListener('click', ()=>{ fakePlay.style.display='none'; player.play(); });
+
+player.addEventListener('play', ()=>countViewOnce());
+setTimeout(()=>{ if(!viewCounted) countViewOnce(); }, 3500);
+
+// Like button
+likeBtn.addEventListener('click', async ()=>{
+  liked = !liked;
+  likeBtn.style.opacity = liked ? '0.7' : '1';
+  try{
+    const res = await fetch(`${API_BASE}/like`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({video_id:VIDEO_ID, like: liked})});
+    if(res.ok){ const j = await res.json(); likesEl.textContent = j.likes; }
+  }catch(e){console.log('like err',e)}
+});
+
+// Share
+shareBtn.addEventListener('click', ()=>{
+  if(navigator.share){ navigator.share({title:'Clipfy', url:location.href}).catch(()=>{}); }
+  else{ navigator.clipboard.writeText(location.href).then(()=>alert('Link copied')) }
+});
+
+// Initial load
+fetchStats();
+
+// Optional: poll for updates every 15s to give realtime feel
+setInterval(fetchStats,15000);
+// Time Ago
+const createdAt = '{{CREATED_AT}}'; // bot will inject e.g. 2025-11-20T05:00:00Z
+function timeAgo(ts){
+  const diff = (Date.now() - new Date(ts).getTime())/1000;
+  if(diff < 60) return Math.floor(diff)+"s ago";
+  if(diff < 3600) return Math.floor(diff/60)+"m ago";
+  if(diff < 86400) return Math.floor(diff/3600)+"h ago";
+  return Math.floor(diff/86400)+"d ago";
+}
+if(createdAt && createdAt !== '{{CREATED_AT}}'){
+  document.getElementById('timeAgo').textContent = 'Trending · ' + timeAgo(createdAt);
+}
+</script>
+
+<!--
+  Cloudflare Worker example (paste into a Worker, bind a KV namespace named CLIPFY_STATS):
+
+  // worker.js
+  addEventListener('fetch', event => { event.respondWith(handle(event.request)) })
+
+  async function handle(req){
+    const url = new URL(req.url);
+    if(url.pathname === '/stats' && req.method === 'GET'){
+      const vid = url.searchParams.get('video_id');
+      if(!vid) return new Response(JSON.stringify({error:'missing'}),{status:400});
+      const raw = await CLIPFY_STATS.get(vid);
+      const obj = raw ? JSON.parse(raw) : {views:0,likes:0};
+      return new Response(JSON.stringify(obj), {headers:{'Content-Type':'application/json'}});
+    }
+
+    if(url.pathname === '/hit' && req.method === 'POST'){
+      const body = await req.json();
+      const vid = body.video_id; const type = body.type || 'view';
+      if(!vid) return new Response('missing', {status:400});
+      const raw = await CLIPFY_STATS.get(vid);
+      const obj = raw ? JSON.parse(raw) : {views:0,likes:0};
+      if(type === 'view') obj.views = (obj.views||0) + 1;
+      await CLIPFY_STATS.put(vid, JSON.stringify(obj));
+      return new Response(JSON.stringify(obj), {headers:{'Content-Type':'application/json'}});
+    }
+
+    if(url.pathname === '/like' && req.method === 'POST'){
+      const body = await req.json();
+      const vid = body.video_id; const like = body.like === true;
+      if(!vid) return new Response('missing', {status:400});
+      const raw = await CLIPFY_STATS.get(vid);
+      const obj = raw ? JSON.parse(raw) : {views:0,likes:0};
+      // naive toggle: increment when like true, decrement when false (no per-user guard)
+      obj.likes = Math.max(0, (obj.likes||0) + (like ? 1 : -1));
+      await CLIPFY_STATS.put(vid, JSON.stringify(obj));
+      return new Response(JSON.stringify(obj), {headers:{'Content-Type':'application/json'}});
+    }
+
+    return new Response('ok');
+  }
+
+  Bindings:
+  - CLIPFY_STATS (KV namespace)
+
+  Notes / improvements:
+  - For per-user like prevention, store a small signed cookie or track by IP (privacy concerns).
+  - Use Workers KV for simple counters (eventually consistent). For higher accuracy, use Durable Objects or an external DB.
+-->
+
+</html>
