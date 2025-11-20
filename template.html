@@ -61,7 +61,17 @@ body {
 
 .video-box {
   width:100%;
+  height:70vh; /* fixed video area */
   padding:0;
+  position:relative;
+  overflow:hidden;
+}
+
+video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:0; /* full bleed */
 }
 
 video {
@@ -99,7 +109,15 @@ video {
   </div>
 </div>
 
-<div class="video-box">
+<div class="video-box" style="position:relative;">
+
+  <!-- Fake Blue Play Button (Twitter-style) -->
+  <div id="fakePlay" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:20; width:70px; height:70px; border-radius:50%; background:#1d9bf0; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.4); cursor:pointer;">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff">
+      <path d="M8 5v14l11-7z"></path>
+    </svg>
+  </div>
+
   <!-- Fake Twitter Video Badge -->
   <div style="position:absolute; z-index:10; margin:10px; background:rgba(0,0,0,0.55); padding:6px 10px; border-radius:6px; font-size:13px; display:flex; align-items:center; gap:4px;">
     <span style="font-weight:700;">▶ X Video</span>
@@ -135,7 +153,8 @@ const likesEl = document.getElementById('likes');
 const viewsEl = document.getElementById('views');
 const likeBtn = document.getElementById('likeBtn');
 const shareBtn = document.getElementById('shareBtn');
-const player = document.getElementById('player');
+const const fakePlay = document.getElementById('fakePlay');
+player = document.getElementById('player');
 
 let liked = false;
 
@@ -157,6 +176,8 @@ function countViewOnce(){
 }
 
 // Try to count view after play event or after short timeout
+fakePlay.addEventListener('click', ()=>{ fakePlay.style.display='none'; player.play(); });
+
 player.addEventListener('play', ()=>countViewOnce());
 setTimeout(()=>{ if(!viewCounted) countViewOnce(); }, 3500);
 
