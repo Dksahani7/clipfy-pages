@@ -4,13 +4,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Clipfy Player</title>
 
-<meta name="twitter:card" content="player" /> 
+<meta name="twitter:card" content="summary_large_image" /> 
 <meta name="twitter:title" content="{{TITLE}}" />
 <meta name="twitter:description" content="{{DESCRIPTION}}" />
 <meta name="twitter:image" content="{{THUMB_URL}}" />
+
 <meta property="og:image" content="{{THUMB_URL}}" />
 <meta property="og:image:width" content="1280" />
 <meta property="og:image:height" content="720" />
+
 <meta name="twitter:player" content="{{PLAYER_PAGE_URL}}" />
 <meta name="twitter:player:width" content="720" />
 <meta name="twitter:player:height" content="405" />
@@ -45,18 +47,18 @@ body {
 video {
   width:100%;
   height:100%;
-  /* ✨ REVERTED FIX: 'cover' वापस आ गया! यह 40vh एरिया को पूरी तरह भरेगा (Reels Crop हो सकती है) */
+  /* 'cover' वापस, जैसा आपको चाहिए था (40vh एरिया को भरेगा, Reels Crop हो सकती है) */
   object-fit:cover !important; 
   display:block;
 }
 
 /* 2. SCROLLABLE CONTENT WRAPPER */
 .content-wrapper {
-  padding-top:40vh; 
+  padding-top:40vh; /* फिक्स्ड वीडियो के नीचे से शुरू होता है */
   min-height:100vh;
   position:relative;
   z-index:1;
-  min-width: 100%; 
+  min-width: 100%; /* Scaling को रोकने के लिए */
 }
 
 .header {
@@ -67,14 +69,43 @@ video {
   font-size:20px;
 }
 
-/* ... (बाकी कंटेंट स्टाइलिंग) ... */
+.post {
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.post .dp {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#555;
+}
+
+.title {
+  margin-top:4px;
+  font-size:14px;
+  color:#aaa;
+}
+
+.stats {
+  display:flex;
+  gap:12px;
+  padding:12px;
+  font-size:14px;
+  align-items:center;
+  border-bottom:1px solid #222;
+}
+
+.stat-btn { cursor:pointer; }
 
 .blog-content {
   padding:12px;
   line-height:1.6;
   font-size:16px;
   position:relative;
-  z-index:2; 
+  z-index:2; /* Ads से ऊपर रहने के लिए */
 }
 
 /* 3. AD SLOTS (Ensures ads stay in flow) */
@@ -112,6 +143,7 @@ video {
     <div>X</div>
     <div>⋯</div>
   </div>
+
   <div class="post">
     <div class="dp"></div>
     <div>
