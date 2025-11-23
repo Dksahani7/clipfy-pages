@@ -17,7 +17,6 @@
 <meta name="twitter:player:stream" content="{{VIDEO_URL}}" />
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 
-  
 <style>
 body {
   background:#0f141a;
@@ -27,40 +26,28 @@ body {
   margin:0;
 }
 
-/* ========================================= */
-/* 1. FIXED VIDEO BOX (MODIFIED) */
-/* ========================================= */
 .video-box {
   width:100%;
-  height:40vh; /* Changed: Fixed video area to 40% of viewport height */
+  height:40vh;
   padding:0;
-  /* Added: Make it fixed at the top */
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10; /* Ensure video is above scrollable content */
+  z-index: 10;
   overflow:hidden;
 }
 
 video {
   width:100%;
   height:100%;
-  /* Use 'contain' to ensure reels/vertical video is not cropped, 
-     or 'cover' if you want it to fill 40vh area, potentially cropping edges. 
-     Keeping 'cover' as per original code's aesthetic. */
-  object-fit:cover; 
-  border-radius:0; /* full bleed */
+  object-fit:cover;
+  border-radius:0;
 }
 
-/* ========================================= */
-/* 2. SCROLLABLE CONTENT WRAPPER (NEW) */
-/* ========================================= */
 .content-wrapper {
-    /* Added: Push content below the 40vh fixed video box */
-    margin-top: 40vh;
+  margin-top: 40vh;
 }
 
-/* --- Original Styles (Inside content-wrapper) --- */
 .header {
   display:flex;
   justify-content:space-between;
@@ -95,28 +82,25 @@ video {
   padding:12px;
   font-size:14px;
   align-items:center;
-  border-bottom:1px solid #222; /* Added separator for clarity */
+  border-bottom:1px solid #222;
 }
 
 .stat-btn { cursor:pointer; user-select:none; }
 
-.cta { display:none }
-
-/* Optional: Ad/Blog Content area (Below Stats) */
 .blog-content {
-    padding: 12px;
-    line-height: 1.6;
-    font-size: 16px;
+  padding: 12px;
+  line-height: 1.6;
+  font-size: 16px;
 }
 
 .ad-slot {
-    text-align: center;
-    background: #1a2430;
-    padding: 20px;
-    margin: 20px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #888;
+  text-align: center;
+  background: #1a2430;
+  padding: 20px;
+  margin: 20px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #888;
 }
 </style>
 </head>
@@ -127,13 +111,14 @@ video {
   <div style="position:absolute; z-index:10; margin:10px; background:rgba(0,0,0,0.55); padding:6px 10px; border-radius:6px; font-size:13px; display:flex; align-items:center; gap:4px;">
     <span style="font-weight:700;">▶ X Video</span>
   </div>
+
   <video id="player" playsinline controls autoplay muted>
     <source src="{{VIDEO_URL}}" type="video/mp4">
-    </video>
+  </video>
 </div>
 
 <div class="content-wrapper">
-  
+
   <div class="header">
     <div>X</div>
     <div>⋯</div>
@@ -153,24 +138,126 @@ video {
     <div style="margin-left:auto; font-size:14px; cursor:pointer;" id="shareBtn">🔗 Share</div>
   </div>
 
+
+  <!-- 🔥 NEW SEX EDUCATION BLOG (FULL + CLEAN) -->
   <div class="blog-content">
-      <p style="font-weight:700; color:#eee;">यह है ब्लॉग/स्टोरी की मुख्य जानकारी:</p>
-      
-      <p>वीडियो ऊपर 40% क्षेत्र में फिक्स है, जबकि आप नीचे यह लेख स्क्रॉल करके पढ़ रहे हैं। यह एक बेहतरीन तरीका है जिससे उपयोगकर्ता वीडियो देखते हुए कंटेंट से जुड़े रह सकते हैं। यह डिज़ाइन खासकर मोबाइल और सोशल मीडिया एम्बेडेड प्लेयर (Twitter/X) के लिए अनुकूलित है।</p>
-      
-      <div class="ad-slot">
-          <strong>विज्ञापन क्षेत्र 1:</strong> (300x250 Ad Code यहाँ पेस्ट करें)
-      </div>
 
-      <p>हमने यहाँ कुछ अतिरिक्त टेक्स्ट जोड़ा है ताकि पेज में पर्याप्त स्क्रॉलिंग स्पेस बन सके। फिक्स वीडियो हेडर का उपयोग करते समय, `margin-top` CSS प्रॉपर्टी का उपयोग करके सुनिश्चित किया जाता है कि नीचे का कंटेंट फिक्स बार के नीचे से शुरू हो।</p>
-      
-      <p>यह लेआउट आपकी सभी आवश्यकताओं (40% फिक्स वीडियो, नीचे स्क्रॉल होने वाला कंटेंट और विज्ञापन) को पूरा करता है। आपको बस अपनी वीडियो URL और API एंडपॉइंट को रिप्लेस करना है।</p>
-      
-      <div class="ad-slot">
-          <strong>विज्ञापन क्षेत्र 2:</strong> (728x90 Banner Ad Code यहाँ पेस्ट करें)
-      </div>
+    <h2 style="font-size:20px; font-weight:800; margin-bottom:10px; color:#fff;">
+        Sex Education: समझ, सुरक्षा और ज़िम्मेदारी
+    </h2>
 
-      <p>धन्यवाद, आपका पेज अब **Ready to Use** है!</p>
+    <p style="color:#bdbdbd;">
+        Sex education सिर्फ sex के बारे में नहीं होता — यह शरीर, मानसिक स्वास्थ्य, consent, respect और 
+        सुरक्षित रिश्ते बनाने की समझ देने के लिए होता है। सही जानकारी जीवनभर गलतियों, डर और असुरक्षित 
+        फैसलों से बचाती है। भारत में अभी भी इस पर बात कम होती है, लेकिन जागरूकता सबसे ज़रूरी है।
+    </p>
+
+    <div class="ad-slot">
+        <strong>Ad Slot 1</strong> — 300×250
+    </div>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        1. शरीर और बदलाव (Understanding Your Body)
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        हर व्यक्ति का शरीर अलग तरह से develop होता है। Puberty में लड़कों और लड़कियों दोनों में कई 
+        बदलाव आते हैं — आवाज़ बदलना, hair growth, mood swings, emotional बदलाव और physical 
+        maturity। ये सब natural हिस्से हैं और किसी को भी शर्मिंदा होने की ज़रूरत नहीं है।
+    </p>
+
+    <p style="color:#c9c9c9;">
+        अपने शरीर को समझना और उसकी respect करना sex education का पहला कदम है।
+    </p>
+
+    <div class="ad-slot">
+        <strong>Ad Slot 2</strong> — 728×90 Banner
+    </div>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        2. Consent (सहमति) — सबसे महत्वपूर्ण नियम
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        Consent मतलब — बिना दबाव, धमकी, मजबूरी या झूठ के, दोनों लोगों की मर्जी से लिया गया फैसला।
+        अगर कोई "हाँ" नहीं बोल रहा, या unsure है, या मजबूर है — तो वह consent नहीं है।
+    </p>
+
+    <p style="color:#c9c9c9;">
+        Healthy relationship वही है जिसमें दोनों लोग comfortable हों और एक दूसरे की boundaries 
+        समझें।
+    </p>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        3. Safe Sex और Health Awareness
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        सुरक्षित तरीके अपनाने से दो बड़ी चीज़ों से बचा जा सकता है:
+    </p>
+
+    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
+        <li>अनचाही प्रेग्नेंसी</li>
+        <li>Sexually Transmitted Diseases (STDs)</li>
+    </ul>
+
+    <p style="color:#c9c9c9;">
+        Condom सबसे आसान, सस्ता और सबसे effective तरीका है। ये कोई शर्म की बात नहीं है — यह 
+        जिम्मेदारी है।
+    </p>
+
+    <div class="ad-slot">
+        <strong>Ad Slot 3</strong> — Responsive Ad
+    </div>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        4. Emotional Safety और Mental Health
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        रिश्तों में emotional safety भी उतनी ही ज़रूरी है। किसी भी रिश्ते में:
+    </p>
+
+    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
+        <li>pressure नहीं होना चाहिए</li>
+        <li>trust होना चाहिए</li>
+        <li>communication होना चाहिए</li>
+        <li>respect सबसे ऊपर होना चाहिए</li>
+    </ul>
+
+    <p style="color:#c9c9c9;">
+        Toxic relationships मानसिक स्वास्थ्य को बहुत नुकसान पहुँचाते हैं। Healthy boundaries 
+        रखना maturity की निशानी है।
+    </p>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        5. Myths vs Reality — सच क्या है?
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        Society में कई गलत धारणाएँ चलती रहती हैं जैसे:
+    </p>
+
+    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
+        <li>"पहली बार में कुछ नहीं होता" – गलत</li>
+        <li>"दिखकर पता चल जाता है कि कौन healthy है" – गलत</li>
+        <li>"Condom से मज़ा खराब होता है" – गलत</li>
+        <li>"केवल लड़कों को ही जानकारी चाहिए" – गलत</li>
+    </ul>
+
+    <p style="color:#c9c9c9;">
+        Sex education facts पर आधारित होता है, online myths पर नहीं।
+    </p>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        Conclusion
+    </h3>
+
+    <p style="color:#bdbdbd;">
+        Sex education शर्म की चीज़ नहीं — बल्कि health, respect, understanding और safety का 
+        विषय है। जितनी सही और खुली जानकारी मिलेगी, लोग उतने अच्छे और सुरक्षित फैसले ले पाएंगे।
+    </p>
+
   </div>
 
 </div>
@@ -178,14 +265,13 @@ video {
 
 <script>
 const VIDEO_ID = '{{VIDEO_ID}}';
-const API_BASE = '{{API_BASE}}'; // e.g. https://your-workers-domain.workers.dev
+const API_BASE = '{{API_BASE}}';
 
 const likesEl = document.getElementById('likes');
 const viewsEl = document.getElementById('views');
 const likeBtn = document.getElementById('likeBtn');
 const shareBtn = document.getElementById('shareBtn');
-// Removed 'fakePlay' as it's not in the modified HTML
-const player = document.getElementById('player'); // Corrected variable name
+const player = document.getElementById('player');
 
 let liked = false;
 
@@ -196,45 +282,51 @@ async function fetchStats(){
     const j = await res.json();
     likesEl.textContent = j.likes || 0;
     viewsEl.textContent = j.views || 0;
-  }catch(e){console.log('stat fetch err',e)}
+  }catch(e){}
 }
 
-// Increment view once when user first interacts or autoplay plays
 let viewCounted = false;
 function countViewOnce(){
-  if(viewCounted) return; viewCounted = true;
-  fetch(`${API_BASE}/hit`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({video_id:VIDEO_ID, type:'view'})}).catch(()=>{});
+  if(viewCounted) return;
+  viewCounted = true;
+  fetch(`${API_BASE}/hit`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({video_id:VIDEO_ID, type:'view'})
+  });
 }
 
-// Try to count view after play event or after short timeout
-// Since fakePlay is removed, using timeout and play event listeners directly
 player.addEventListener('play', ()=>countViewOnce());
 setTimeout(()=>{ if(!viewCounted) countViewOnce(); }, 3500);
 
-// Like button
 likeBtn.addEventListener('click', async ()=>{
   liked = !liked;
   likeBtn.style.opacity = liked ? '0.7' : '1';
   try{
-    const res = await fetch(`${API_BASE}/like`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({video_id:VIDEO_ID, like: liked})});
-    if(res.ok){ const j = await res.json(); likesEl.textContent = j.likes; }
-  }catch(e){console.log('like err',e)}
+    const res = await fetch(`${API_BASE}/like`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({video_id:VIDEO_ID, like: liked})
+    });
+    if(res.ok){
+      const j = await res.json();
+      likesEl.textContent = j.likes;
+    }
+  }catch(e){}
 });
 
-// Share
 shareBtn.addEventListener('click', ()=>{
-  if(navigator.share){ navigator.share({title:'Clipfy', url:location.href}).catch(()=>{}); }
-  else{ navigator.clipboard.writeText(location.href).then(()=>alert('Link copied')) }
+  if(navigator.share){
+    navigator.share({title:'Clipfy', url:location.href});
+  } else {
+    navigator.clipboard.writeText(location.href).then(()=>alert('Link copied'));
+  }
 });
 
-// Initial load
 fetchStats();
-
-// Optional: poll for updates every 15s to give realtime feel
 setInterval(fetchStats,15000);
 
-// Time Ago
-const createdAt = '{{CREATED_AT}}'; // bot will inject e.g. 2025-11-20T05:00:00Z
+const createdAt = '{{CREATED_AT}}';
 function timeAgo(ts){
   const diff = (Date.now() - new Date(ts).getTime())/1000;
   if(diff < 60) return Math.floor(diff)+"s ago";
@@ -247,4 +339,5 @@ if(createdAt && createdAt !== '{{CREATED_AT}}'){
 }
 </script>
 
+</body>
 </html>
