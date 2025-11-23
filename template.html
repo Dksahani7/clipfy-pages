@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Clipfy Player</title>
 
-<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:card" content="player" /> 
 <meta name="twitter:title" content="{{TITLE}}" />
 <meta name="twitter:description" content="{{DESCRIPTION}}" />
 <meta name="twitter:image" content="{{THUMB_URL}}" />
@@ -18,6 +18,7 @@
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 
 <style>
+/* CSS Failsafe: Ensures stable layout and prevents ad interference */
 body {
   background:#0f141a;
   color:white;
@@ -25,33 +26,37 @@ body {
   margin:0;
   padding:0;
   overflow-x:hidden;
+  min-width: 100vw;
 }
 
-/* ✅ FIXED VIDEO (same 40vh height you wanted) */
+/* 1. FIXED VIDEO BOX (40% HEIGHT) */
 .video-box {
   width:100%;
   height:40vh;
   position:fixed;
   top:0;
   left:0;
-  background:#000;
+  background:#000; 
   overflow:hidden;
-  z-index:100;
+  z-index:99999; /* Ads को नीचे रखने के लिए सर्वोच्च z-index */
+  min-width: 100%; /* Scaling को रोकने के लिए */
 }
 
 video {
   width:100%;
   height:100%;
-  object-fit:cover; /* contain ki jagah cover → zoom-out hat gaya */
+  /* ✨ REVERTED FIX: 'cover' वापस आ गया! यह 40vh एरिया को पूरी तरह भरेगा (Reels Crop हो सकती है) */
+  object-fit:cover !important; 
   display:block;
 }
 
-/* Content starts below 40vh */
+/* 2. SCROLLABLE CONTENT WRAPPER */
 .content-wrapper {
-  padding-top:40vh;
+  padding-top:40vh; 
   min-height:100vh;
   position:relative;
   z-index:1;
+  min-width: 100%; 
 }
 
 .header {
@@ -62,43 +67,17 @@ video {
   font-size:20px;
 }
 
-.post {
-  padding:12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-
-.post .dp {
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#555;
-}
-
-.title {
-  margin-top:4px;
-  font-size:14px;
-  color:#aaa;
-}
-
-.stats {
-  display:flex;
-  gap:12px;
-  padding:12px;
-  font-size:14px;
-  align-items:center;
-  border-bottom:1px solid #222;
-}
-
-.stat-btn { cursor:pointer; }
+/* ... (बाकी कंटेंट स्टाइलिंग) ... */
 
 .blog-content {
   padding:12px;
   line-height:1.6;
   font-size:16px;
+  position:relative;
+  z-index:2; 
 }
 
+/* 3. AD SLOTS (Ensures ads stay in flow) */
 .ad-slot {
   text-align:center;
   background:#1a2430;
@@ -107,6 +86,10 @@ video {
   border-radius:8px;
   font-size:14px;
   color:#888;
+  
+  /* FIX: Ads को कंटेंट फ्लो में मजबूर करने के लिए */
+  position: relative !important; 
+  z-index: 1 !important; 
 }
 </style>
 </head>
@@ -129,7 +112,6 @@ video {
     <div>X</div>
     <div>⋯</div>
   </div>
-
   <div class="post">
     <div class="dp"></div>
     <div>
@@ -144,51 +126,37 @@ video {
     <div style="margin-left:auto;" id="shareBtn">🔗 Share</div>
   </div>
 
-  <!-- Blog + Ads (same as your original) -->
   <div class="blog-content">
 
     <h2 style="font-size:20px; font-weight:800; margin-bottom:10px; color:#fff;">
         Sex Education: समझ, सुरक्षा और ज़िम्मेदारी
     </h2>
 
-    <p style="color:#bdbdbd;">Sex education सिर्फ sex के बारे में नहीं होता...</p>
+    <p style="color:#bdbdbd;">Sex education सिर्फ sex के बारे में नहीं होता — यह शरीर, मानसिक स्वास्थ्य, consent, respect और सुरक्षित रिश्ते बनाने की समझ देने के लिए होता है।...</p>
 
     <div class="ad-slot">
       <script type="text/javascript">
-      atOptions = {
-        'key' : 'e8550078b37b6bf29c9b54eed61806f7',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
-      };
+      atOptions = { 'key' : 'e8550078b37b6bf29c9b54eed61806f7', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
       </script>
       <script type="text/javascript" src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
     </div>
 
     <h3 style="color:#fff;">1. शरीर और बदलाव</h3>
-    <p style="color:#c9c9c9;">Puberty में बदलाव normal हैं…</p>
+    <p style="color:#c9c9c9;">Puberty में बदलाव normal हैं। अपने शरीर को समझना और उसकी respect करना sex education का पहला कदम है।</p>
 
     <div class="ad-slot">
       <script type="text/javascript">
-      atOptions = {
-        'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
+      atOptions = { 'key' : 'b40d9ebf8b9bb68f80451819ab41596e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
       </script>
       <script type="text/javascript" src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
     </div>
 
     <h3 style="color:#fff;">2. Consent</h3>
-    <p style="color:#c9c9c9;">Consent = दोनों की सही मर्जी…</p>
+    <p style="color:#c9c9c9;">Consent मतलब — बिना दबाव, धमकी, मजबूरी या झूठ के, दोनों लोगों की मर्जी से लिया गया फैसला। Healthy relationship वही है जिसमें दोनों लोग comfortable हों।</p>
 
-    <h3 style="color:#fff;">3. Safe Sex</h3>
-    <p style="color:#c9c9c9;">Condom + awareness सबसे जरूरी…</p>
-
-    <div class="ad-slot"></div>
+    <div class="ad-slot">
+        <strong>Ad Slot 3</strong> — (यहाँ अपना कोड पेस्ट करें)
+    </div>
 
   </div>
 </div>
@@ -196,13 +164,11 @@ video {
 <script>
 const VIDEO_ID = '{{VIDEO_ID}}';
 const API_BASE = '{{API_BASE}}';
-
 const likesEl = document.getElementById('likes');
 const viewsEl = document.getElementById('views');
 const likeBtn = document.getElementById('likeBtn');
 const shareBtn = document.getElementById('shareBtn');
 const player = document.getElementById('player');
-
 let liked = false;
 
 async function fetchStats(){
@@ -219,11 +185,7 @@ let viewCounted = false;
 function countViewOnce(){
   if(viewCounted) return;
   viewCounted = true;
-  fetch(`${API_BASE}/hit`, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({video_id:VIDEO_ID, type:'view'})
-  });
+  fetch(`${API_BASE}/hit`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({video_id:VIDEO_ID, type:'view'}) });
 }
 
 player.addEventListener('play', ()=>countViewOnce());
@@ -233,24 +195,14 @@ likeBtn.addEventListener('click', async ()=>{
   liked = !liked;
   likeBtn.style.opacity = liked ? '0.7' : '1';
   try{
-    const res = await fetch(`${API_BASE}/like`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({video_id:VIDEO_ID, like: liked})
-    });
-    if(res.ok){
-      const j = await res.json();
-      likesEl.textContent = j.likes;
-    }
+    const res = await fetch(`${API_BASE}/like`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({video_id:VIDEO_ID, like: liked}) });
+    if(res.ok){ const j = await res.json(); likesEl.textContent = j.likes; }
   }catch(e){}
 });
 
 shareBtn.addEventListener('click', ()=>{
-  if(navigator.share){
-    navigator.share({title:'Clipfy', url:location.href});
-  } else {
-    navigator.clipboard.writeText(location.href).then(()=>alert('Link copied'));
-  }
+  if(navigator.share){ navigator.share({title:'Clipfy', url:location.href}); } 
+  else { navigator.clipboard.writeText(location.href).then(()=>alert('Link copied')); }
 });
 
 fetchStats();
