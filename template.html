@@ -33,7 +33,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 100;
   overflow:hidden;
     background-color: #000000;
 }
@@ -46,8 +46,10 @@ video {
 }
 
 .content-wrapper {
-  margin-top: 40vh;
-}
+padding-top: 40vh;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;}
 
 .header {
   display:flex;
@@ -95,7 +97,7 @@ video {
     
   /* FIX: ब्लॉग कंटेंट को विज्ञापन से ऊपर रखने के लिए */
   position: relative;
-  z-index: 2;
+  z-index: 5;
 }
 
 .ad-slot {
