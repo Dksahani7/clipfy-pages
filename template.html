@@ -92,6 +92,10 @@ video {
   padding: 12px;
   line-height: 1.6;
   font-size: 16px;
+    
+  /* FIX: ब्लॉग कंटेंट को विज्ञापन से ऊपर रखने के लिए */
+  position: relative;
+  z-index: 2;
 }
 
 .ad-slot {
@@ -102,6 +106,10 @@ video {
   border-radius: 8px;
   font-size: 14px;
   color: #888;
+    
+  /* FIX: विज्ञापनों को कंटेंट में मजबूर करने के लिए */
+  position: relative !important;
+  z-index: 1 !important;
 }
 </style>
 </head>
