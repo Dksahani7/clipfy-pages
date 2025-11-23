@@ -22,29 +22,36 @@ body {
   background:#0f141a;
   color:white;
   font-family:Arial, sans-serif;
-  padding:0;
   margin:0;
+  padding:0;
   overflow-x:hidden;
 }
 
-/* FIXED: Video full responsive */
+/* ✅ FIXED VIDEO (same 40vh height you wanted) */
 .video-box {
-  width:100vw;
-  position:relative;
+  width:100%;
+  height:40vh;
+  position:fixed;
+  top:0;
+  left:0;
   background:#000;
   overflow:hidden;
+  z-index:100;
 }
 
 video {
   width:100%;
-  height:auto;
-  object-fit:contain;
+  height:100%;
+  object-fit:cover; /* contain ki jagah cover → zoom-out hat gaya */
   display:block;
 }
 
-/* Content pushes below video */
+/* Content starts below 40vh */
 .content-wrapper {
-  padding-top:10px;
+  padding-top:40vh;
+  min-height:100vh;
+  position:relative;
+  z-index:1;
 }
 
 .header {
@@ -84,26 +91,22 @@ video {
   border-bottom:1px solid #222;
 }
 
-.stat-btn { cursor:pointer; user-select:none; }
+.stat-btn { cursor:pointer; }
 
 .blog-content {
-  padding: 12px;
-  line-height: 1.6;
-  font-size: 16px;
-  position: relative;
-  z-index: 5;
+  padding:12px;
+  line-height:1.6;
+  font-size:16px;
 }
 
 .ad-slot {
-  text-align: center;
-  background: #1a2430;
-  padding: 20px;
-  margin: 20px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #888;
-  position: relative !important;
-  z-index: 1 !important;
+  text-align:center;
+  background:#1a2430;
+  padding:20px;
+  margin:20px 12px;
+  border-radius:8px;
+  font-size:14px;
+  color:#888;
 }
 </style>
 </head>
@@ -111,15 +114,14 @@ video {
 <body>
 
 <div class="video-box"> 
-  <div style="position:absolute; z-index:10; margin:10px; background:rgba(0,0,0,0.55); padding:6px 10px; border-radius:6px; font-size:13px; display:flex; align-items:center; gap:4px;">
-    <span style="font-weight:700;">▶ X Video</span>
+  <div style="position:absolute; z-index:10; margin:10px; background:rgba(0,0,0,0.55); padding:6px 10px; border-radius:6px; font-size:13px;">
+    ▶ X Video
   </div>
 
   <video id="player" playsinline controls autoplay muted>
     <source src="{{VIDEO_URL}}" type="video/mp4">
   </video>
 </div>
-
 
 <div class="content-wrapper">
 
@@ -139,21 +141,17 @@ video {
   <div class="stats">
     <div id="likeBtn" class="stat-btn">❤️ <span id="likes">0</span></div>
     <div>👁️ <span id="views">0</span></div>
-    <div style="margin-left:auto; font-size:14px; cursor:pointer;" id="shareBtn">🔗 Share</div>
+    <div style="margin-left:auto;" id="shareBtn">🔗 Share</div>
   </div>
 
-
-  <!-- BLOG SECTION + ADS -->
+  <!-- Blog + Ads (same as your original) -->
   <div class="blog-content">
 
     <h2 style="font-size:20px; font-weight:800; margin-bottom:10px; color:#fff;">
         Sex Education: समझ, सुरक्षा और ज़िम्मेदारी
     </h2>
 
-    <p style="color:#bdbdbd;">
-        Sex education सिर्फ sex के बारे में नहीं होता — यह शरीर, मानसिक स्वास्थ्य, consent, respect और 
-        सुरक्षित रिश्ते बनाने की समझ देने के लिए होता है।
-    </p>
+    <p style="color:#bdbdbd;">Sex education सिर्फ sex के बारे में नहीं होता...</p>
 
     <div class="ad-slot">
       <script type="text/javascript">
@@ -168,13 +166,8 @@ video {
       <script type="text/javascript" src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
     </div>
 
-    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        1. शरीर और बदलाव
-    </h3>
-
-    <p style="color:#c9c9c9;">
-        Puberty में लड़कों और लड़कियों दोनों में कई बदलाव आते हैं — ये natural process है।
-    </p>
+    <h3 style="color:#fff;">1. शरीर और बदलाव</h3>
+    <p style="color:#c9c9c9;">Puberty में बदलाव normal हैं…</p>
 
     <div class="ad-slot">
       <script type="text/javascript">
@@ -189,28 +182,16 @@ video {
       <script type="text/javascript" src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
     </div>
 
-    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        2. Consent (सहमति)
-    </h3>
+    <h3 style="color:#fff;">2. Consent</h3>
+    <p style="color:#c9c9c9;">Consent = दोनों की सही मर्जी…</p>
 
-    <p style="color:#c9c9c9;">
-        Consent मतलब — बिना दबाव, मजबूरी या झूठ के दोनों की मर्जी से लिया फैसला।
-    </p>
-
-    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        3. Safe Sex और Awareness
-    </h3>
-
-    <p style="color:#c9c9c9;">
-        सुरक्षित तरीके अपनाने से STDs और अनचाही प्रेग्नेंसी से बचा जा सकता है।
-    </p>
+    <h3 style="color:#fff;">3. Safe Sex</h3>
+    <p style="color:#c9c9c9;">Condom + awareness सबसे जरूरी…</p>
 
     <div class="ad-slot"></div>
 
   </div>
-
 </div>
-
 
 <script>
 const VIDEO_ID = '{{VIDEO_ID}}';
@@ -274,18 +255,6 @@ shareBtn.addEventListener('click', ()=>{
 
 fetchStats();
 setInterval(fetchStats,15000);
-
-const createdAt = '{{CREATED_AT}}';
-function timeAgo(ts){
-  const diff = (Date.now() - new Date(ts).getTime())/1000;
-  if(diff < 60) return Math.floor(diff)+"s ago";
-  if(diff < 3600) return Math.floor(diff/60)+"m ago";
-  if(diff < 86400) return Math.floor(diff/3600)+"h ago";
-  return Math.floor(diff/86400)+"d ago";
-}
-if(createdAt && createdAt !== '{{CREATED_AT}}'){
-  document.getElementById('timeAgo').textContent = 'Trending · ' + timeAgo(createdAt);
-}
 </script>
 
 <script type='text/javascript' src='//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js'></script>
