@@ -4,19 +4,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clipfy Player</title>
 
-<!-- Thumbnail Preview -->
-
-<!-- Twitter & OG thumbnail -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="{{TITLE}}" />
 <meta name="twitter:description" content="{{DESCRIPTION}}" />
 <meta name="twitter:image" content="{{THUMB_URL}}" />
-
 <meta property="og:image" content="{{THUMB_URL}}" />
 <meta property="og:image:width" content="1280" />
 <meta property="og:image:height" content="720" />
-
-<!-- Deprecated Twitter player tags (still safe to keep for desktop) -->
 <meta name="twitter:player" content="{{PLAYER_PAGE_URL}}" />
 <meta name="twitter:player:width" content="720" />
 <meta name="twitter:player:height" content="405" />
@@ -33,6 +27,40 @@ body {
   margin:0;
 }
 
+/* ========================================= */
+/* 1. FIXED VIDEO BOX (MODIFIED) */
+/* ========================================= */
+.video-box {
+  width:100%;
+  height:40vh; /* Changed: Fixed video area to 40% of viewport height */
+  padding:0;
+  /* Added: Make it fixed at the top */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10; /* Ensure video is above scrollable content */
+  overflow:hidden;
+}
+
+video {
+  width:100%;
+  height:100%;
+  /* Use 'contain' to ensure reels/vertical video is not cropped, 
+     or 'cover' if you want it to fill 40vh area, potentially cropping edges. 
+     Keeping 'cover' as per original code's aesthetic. */
+  object-fit:cover; 
+  border-radius:0; /* full bleed */
+}
+
+/* ========================================= */
+/* 2. SCROLLABLE CONTENT WRAPPER (NEW) */
+/* ========================================= */
+.content-wrapper {
+    /* Added: Push content below the 40vh fixed video box */
+    margin-top: 40vh;
+}
+
+/* --- Original Styles (Inside content-wrapper) --- */
 .header {
   display:flex;
   justify-content:space-between;
@@ -61,88 +89,94 @@ body {
   color:#aaa;
 }
 
-.video-box {
-  width:100%;
-  height:70vh; /* fixed video area */
-  padding:0;
-  position:relative;
-  overflow:hidden;
-}
-
-video {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:0; /* full bleed */
-}
-
-video {
-  width:100%;
-  border-radius:12px;
-}
-
 .stats {
   display:flex;
   gap:12px;
   padding:12px;
   font-size:14px;
   align-items:center;
+  border-bottom:1px solid #222; /* Added separator for clarity */
 }
 
 .stat-btn { cursor:pointer; user-select:none; }
 
 .cta { display:none }
 
+/* Optional: Ad/Blog Content area (Below Stats) */
+.blog-content {
+    padding: 12px;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.ad-slot {
+    text-align: center;
+    background: #1a2430;
+    padding: 20px;
+    margin: 20px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #888;
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <div>X</div>
-  <div>⋯</div>
-</div>
-
-<div class="post">
-  <div class="dp"></div>
-  <div>
-    <div style="font-weight:700;">Video</div>
-    <div class="title" id="timeAgo">Loading...</div>
-  </div>
-</div>
-
-<div class="video-box" style="position:relative;">
-
- 
-
-  <!-- Fake Twitter Video Badge -->
+<div class="video-box"> 
   <div style="position:absolute; z-index:10; margin:10px; background:rgba(0,0,0,0.55); padding:6px 10px; border-radius:6px; font-size:13px; display:flex; align-items:center; gap:4px;">
     <span style="font-weight:700;">▶ X Video</span>
   </div>
   <video id="player" playsinline controls autoplay muted>
     <source src="{{VIDEO_URL}}" type="video/mp4">
-  </video>
+    </video>
 </div>
 
-<div class="stats">
-  <div id="likeBtn" class="stat-btn">❤️ <span id="likes">0</span></div>
-  <div>👁️ <span id="views">0</span></div>
-  <div style="margin-left:auto; font-size:14px; cursor:pointer;" id="shareBtn">🔗 Share</div>
+<div class="content-wrapper">
+  
+  <div class="header">
+    <div>X</div>
+    <div>⋯</div>
+  </div>
+
+  <div class="post">
+    <div class="dp"></div>
+    <div>
+      <div style="font-weight:700;">Content Creator Name</div>
+      <div class="title" id="timeAgo">Loading...</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div id="likeBtn" class="stat-btn">❤️ <span id="likes">0</span></div>
+    <div>👁️ <span id="views">0</span></div>
+    <div style="margin-left:auto; font-size:14px; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
+
+  <div class="blog-content">
+      <p style="font-weight:700; color:#eee;">यह है ब्लॉग/स्टोरी की मुख्य जानकारी:</p>
+      
+      <p>वीडियो ऊपर 40% क्षेत्र में फिक्स है, जबकि आप नीचे यह लेख स्क्रॉल करके पढ़ रहे हैं। यह एक बेहतरीन तरीका है जिससे उपयोगकर्ता वीडियो देखते हुए कंटेंट से जुड़े रह सकते हैं। यह डिज़ाइन खासकर मोबाइल और सोशल मीडिया एम्बेडेड प्लेयर (Twitter/X) के लिए अनुकूलित है।</p>
+      
+      <div class="ad-slot">
+          <strong>विज्ञापन क्षेत्र 1:</strong> (300x250 Ad Code यहाँ पेस्ट करें)
+      </div>
+
+      <p>हमने यहाँ कुछ अतिरिक्त टेक्स्ट जोड़ा है ताकि पेज में पर्याप्त स्क्रॉलिंग स्पेस बन सके। फिक्स वीडियो हेडर का उपयोग करते समय, `margin-top` CSS प्रॉपर्टी का उपयोग करके सुनिश्चित किया जाता है कि नीचे का कंटेंट फिक्स बार के नीचे से शुरू हो।</p>
+      
+      <p>यह लेआउट आपकी सभी आवश्यकताओं (40% फिक्स वीडियो, नीचे स्क्रॉल होने वाला कंटेंट और विज्ञापन) को पूरा करता है। आपको बस अपनी वीडियो URL और API एंडपॉइंट को रिप्लेस करना है।</p>
+      
+      <div class="ad-slot">
+          <strong>विज्ञापन क्षेत्र 2:</strong> (728x90 Banner Ad Code यहाँ पेस्ट करें)
+      </div>
+
+      <p>धन्यवाद, आपका पेज अब **Ready to Use** है!</p>
+  </div>
+
 </div>
+
 
 <script>
-/*
-  Usage (bot should replace placeholders):
-  - {{VIDEO_ID}} : unique id for this video/page
-  - {{API_BASE}} : your Worker endpoint, e.g. https://clipfy.workers.dev
-
-  This page will:
-  - call GET {{API_BASE}}/stats?video_id={{VIDEO_ID}} to fetch counts
-  - call POST {{API_BASE}}/hit to increment view on first load
-  - call POST {{API_BASE}}/like to toggle like from user
-  Notes: Worker expects a KV namespace bound to CLIPFY_STATS.
-*/
-
 const VIDEO_ID = '{{VIDEO_ID}}';
 const API_BASE = '{{API_BASE}}'; // e.g. https://your-workers-domain.workers.dev
 
@@ -150,8 +184,8 @@ const likesEl = document.getElementById('likes');
 const viewsEl = document.getElementById('views');
 const likeBtn = document.getElementById('likeBtn');
 const shareBtn = document.getElementById('shareBtn');
-const fakePlay = document.getElementById('fakePlay');
-player = document.getElementById('player');
+// Removed 'fakePlay' as it's not in the modified HTML
+const player = document.getElementById('player'); // Corrected variable name
 
 let liked = false;
 
@@ -173,8 +207,7 @@ function countViewOnce(){
 }
 
 // Try to count view after play event or after short timeout
-fakePlay.addEventListener('click', ()=>{ fakePlay.style.display='none'; player.play(); });
-
+// Since fakePlay is removed, using timeout and play event listeners directly
 player.addEventListener('play', ()=>countViewOnce());
 setTimeout(()=>{ if(!viewCounted) countViewOnce(); }, 3500);
 
@@ -199,6 +232,7 @@ fetchStats();
 
 // Optional: poll for updates every 15s to give realtime feel
 setInterval(fetchStats,15000);
+
 // Time Ago
 const createdAt = '{{CREATED_AT}}'; // bot will inject e.g. 2025-11-20T05:00:00Z
 function timeAgo(ts){
@@ -212,55 +246,5 @@ if(createdAt && createdAt !== '{{CREATED_AT}}'){
   document.getElementById('timeAgo').textContent = 'Trending · ' + timeAgo(createdAt);
 }
 </script>
-
-<!--
-  Cloudflare Worker example (paste into a Worker, bind a KV namespace named CLIPFY_STATS):
-
-  // worker.js
-  addEventListener('fetch', event => { event.respondWith(handle(event.request)) })
-
-  async function handle(req){
-    const url = new URL(req.url);
-    if(url.pathname === '/stats' && req.method === 'GET'){
-      const vid = url.searchParams.get('video_id');
-      if(!vid) return new Response(JSON.stringify({error:'missing'}),{status:400});
-      const raw = await CLIPFY_STATS.get(vid);
-      const obj = raw ? JSON.parse(raw) : {views:0,likes:0};
-      return new Response(JSON.stringify(obj), {headers:{'Content-Type':'application/json'}});
-    }
-
-    if(url.pathname === '/hit' && req.method === 'POST'){
-      const body = await req.json();
-      const vid = body.video_id; const type = body.type || 'view';
-      if(!vid) return new Response('missing', {status:400});
-      const raw = await CLIPFY_STATS.get(vid);
-      const obj = raw ? JSON.parse(raw) : {views:0,likes:0};
-      if(type === 'view') obj.views = (obj.views||0) + 1;
-      await CLIPFY_STATS.put(vid, JSON.stringify(obj));
-      return new Response(JSON.stringify(obj), {headers:{'Content-Type':'application/json'}});
-    }
-
-    if(url.pathname === '/like' && req.method === 'POST'){
-      const body = await req.json();
-      const vid = body.video_id; const like = body.like === true;
-      if(!vid) return new Response('missing', {status:400});
-      const raw = await CLIPFY_STATS.get(vid);
-      const obj = raw ? JSON.parse(raw) : {views:0,likes:0};
-      // naive toggle: increment when like true, decrement when false (no per-user guard)
-      obj.likes = Math.max(0, (obj.likes||0) + (like ? 1 : -1));
-      await CLIPFY_STATS.put(vid, JSON.stringify(obj));
-      return new Response(JSON.stringify(obj), {headers:{'Content-Type':'application/json'}});
-    }
-
-    return new Response('ok');
-  }
-
-  Bindings:
-  - CLIPFY_STATS (KV namespace)
-
-  Notes / improvements:
-  - For per-user like prevention, store a small signed cookie or track by IP (privacy concerns).
-  - Use Workers KV for simple counters (eventually consistent). For higher accuracy, use Durable Objects or an external DB.
--->
 
 </html>
