@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Clipfy Player</title>
 
 <meta name="twitter:card" content="summary_large_image" />
@@ -24,32 +24,28 @@ body {
   font-family:Arial, sans-serif;
   padding:0;
   margin:0;
+  overflow-x:hidden;
 }
 
+/* FIXED: Video full responsive */
 .video-box {
-  width:100%;
-  height:40vh;
-  padding:0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
+  width:100vw;
+  position:relative;
+  background:#000;
   overflow:hidden;
-    background-color: #000000;
 }
 
 video {
   width:100%;
-  height:100%;
+  height:auto;
   object-fit:contain;
-  border-radius:0;
+  display:block;
 }
 
+/* Content pushes below video */
 .content-wrapper {
-padding-top: 40vh;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;}
+  padding-top:10px;
+}
 
 .header {
   display:flex;
@@ -94,8 +90,6 @@ padding-top: 40vh;
   padding: 12px;
   line-height: 1.6;
   font-size: 16px;
-    
-  /* FIX: ब्लॉग कंटेंट को विज्ञापन से ऊपर रखने के लिए */
   position: relative;
   z-index: 5;
 }
@@ -108,8 +102,6 @@ padding-top: 40vh;
   border-radius: 8px;
   font-size: 14px;
   color: #888;
-    
-  /* FIX: विज्ञापनों को कंटेंट में मजबूर करने के लिए */
   position: relative !important;
   z-index: 1 !important;
 }
@@ -127,6 +119,7 @@ padding-top: 40vh;
     <source src="{{VIDEO_URL}}" type="video/mp4">
   </video>
 </div>
+
 
 <div class="content-wrapper">
 
@@ -150,7 +143,7 @@ padding-top: 40vh;
   </div>
 
 
-  <!-- 🔥 NEW SEX EDUCATION BLOG (FULL + CLEAN) -->
+  <!-- BLOG SECTION + ADS -->
   <div class="blog-content">
 
     <h2 style="font-size:20px; font-weight:800; margin-bottom:10px; color:#fff;">
@@ -159,126 +152,60 @@ padding-top: 40vh;
 
     <p style="color:#bdbdbd;">
         Sex education सिर्फ sex के बारे में नहीं होता — यह शरीर, मानसिक स्वास्थ्य, consent, respect और 
-        सुरक्षित रिश्ते बनाने की समझ देने के लिए होता है। सही जानकारी जीवनभर गलतियों, डर और असुरक्षित 
-        फैसलों से बचाती है। भारत में अभी भी इस पर बात कम होती है, लेकिन जागरूकता सबसे ज़रूरी है।
+        सुरक्षित रिश्ते बनाने की समझ देने के लिए होता है।
     </p>
 
     <div class="ad-slot">
       <script type="text/javascript">
-atOptions = {
-'key' : 'e8550078b37b6bf29c9b54eed61806f7',
-'format' : 'iframe',
-'height' : 250,
-'width' : 300,
-'params' : {}
-};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
+      atOptions = {
+        'key' : 'e8550078b37b6bf29c9b54eed61806f7',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
+    </div>
+
     <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        1. शरीर और बदलाव (Understanding Your Body)
+        1. शरीर और बदलाव
     </h3>
 
     <p style="color:#c9c9c9;">
-        हर व्यक्ति का शरीर अलग तरह से develop होता है। Puberty में लड़कों और लड़कियों दोनों में कई 
-        बदलाव आते हैं — आवाज़ बदलना, hair growth, mood swings, emotional बदलाव और physical 
-        maturity। ये सब natural हिस्से हैं और किसी को भी शर्मिंदा होने की ज़रूरत नहीं है।
-    </p>
-
-    <p style="color:#c9c9c9;">
-        अपने शरीर को समझना और उसकी respect करना sex education का पहला कदम है।
+        Puberty में लड़कों और लड़कियों दोनों में कई बदलाव आते हैं — ये natural process है।
     </p>
 
     <div class="ad-slot">
-<script type="text/javascript">
-atOptions = {
-'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
-'format' : 'iframe',
-'height' : 90,
-'width' : 728,
-'params' : {}
-};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
+      <script type="text/javascript">
+      atOptions = {
+        'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
+    </div>
+
     <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        2. Consent (सहमति) — सबसे महत्वपूर्ण नियम
+        2. Consent (सहमति)
     </h3>
 
     <p style="color:#c9c9c9;">
-        Consent मतलब — बिना दबाव, धमकी, मजबूरी या झूठ के, दोनों लोगों की मर्जी से लिया गया फैसला।
-        अगर कोई "हाँ" नहीं बोल रहा, या unsure है, या मजबूर है — तो वह consent नहीं है।
-    </p>
-
-    <p style="color:#c9c9c9;">
-        Healthy relationship वही है जिसमें दोनों लोग comfortable हों और एक दूसरे की boundaries 
-        समझें।
+        Consent मतलब — बिना दबाव, मजबूरी या झूठ के दोनों की मर्जी से लिया फैसला।
     </p>
 
     <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        3. Safe Sex और Health Awareness
+        3. Safe Sex और Awareness
     </h3>
 
     <p style="color:#c9c9c9;">
-        सुरक्षित तरीके अपनाने से दो बड़ी चीज़ों से बचा जा सकता है:
+        सुरक्षित तरीके अपनाने से STDs और अनचाही प्रेग्नेंसी से बचा जा सकता है।
     </p>
 
-    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
-        <li>अनचाही प्रेग्नेंसी</li>
-        <li>Sexually Transmitted Diseases (STDs)</li>
-    </ul>
-
-    <p style="color:#c9c9c9;">
-        Condom सबसे आसान, सस्ता और सबसे effective तरीका है। ये कोई शर्म की बात नहीं है — यह 
-        जिम्मेदारी है।
-    </p>
-
-    <div class="ad-slot">
-    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        4. Emotional Safety और Mental Health
-    </h3>
-
-    <p style="color:#c9c9c9;">
-        रिश्तों में emotional safety भी उतनी ही ज़रूरी है। किसी भी रिश्ते में:
-    </p>
-
-    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
-        <li>pressure नहीं होना चाहिए</li>
-        <li>trust होना चाहिए</li>
-        <li>communication होना चाहिए</li>
-        <li>respect सबसे ऊपर होना चाहिए</li>
-    </ul>
-
-    <p style="color:#c9c9c9;">
-        Toxic relationships मानसिक स्वास्थ्य को बहुत नुकसान पहुँचाते हैं। Healthy boundaries 
-        रखना maturity की निशानी है।
-    </p>
-
-    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        5. Myths vs Reality — सच क्या है?
-    </h3>
-
-    <p style="color:#c9c9c9;">
-        Society में कई गलत धारणाएँ चलती रहती हैं जैसे:
-    </p>
-
-    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
-        <li>"पहली बार में कुछ नहीं होता" – गलत</li>
-        <li>"दिखकर पता चल जाता है कि कौन healthy है" – गलत</li>
-        <li>"Condom से मज़ा खराब होता है" – गलत</li>
-        <li>"केवल लड़कों को ही जानकारी चाहिए" – गलत</li>
-    </ul>
-
-    <p style="color:#c9c9c9;">
-        Sex education facts पर आधारित होता है, online myths पर नहीं।
-    </p>
-
-    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
-        Conclusion
-    </h3>
-
-    <p style="color:#bdbdbd;">
-        Sex education शर्म की चीज़ नहीं — बल्कि health, respect, understanding और safety का 
-        विषय है। जितनी सही और खुली जानकारी मिलेगी, लोग उतने अच्छे और सुरक्षित फैसले ले पाएंगे।
-    </p>
+    <div class="ad-slot"></div>
 
   </div>
 
@@ -362,5 +289,6 @@ if(createdAt && createdAt !== '{{CREATED_AT}}'){
 </script>
 
 <script type='text/javascript' src='//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js'></script>
-    </body>
+
+</body>
 </html>
