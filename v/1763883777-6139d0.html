@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clipfy Player</title>
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{TITLE}}" />
+<meta name="twitter:description" content="{{DESCRIPTION}}" />
+<meta name="twitter:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/da60159e637d4beb85c07d7e9598ced6.jpg" />
+<meta property="og:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/da60159e637d4beb85c07d7e9598ced6.jpg" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
+<meta name="twitter:player" content="{{PLAYER_PAGE_URL}}" />
+<meta name="twitter:player:width" content="720" />
+<meta name="twitter:player:height" content="405" />
+<meta name="twitter:player:stream" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/videos/6639a57dd3504a8a81f246b9ca6a8a96.mp4" />
+<meta name="twitter:player:stream:content_type" content="video/mp4" />
+
+<style>
+body {
+  background:#0f141a;
+  color:white;
+  font-family:Arial, sans-serif;
+  padding:0;
+  margin:0;
+}
+
+.video-box {
+  width:100%;
+  height:40vh;
+  padding:0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  overflow:hidden;
+}
+
+video {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:0;
+}
+
+.content-wrapper {
+  margin-top: 40vh;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:20px;
+}
+
+.post {
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.post .dp {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#555;
+}
+
+.title {
+  margin-top:4px;
+  font-size:14px;
+  color:#aaa;
+}
+
+.stats {
+  display:flex;
+  gap:12px;
+  padding:12px;
+  font-size:14px;
+  align-items:center;
+  border-bottom:1px solid #222;
+}
+
+.stat-btn { cursor:pointer; user-select:none; }
+
+.blog-content {
+  padding: 12px;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.ad-slot {
+  text-align: center;
+  background: #1a2430;
+  padding: 20px;
+  margin: 20px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="video-box"> 
+  <div style="position:absolute; z-index:10; margin:10px; background:rgba(0,0,0,0.55); padding:6px 10px; border-radius:6px; font-size:13px; display:flex; align-items:center; gap:4px;">
+    <span style="font-weight:700;">▶ X Video</span>
+  </div>
+
+  <video id="player" playsinline controls autoplay muted>
+    <source src="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/videos/6639a57dd3504a8a81f246b9ca6a8a96.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="content-wrapper">
+
+  <div class="header">
+    <div>X</div>
+    <div>⋯</div>
+  </div>
+
+  <div class="post">
+    <div class="dp"></div>
+    <div>
+      <div style="font-weight:700;">Content Creator Name</div>
+      <div class="title" id="timeAgo">Loading...</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div id="likeBtn" class="stat-btn">❤️ <span id="likes">0</span></div>
+    <div>👁️ <span id="views">0</span></div>
+    <div style="margin-left:auto; font-size:14px; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
+
+
+  <!-- 🔥 NEW SEX EDUCATION BLOG (FULL + CLEAN) -->
+  <div class="blog-content">
+
+    <h2 style="font-size:20px; font-weight:800; margin-bottom:10px; color:#fff;">
+        Sex Education: समझ, सुरक्षा और ज़िम्मेदारी
+    </h2>
+
+    <p style="color:#bdbdbd;">
+        Sex education सिर्फ sex के बारे में नहीं होता — यह शरीर, मानसिक स्वास्थ्य, consent, respect और 
+        सुरक्षित रिश्ते बनाने की समझ देने के लिए होता है। सही जानकारी जीवनभर गलतियों, डर और असुरक्षित 
+        फैसलों से बचाती है। भारत में अभी भी इस पर बात कम होती है, लेकिन जागरूकता सबसे ज़रूरी है।
+    </p>
+
+    <div class="ad-slot">
+<script type='text/javascript' src='//pl28118221.effectivegatecpm.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js'></script>    </div>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        1. शरीर और बदलाव (Understanding Your Body)
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        हर व्यक्ति का शरीर अलग तरह से develop होता है। Puberty में लड़कों और लड़कियों दोनों में कई 
+        बदलाव आते हैं — आवाज़ बदलना, hair growth, mood swings, emotional बदलाव और physical 
+        maturity। ये सब natural हिस्से हैं और किसी को भी शर्मिंदा होने की ज़रूरत नहीं है।
+    </p>
+
+    <p style="color:#c9c9c9;">
+        अपने शरीर को समझना और उसकी respect करना sex education का पहला कदम है।
+    </p>
+
+    <div class="ad-slot">
+<script type='text/javascript' src='//pl28118221.effectivegatecpm.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js'></script>    </div>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        2. Consent (सहमति) — सबसे महत्वपूर्ण नियम
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        Consent मतलब — बिना दबाव, धमकी, मजबूरी या झूठ के, दोनों लोगों की मर्जी से लिया गया फैसला।
+        अगर कोई "हाँ" नहीं बोल रहा, या unsure है, या मजबूर है — तो वह consent नहीं है।
+    </p>
+
+    <p style="color:#c9c9c9;">
+        Healthy relationship वही है जिसमें दोनों लोग comfortable हों और एक दूसरे की boundaries 
+        समझें।
+    </p>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        3. Safe Sex और Health Awareness
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        सुरक्षित तरीके अपनाने से दो बड़ी चीज़ों से बचा जा सकता है:
+    </p>
+
+    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
+        <li>अनचाही प्रेग्नेंसी</li>
+        <li>Sexually Transmitted Diseases (STDs)</li>
+    </ul>
+
+    <p style="color:#c9c9c9;">
+        Condom सबसे आसान, सस्ता और सबसे effective तरीका है। ये कोई शर्म की बात नहीं है — यह 
+        जिम्मेदारी है।
+    </p>
+
+    <div class="ad-slot">
+<script type='text/javascript' src='//pl28118221.effectivegatecpm.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js'></script>    </div>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        4. Emotional Safety और Mental Health
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        रिश्तों में emotional safety भी उतनी ही ज़रूरी है। किसी भी रिश्ते में:
+    </p>
+
+    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
+        <li>pressure नहीं होना चाहिए</li>
+        <li>trust होना चाहिए</li>
+        <li>communication होना चाहिए</li>
+        <li>respect सबसे ऊपर होना चाहिए</li>
+    </ul>
+
+    <p style="color:#c9c9c9;">
+        Toxic relationships मानसिक स्वास्थ्य को बहुत नुकसान पहुँचाते हैं। Healthy boundaries 
+        रखना maturity की निशानी है।
+    </p>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        5. Myths vs Reality — सच क्या है?
+    </h3>
+
+    <p style="color:#c9c9c9;">
+        Society में कई गलत धारणाएँ चलती रहती हैं जैसे:
+    </p>
+
+    <ul style="line-height:1.7; padding-left:18px; color:#c9c9c9;">
+        <li>"पहली बार में कुछ नहीं होता" – गलत</li>
+        <li>"दिखकर पता चल जाता है कि कौन healthy है" – गलत</li>
+        <li>"Condom से मज़ा खराब होता है" – गलत</li>
+        <li>"केवल लड़कों को ही जानकारी चाहिए" – गलत</li>
+    </ul>
+
+    <p style="color:#c9c9c9;">
+        Sex education facts पर आधारित होता है, online myths पर नहीं।
+    </p>
+
+    <h3 style="font-size:18px; font-weight:700; margin-top:30px; color:#fff;">
+        Conclusion
+    </h3>
+
+    <p style="color:#bdbdbd;">
+        Sex education शर्म की चीज़ नहीं — बल्कि health, respect, understanding और safety का 
+        विषय है। जितनी सही और खुली जानकारी मिलेगी, लोग उतने अच्छे और सुरक्षित फैसले ले पाएंगे।
+    </p>
+
+  </div>
+
+</div>
+
+
+<script>
+const VIDEO_ID = '{{VIDEO_ID}}';
+const API_BASE = '{{API_BASE}}';
+
+const likesEl = document.getElementById('likes');
+const viewsEl = document.getElementById('views');
+const likeBtn = document.getElementById('likeBtn');
+const shareBtn = document.getElementById('shareBtn');
+const player = document.getElementById('player');
+
+let liked = false;
+
+async function fetchStats(){
+  try{
+    const res = await fetch(`${API_BASE}/stats?video_id=${encodeURIComponent(VIDEO_ID)}`);
+    if(!res.ok) return;
+    const j = await res.json();
+    likesEl.textContent = j.likes || 0;
+    viewsEl.textContent = j.views || 0;
+  }catch(e){}
+}
+
+let viewCounted = false;
+function countViewOnce(){
+  if(viewCounted) return;
+  viewCounted = true;
+  fetch(`${API_BASE}/hit`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({video_id:VIDEO_ID, type:'view'})
+  });
+}
+
+player.addEventListener('play', ()=>countViewOnce());
+setTimeout(()=>{ if(!viewCounted) countViewOnce(); }, 3500);
+
+likeBtn.addEventListener('click', async ()=>{
+  liked = !liked;
+  likeBtn.style.opacity = liked ? '0.7' : '1';
+  try{
+    const res = await fetch(`${API_BASE}/like`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({video_id:VIDEO_ID, like: liked})
+    });
+    if(res.ok){
+      const j = await res.json();
+      likesEl.textContent = j.likes;
+    }
+  }catch(e){}
+});
+
+shareBtn.addEventListener('click', ()=>{
+  if(navigator.share){
+    navigator.share({title:'Clipfy', url:location.href});
+  } else {
+    navigator.clipboard.writeText(location.href).then(()=>alert('Link copied'));
+  }
+});
+
+fetchStats();
+setInterval(fetchStats,15000);
+
+const createdAt = '{{CREATED_AT}}';
+function timeAgo(ts){
+  const diff = (Date.now() - new Date(ts).getTime())/1000;
+  if(diff < 60) return Math.floor(diff)+"s ago";
+  if(diff < 3600) return Math.floor(diff/60)+"m ago";
+  if(diff < 86400) return Math.floor(diff/3600)+"h ago";
+  return Math.floor(diff/86400)+"d ago";
+}
+if(createdAt && createdAt !== '{{CREATED_AT}}'){
+  document.getElementById('timeAgo').textContent = 'Trending · ' + timeAgo(createdAt);
+}
+</script>
+
+</body>
+</html>
