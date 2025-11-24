@@ -1,328 +1,394 @@
-<!doctype html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>{{TITLE}} | Clipfy Player</title>
+<!doctype html> 
 
+<html> 
 
+<head> 
 
-  <meta name="twitter:card" content="summary_large_image" /> 
-<meta name="twitter:title" content="{{TITLE}}" />
-<meta name="twitter:description" content="{{DESCRIPTION}}" />
-<meta name="twitter:image" content="{{THUMB_URL}}" />
-<meta property="og:image" content="{{THUMB_URL}}" />
-<meta property="og:image:width" content="1280" />
-<meta property="og:image:height" content="720" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> 
 
-<meta name="twitter:player" content="{{PLAYER_PAGE_URL}}" />
-<meta name="twitter:player:width" content="720" />
-<meta name="twitter:player:height" content="405" />
-<meta name="twitter:player:stream" content="{{VIDEO_URL}}" />
-<meta name="twitter:player:stream:content_type" content="video/mp4" />
+<title>{{TITLE}} | Clipfy Player</title> 
 
+<meta name="twitter:card" content="summary_large_image" /> 
 
+<meta name="twitter:title" content="{{TITLE}}" /> 
 
+<meta name="twitter:description" content="{{DESCRIPTION}}" /> 
 
-  
-<style>
-/* 🎨 CSS - (No change in styles) */
-body {
-  background:#0f141a;
-  color:white;
-  font-family:Arial, sans-serif;
-  margin:0;
-  padding:0;
-  overflow-x:hidden;
-}
+<meta name="twitter:image" content="{{THUMB_URL}}" /> 
 
-/* Video fixed */
-.video-box {
-  width:100%;
-  height:40vh;
-  position:fixed;
-  top:0;
-  left:0;
-  background:#000;
-  overflow:hidden;
-  z-index:9999;
-}
+<meta property="og:image" content="{{THUMB_URL}}" /> 
 
-video {
-  width:100%;
-  height:100%;
-  object-fit:contain; /* ⬅️ यहाँ बदलाव किया गया है: 'cover' से 'contain' */
-}
+<meta property="og:image:width" content="1280" /> 
 
-/* Scroll content */
-.content-wrapper {
-  padding-top:40vh;
-  min-height:250vh;
-}
+<meta property="og:image:height" content="720" /> 
 
-.header {
-  display:flex;
-  justify-content:space-between;
-  padding:12px;
-  border-bottom:1px solid #222;
-  font-size:20px;
-}
+<meta name="twitter:player" content="{{PLAYER_PAGE_URL}}" /> 
 
-.post {
-  padding:12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
+<meta name="twitter:player:width" content="720" /> 
 
-.dp {
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#555;
-}
+<meta name="twitter:player:height" content="405" /> 
 
-.stats {
-  display:flex;
-  gap:15px;
-  padding:12px;
-  border-bottom:1px solid #222;
-  font-size:14px;
-}
+<meta name="twitter:player:stream" content="{{VIDEO_URL}}" /> 
 
-.blog-content {
-  padding:20px;
-  font-size:17px;
-  line-height:1.7;
-}
+<meta name="twitter:player:stream:content_type" content="video/mp4" /> 
 
-/* Ads */
-.ad-slot {
+<style> 
+
+body { 
+
+background:#0f141a; 
+
+color:white; 
+
+font-family:Arial, sans-serif; 
+
+margin:0; 
+
+padding:0; 
+
+overflow-x:hidden; 
+
+} 
+
+.video-box { 
+
+width:100%; 
+
+height:40vh; 
+
+position:fixed; 
+
+top:0; 
+
+left:0; 
+
+background:#000; 
+
+overflow:hidden; 
+
+z-index:9999; 
+
+} 
+
+video { 
+
+width:100%; 
+
+height:100%; 
+
+object-fit:contain; 
+
+} 
+
+.video-box::before { 
+
+content: "Loading..."; 
+
+position: absolute; 
+
+top: 0; 
+
+left: 0; 
+
+width: 100%; 
+
+height: 100%; 
+
+background: rgba(0, 0, 0, 0.9); 
+
+color: #fff; 
+
+display: flex; 
+
+justify-content: center; 
+
+align-items: center; 
+
+font-size: 20px; 
+
+z-index: 10000; 
+
+opacity: 0; 
+
+transition: opacity 0.3s; 
+
+pointer-events: none; 
+
+} 
+
+.video-box.loading::before { opacity: 1; } 
+
+.content-wrapper { padding-top:40vh; } 
+
+.header { 
+
+display:flex; 
+
+justify-content:space-between; 
+
+padding:12px; 
+
+border-bottom:1px solid #222; 
+
+font-size:20px; 
+
+} 
+
+.post { 
+
+padding:12px; 
+
+display:flex; 
+
+gap:10px; 
+
+align-items:center; 
+
+} 
+
+.dp { 
+
+width:42px; 
+
+height:42px; 
+
+border-radius:50%; 
+
+background:#555; 
+
+} 
+
+.stats { 
+
+display:flex; 
+
+gap:15px; 
+
+padding:12px; 
+
+border-bottom:1px solid #222; 
+
+font-size:14px; 
+
+} 
+
+.blog-content { 
+
+padding:20px; 
+
+font-size:17px; 
+
+line-height:1.7; 
+
+} 
+
+/* Suggestions */ 
+
+.suggestions-header { 
+
+padding: 10px 15px; 
+
+font-size: 18px; 
+
+font-weight: 700; 
+
+border-top: 1px solid #222; 
+
+} 
+
+.suggestion-item { 
+
+display: block; 
+
+padding: 12px 20px; 
+
+cursor: pointer; 
+
+border-bottom: 1px solid #1a2430; 
+
+background: #0f141a; 
+
+} 
+
+.suggestion-thumbnail { 
+
+width: 100%; 
+
+position: relative; 
+
+padding-top: 56.25%; 
+
+height: 0; 
+
+background: #333; 
+
+border-radius: 4px; 
+
+overflow: hidden; 
+
+margin-bottom: 8px; 
+
+} 
+
+.suggestion-thumbnail img { 
+
+position: absolute; 
+
+top: 0; 
+
+left: 0; 
+
+width: 100%; 
+
+height: 100%; 
+
+object-fit: contain; /* keeping contain as per user requirement */ 
+
+background: black; 
+
+} 
+
+.suggestion-details { display: block; } 
+
+.suggestion-title { 
+
+font-weight: 700; 
+
+font-size: 16px; 
+
+margin-bottom: 4px; 
+
+overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; /* safer clamp */ 
+
+} 
+
+.suggestion-creator { 
+
+font-size: 13px; 
+
+color: #aaa; 
+
+} 
+
+.suggestion-ad-slot { 
+
+padding: 10px 20px; 
+
+background: #1a2430; 
+
+text-align: center; 
+
+border-bottom: 1px solid #1a2430; 
+
+} 
+
+/* New: Ad directly under video */ 
+
+.top-ad-slot {
+  margin-top: 10px;
+  padding:10px 0;
   background:#1a2430;
-  padding:20px;
-  margin:25px 0;
-  border-radius:10px;
   text-align:center;
-}
+  border-bottom:1px solid #222;
+} 
 
-/* 🆕 CSS Added for Suggested Videos */
-.suggestions-header {
-  padding: 12px 20px 12px 20px;
-  font-size: 18px;
-  font-weight: 700;
-  border-top: 1px solid #222;
-}
+</style> 
 
-.suggestion-item {
-  display: flex;
-  gap: 10px;
-  padding: 12px 20px;
-  cursor: pointer;
-  border-bottom: 1px solid #1a2430; 
-  align-items: center;
-}
+</head> 
 
-.suggestion-thumbnail {
-  width: 120px;
-  height: 67.5px; /* 16:9 Aspect Ratio */
-  background: #333;
-  border-radius: 4px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
+<body> 
 
-.suggestion-thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+<div class="video-box"> 
 
-.suggestion-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+<video id="player" playsinline controls autoplay loop> 
 
-.suggestion-title {
-  font-weight: 600;
-  font-size: 16px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+<source src="{{VIDEO_URL}}" type="video/mp4"> 
 
-.suggestion-creator {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 4px;
-}
-</style>
-</head>
+</video> 
 
-<body>
+</div> 
 
-<div class="video-box">
-  <video id="player" playsinline controls autoplay muted>
-    <source src="{{VIDEO_URL}}" type="video/mp4">
-  </video>
+<div class="content-wrapper"> 
+
+<div class="header"> 
+
+<div>X</div><div>⋯</div> 
+
+</div> 
+
+<div class="post"> 
+
+<div class="dp"></div> 
+
+<div> 
+
+<div style="font-weight:700;">Content Creator Name</div> 
+
+<div id="timeAgo">{{TIME_AGO}}</div> 
+
+</div> 
+
+</div> 
+
+
+  
+  
+  <!-- FontAwesome CDN Link (head section mein daaliye) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="stats">
+  <i class="fa-regular fa-heart"></i> <span id="likes">0</span>
+  <i class="fa-regular fa-eye"></i> <span id="views">0</span>
+  <div style="margin-left:auto; cursor:pointer;" id="shareBtn">
+    <i class="fa-solid fa-share-nodes"></i> Share
+  </div>
 </div>
 
-<div class="content-wrapper">
-
-  <div class="header">
-    <div>X</div>
-    <div>⋯</div>
-  </div>
-
-  <div class="post">
-    <div class="dp"></div>
-    <div>
-      <div style="font-weight:700;">Content Creator Name</div>
-      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
-    </div>
-  </div>
-
-  <div class="stats">
-    ❤️ <span id="likes">0</span>
-    👁️ <span id="views">0</span>
-    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
-  </div>
 
 
-  <div class="blog-content">
-    
-    <h2>{{TITLE}}</h2>
-    <p>{{DESCRIPTION}}</p>
-    
-    <div class="ad-slot">
-      <script>
-      atOptions={'key':'e8550078b37b6bf29c9b54eed61806f7','format':'iframe','height':250,'width':300,'params':{}};
-      </script>
-      <script src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
-    </div>
-
-    <div class="ad-slot">
-      <script>
-      atOptions={'key':'b40d9ebf8b9bb68f80451819ab41596e','format':'iframe','height':90,'width':728,'params':{}};
-      </script>
-      <script src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
-    </div>
-    
-  </div>
   
-  <div class="suggestions-header">
-    More Viral Videos 🔥
-  </div>
-  
-  <div class="video-suggestions-list" id="videoSuggestionsList">
-    </div>
+</div> 
 
-</div>
+<div class="top-ad-slot"> 
 
-<script src='//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js'></script>
+<script> 
 
-<script>
-let VIDEO_ID='{{VIDEO_ID}}';
-const API_BASE='{{API_BASE}}';
+atOptions={'key':'e8550078b37b6bf29c9b54eed61806f7','format':'iframe','height':250,'width':300,'params':{}}; 
 
-const likesEl=document.getElementById('likes');
-const viewsEl=document.getElementById('views');
-const shareBtn=document.getElementById('shareBtn');
-const player=document.getElementById('player');
-const timeAgoEl = document.getElementById('timeAgo');
-const videoSuggestionsList = document.getElementById('videoSuggestionsList');
-const mainTitleEl = document.querySelector('.blog-content h2');
-const mainDescEl = document.querySelector('.blog-content p');
+</script> 
 
-let viewCounted=false;
-player.addEventListener('play',()=>{
-  if(!viewCounted){
-    viewCounted=true;
-    fetch(`${API_BASE}/hit`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({video_id:VIDEO_ID,type:'view'})});
-  }
-});
+<script src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script> 
 
-shareBtn.onclick=()=>{
-  if(navigator.share){ navigator.share({title:'{{TITLE}}',url:location.href}); }
-  else{ navigator.clipboard.writeText(location.href); alert("Link Copied!"); }
-};
+</div> 
 
-// --- New JavaScript Logic for Suggested Videos and In-Page Playback ---
+<div class="blog-content"> 
 
-const ALL_VIDEOS = {{ALL_VIDEOS_JSON}};
+<h2 id="mainVideoTitle">{{TITLE}}</h2> 
 
+<p id="mainVideoDescription">{{DESCRIPTION}}</p> 
 
-function playSuggestedVideo(videoData) {
-    // 1. Update Video Player
-    const sourceEl = player.querySelector('source');
-    sourceEl.src = videoData.video_url;
-    player.load(); 
-    player.play(); 
-    
-    // Reset view count tracking 
-    viewCounted = false; 
-    
-    // 2. Update Page Content (Title, Time, Description)
-    timeAgoEl.innerText = videoData.time_ago;
-    mainTitleEl.innerText = videoData.title;
-    mainDescEl.innerText = videoData.description;
-    document.title = videoData.title + " | Clipfy Player"; 
+</div> 
 
-    // 3. Update Global VIDEO_ID and URL in browser history
-    VIDEO_ID = videoData.video_id; 
-    const newURL = `/v/${videoData.video_id}.html`; 
+<div class="suggestions-header">More Viral Videos 🔥</div> 
 
-    if (location.pathname !== newURL) {
-        history.pushState(videoData, videoData.title, newURL);
-    }
-    
-    // 4. Re-render the suggestions list to update the 'exclude' logic
-    renderVideoSuggestions(ALL_VIDEOS); 
+<div id="videoSuggestionsList"></div> 
 
-    // 5. Scroll to the top to see the new video
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-}
+</div> 
 
-function renderVideoSuggestions(videos) {
-    videoSuggestionsList.innerHTML = ''; 
-    
-    videos.forEach(video => {
-        if (video.video_id === VIDEO_ID) return;
+<script> 
 
-        const item = document.createElement('div');
-        item.className = 'suggestion-item';
-        
-        item.innerHTML = `
-            <div class="suggestion-thumbnail">
-                <img src="${video.thumb_url}" alt="${video.title} thumbnail">
-            </div>
-            <div class="suggestion-details">
-                <div class="suggestion-title">${video.title}</div>
-                <div class="suggestion-creator">${video.creator}</div>
-            </div>
-        `;
+let VIDEO_ID='{{VIDEO_ID}}'; 
 
-        item.addEventListener('click', (e) => {
-            e.preventDefault(); 
-            playSuggestedVideo(video); 
-        });
-        
-        videoSuggestionsList.appendChild(item);
-    });
-}
+const API_BASE='{{API_BASE}}'; 
 
-// Call the function on initial load
-renderVideoSuggestions(ALL_VIDEOS);
+const shareBtn=document.getElementById('shareBtn'); 
 
-// Handle browser back/forward buttons
-window.onpopstate = (event) => {
-    if (event.state) {
-        playSuggestedVideo(event.state);
-    } 
-};
+const player=document.getElementById('player'); 
 
-// --- End of New JavaScript Logic ---
-</script>
+const timeAgoEl = document.getElementById('timeAgo'); 
 
-</body>
-</html>
+const videoSuggestionsList = document.getElementById('videoSuggestionsList'); 
+
+const mainTitleEl = document.getElementById
