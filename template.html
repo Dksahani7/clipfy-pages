@@ -44,7 +44,7 @@ body {
 video {
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain; /* ⬅️ यहाँ बदलाव किया गया है: 'cover' से 'contain' */
 }
 
 /* Scroll content */
@@ -243,7 +243,6 @@ shareBtn.onclick=()=>{
 
 // --- New JavaScript Logic for Suggested Videos and In-Page Playback ---
 
-// ❗ FIX #1 APPLIED: Replaced dummy array with JSON injection placeholder
 const ALL_VIDEOS = {{ALL_VIDEOS_JSON}};
 
 
@@ -265,8 +264,6 @@ function playSuggestedVideo(videoData) {
 
     // 3. Update Global VIDEO_ID and URL in browser history
     VIDEO_ID = videoData.video_id; 
-    
-    // ❗ FIX #2 APPLIED: Correcting URL generation to /v/id.html
     const newURL = `/v/${videoData.video_id}.html`; 
 
     if (location.pathname !== newURL) {
