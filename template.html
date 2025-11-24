@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Clipfy Player</title>
+<title>{{TITLE}} | Clipfy Player</title>
 
 <meta name="twitter:card" content="summary_large_image" /> 
 <meta name="twitter:title" content="{{TITLE}}" />
@@ -19,7 +19,7 @@
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 
 <style>
-/* 🎨 CSS - Original CSS */
+/* 🎨 CSS - (No change in styles) */
 body {
   background:#0f141a;
   color:white;
@@ -172,7 +172,7 @@ video {
     <div class="dp"></div>
     <div>
       <div style="font-weight:700;">Content Creator Name</div>
-      <div class="title" id="timeAgo">Loading...</div>
+      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
     </div>
   </div>
 
@@ -184,8 +184,10 @@ video {
 
 
   <div class="blog-content">
-
-    <h2>Sex Education: समझ, सुरक्षा, रिश्ते और ज़िम्मेदारी</h2>
+    
+    <h2>{{TITLE}}</h2>
+    <p>{{DESCRIPTION}}</p>
+    
     <div class="ad-slot">
       <script>
       atOptions={'key':'e8550078b37b6bf29c9b54eed61806f7','format':'iframe','height':250,'width':300,'params':{}};
@@ -193,21 +195,27 @@ video {
       <script src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
     </div>
 
-    <h3>6. Relationship Maturity — क्या होती है?</h3>
+    <div class="ad-slot">
+      <script>
+      atOptions={'key':'b40d9ebf8b9bb68f80451819ab41596e','format':'iframe','height':90,'width':728,'params':{}};
+      </script>
+      <script src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
     </div>
+    
+  </div>
   
   <div class="suggestions-header">
-    More Videos
+    More Viral Videos 🔥
   </div>
   
   <div class="video-suggestions-list" id="videoSuggestionsList">
     </div>
-  </div>
+
+</div>
 
 <script src='//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js'></script>
 
 <script>
-// ⚠️ IMPORTANT: Changed from 'const' to 'let' to allow in-page updates
 let VIDEO_ID='{{VIDEO_ID}}';
 const API_BASE='{{API_BASE}}';
 
@@ -215,56 +223,56 @@ const likesEl=document.getElementById('likes');
 const viewsEl=document.getElementById('views');
 const shareBtn=document.getElementById('shareBtn');
 const player=document.getElementById('player');
-const timeAgoEl = document.getElementById('timeAgo'); // Added for in-page update
-const videoSuggestionsList = document.getElementById('videoSuggestionsList'); // Added
+const timeAgoEl = document.getElementById('timeAgo');
+const videoSuggestionsList = document.getElementById('videoSuggestionsList');
+const mainTitleEl = document.querySelector('.blog-content h2');
+const mainDescEl = document.querySelector('.blog-content p');
 
 let viewCounted=false;
 player.addEventListener('play',()=>{
   if(!viewCounted){
     viewCounted=true;
-    // API Call to count view (Original Logic Maintained)
     fetch(`${API_BASE}/hit`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({video_id:VIDEO_ID,type:'view'})});
   }
 });
 
 shareBtn.onclick=()=>{
-  if(navigator.share){ navigator.share({title:'Clipfy',url:location.href}); }
+  if(navigator.share){ navigator.share({title:'{{TITLE}}',url:location.href}); }
   else{ navigator.clipboard.writeText(location.href); alert("Link Copied!"); }
 };
 
-// --- 🆕 New JavaScript Logic for Suggested Videos and In-Page Playback ---
+// --- New JavaScript Logic for Suggested Videos and In-Page Playback ---
 
-// 🛑 IMPORTANT: This is DUMMY DATA.
-// Your generator.py must replace `[]` with the JSON string of ALL your videos.
-const ALL_VIDEOS = [
-    { title: "Healthy Relationship: The Secret Sauce of Success", creator: "Content Creator Name", video_url: "/videos/video-1.mp4", thumb_url: "/thumbs/thumb-1.jpg", video_id: "vid1", time_ago: "3 days ago" },
-    { title: "Body Positivity: Embrace Your True Self", creator: "Self Love Coach", video_url: "/videos/video-2.mp4", thumb_url: "/thumbs/thumb-2.jpg", video_id: "vid2", time_ago: "1 week ago" },
-    { title: "Consent is Clear: Understanding the Boundaries", creator: "Legal Advisor", video_url: "/videos/video-3.mp4", thumb_url: "/thumbs/thumb-3.jpg", video_id: "vid3", time_ago: "1 day ago" },
-    { title: "Maturity in Online Dating", creator: "Dating Coach", video_url: "/videos/video-4.mp4", thumb_url: "/thumbs/thumb-4.jpg", video_id: "vid4", time_ago: "5 hours ago" },
-    // ** generator.py will replace `[]` with: {{ALL_VIDEOS_JSON}} ** ];
+// ❗ FIX #1 APPLIED: Replaced dummy array with JSON injection placeholder
+const ALL_VIDEOS = {{ALL_VIDEOS_JSON}};
 
 
-// Function to handle the actual video change without reloading the page
 function playSuggestedVideo(videoData) {
     // 1. Update Video Player
     const sourceEl = player.querySelector('source');
     sourceEl.src = videoData.video_url;
-    player.load(); // Load the new source
-    player.play(); // Start playing the new video (might be muted based on initial setting)
+    player.load(); 
+    player.play(); 
     
-    // Reset view count tracking for the new video
+    // Reset view count tracking 
     viewCounted = false; 
     
-    // 2. Update Page Content (e.g., Title, Time)
+    // 2. Update Page Content (Title, Time, Description)
     timeAgoEl.innerText = videoData.time_ago;
-    // You might want to update the main content H2 and P tags here too!
+    mainTitleEl.innerText = videoData.title;
+    mainDescEl.innerText = videoData.description;
     document.title = videoData.title + " | Clipfy Player"; 
 
     // 3. Update Global VIDEO_ID and URL in browser history
     VIDEO_ID = videoData.video_id; 
-    const newURL = location.origin + '/' + VIDEO_ID; 
-    history.pushState(videoData, videoData.title, newURL);
+    
+    // ❗ FIX #2 APPLIED: Correcting URL generation to /v/id.html
+    const newURL = `/v/${videoData.video_id}.html`; 
 
+    if (location.pathname !== newURL) {
+        history.pushState(videoData, videoData.title, newURL);
+    }
+    
     // 4. Re-render the suggestions list to update the 'exclude' logic
     renderVideoSuggestions(ALL_VIDEOS); 
 
@@ -272,18 +280,15 @@ function playSuggestedVideo(videoData) {
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
 }
 
-// Function to Render the List
 function renderVideoSuggestions(videos) {
-    videoSuggestionsList.innerHTML = ''; // Clear previous content
+    videoSuggestionsList.innerHTML = ''; 
     
     videos.forEach(video => {
-        // Skip the current playing video using the updated VIDEO_ID
         if (video.video_id === VIDEO_ID) return;
 
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         
-        // This is a div, not an <a> tag, because we prevent navigation/reload
         item.innerHTML = `
             <div class="suggestion-thumbnail">
                 <img src="${video.thumb_url}" alt="${video.title} thumbnail">
@@ -294,10 +299,9 @@ function renderVideoSuggestions(videos) {
             </div>
         `;
 
-        // Add the click listener to change the video without reload
         item.addEventListener('click', (e) => {
             e.preventDefault(); 
-            playSuggestedVideo(video); // Pass the entire video object
+            playSuggestedVideo(video); 
         });
         
         videoSuggestionsList.appendChild(item);
@@ -307,17 +311,11 @@ function renderVideoSuggestions(videos) {
 // Call the function on initial load
 renderVideoSuggestions(ALL_VIDEOS);
 
-// Handle browser back/forward buttons for history.pushState
+// Handle browser back/forward buttons
 window.onpopstate = (event) => {
-    // Note: event.state contains the videoData if it was pushed by our script
     if (event.state) {
-        // You would need to re-render the content based on event.state here
-        console.log("History state changed. Need to load:", event.state.video_id);
-        // For now, we'll just log this, as re-rendering the full blog content is complex.
-    } else {
-        // If it's a state pushed by the browser initially
-        console.log("Moved to initial state.");
-    }
+        playSuggestedVideo(event.state);
+    } 
 };
 
 // --- End of New JavaScript Logic ---
