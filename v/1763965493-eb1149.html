@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Clipfy Player</title>
+
+<meta name="twitter:card" content="summary_large_image" /> 
+<meta name="twitter:title" content="{{TITLE}}" />
+<meta name="twitter:description" content="{{DESCRIPTION}}" />
+<meta name="twitter:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/cdbb0b0038414cc1b53594b76776e4fc.jpg" />
+<meta property="og:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/cdbb0b0038414cc1b53594b76776e4fc.jpg" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
+
+<meta name="twitter:player" content="{{PLAYER_PAGE_URL}}" />
+<meta name="twitter:player:width" content="720" />
+<meta name="twitter:player:height" content="405" />
+<meta name="twitter:player:stream" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/videos/49614cba50b0411fa768b42e6e5f92a5.mp4" />
+<meta name="twitter:player:stream:content_type" content="video/mp4" />
+
+<style>
+/* 🎨 CSS - Original CSS */
+body {
+  background:#0f141a;
+  color:white;
+  font-family:Arial, sans-serif;
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+}
+
+/* Video fixed */
+.video-box {
+  width:100%;
+  height:40vh;
+  position:fixed;
+  top:0;
+  left:0;
+  background:#000;
+  overflow:hidden;
+  z-index:9999;
+}
+
+video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* Scroll content */
+.content-wrapper {
+  padding-top:40vh;
+  min-height:250vh;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:20px;
+}
+
+.post {
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.dp {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#555;
+}
+
+.stats {
+  display:flex;
+  gap:15px;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:14px;
+}
+
+.blog-content {
+  padding:20px;
+  font-size:17px;
+  line-height:1.7;
+}
+
+/* Ads */
+.ad-slot {
+  background:#1a2430;
+  padding:20px;
+  margin:25px 0;
+  border-radius:10px;
+  text-align:center;
+}
+
+/* 🆕 CSS Added for Suggested Videos */
+.suggestions-header {
+  padding: 12px 20px 12px 20px;
+  font-size: 18px;
+  font-weight: 700;
+  border-top: 1px solid #222;
+}
+
+.suggestion-item {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #1a2430; 
+  align-items: center;
+}
+
+.suggestion-thumbnail {
+  width: 120px;
+  height: 67.5px; /* 16:9 Aspect Ratio */
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.suggestion-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.suggestion-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.suggestion-title {
+  font-weight: 600;
+  font-size: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.suggestion-creator {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="video-box">
+  <video id="player" playsinline controls autoplay muted>
+    <source src="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/videos/49614cba50b0411fa768b42e6e5f92a5.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="content-wrapper">
+
+  <div class="header">
+    <div>X</div>
+    <div>⋯</div>
+  </div>
+
+  <div class="post">
+    <div class="dp"></div>
+    <div>
+      <div style="font-weight:700;">Content Creator Name</div>
+      <div class="title" id="timeAgo">Loading...</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    ❤️ <span id="likes">0</span>
+    👁️ <span id="views">0</span>
+    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
+
+
+  <div class="blog-content">
+
+    <h2>Sex Education: समझ, सुरक्षा, रिश्ते और ज़िम्मेदारी</h2>
+    <div class="ad-slot">
+      <script>
+      atOptions={'key':'e8550078b37b6bf29c9b54eed61806f7','format':'iframe','height':250,'width':300,'params':{}};
+      </script>
+      <script src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
+    </div>
+
+    <h3>6. Relationship Maturity — क्या होती है?</h3>
+    </div>
+  
+  <div class="suggestions-header">
+    More Videos
+  </div>
+  
+  <div class="video-suggestions-list" id="videoSuggestionsList">
+    </div>
+  </div>
+
+<script src='//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js'></script>
+
+<script>
+// ⚠️ IMPORTANT: Changed from 'const' to 'let' to allow in-page updates
+let VIDEO_ID='{{VIDEO_ID}}';
+const API_BASE='{{API_BASE}}';
+
+const likesEl=document.getElementById('likes');
+const viewsEl=document.getElementById('views');
+const shareBtn=document.getElementById('shareBtn');
+const player=document.getElementById('player');
+const timeAgoEl = document.getElementById('timeAgo'); // Added for in-page update
+const videoSuggestionsList = document.getElementById('videoSuggestionsList'); // Added
+
+let viewCounted=false;
+player.addEventListener('play',()=>{
+  if(!viewCounted){
+    viewCounted=true;
+    // API Call to count view (Original Logic Maintained)
+    fetch(`${API_BASE}/hit`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({video_id:VIDEO_ID,type:'view'})});
+  }
+});
+
+shareBtn.onclick=()=>{
+  if(navigator.share){ navigator.share({title:'Clipfy',url:location.href}); }
+  else{ navigator.clipboard.writeText(location.href); alert("Link Copied!"); }
+};
+
+// --- 🆕 New JavaScript Logic for Suggested Videos and In-Page Playback ---
+
+// 🛑 IMPORTANT: This is DUMMY DATA.
+// Your generator.py must replace `[]` with the JSON string of ALL your videos.
+const ALL_VIDEOS = [
+    { title: "Healthy Relationship: The Secret Sauce of Success", creator: "Content Creator Name", video_url: "/videos/video-1.mp4", thumb_url: "/thumbs/thumb-1.jpg", video_id: "vid1", time_ago: "3 days ago" },
+    { title: "Body Positivity: Embrace Your True Self", creator: "Self Love Coach", video_url: "/videos/video-2.mp4", thumb_url: "/thumbs/thumb-2.jpg", video_id: "vid2", time_ago: "1 week ago" },
+    { title: "Consent is Clear: Understanding the Boundaries", creator: "Legal Advisor", video_url: "/videos/video-3.mp4", thumb_url: "/thumbs/thumb-3.jpg", video_id: "vid3", time_ago: "1 day ago" },
+    { title: "Maturity in Online Dating", creator: "Dating Coach", video_url: "/videos/video-4.mp4", thumb_url: "/thumbs/thumb-4.jpg", video_id: "vid4", time_ago: "5 hours ago" },
+    // ** generator.py will replace `[]` with: {{ALL_VIDEOS_JSON}} ** ];
+
+
+// Function to handle the actual video change without reloading the page
+function playSuggestedVideo(videoData) {
+    // 1. Update Video Player
+    const sourceEl = player.querySelector('source');
+    sourceEl.src = videoData.video_url;
+    player.load(); // Load the new source
+    player.play(); // Start playing the new video (might be muted based on initial setting)
+    
+    // Reset view count tracking for the new video
+    viewCounted = false; 
+    
+    // 2. Update Page Content (e.g., Title, Time)
+    timeAgoEl.innerText = videoData.time_ago;
+    // You might want to update the main content H2 and P tags here too!
+    document.title = videoData.title + " | Clipfy Player"; 
+
+    // 3. Update Global VIDEO_ID and URL in browser history
+    VIDEO_ID = videoData.video_id; 
+    const newURL = location.origin + '/' + VIDEO_ID; 
+    history.pushState(videoData, videoData.title, newURL);
+
+    // 4. Re-render the suggestions list to update the 'exclude' logic
+    renderVideoSuggestions(ALL_VIDEOS); 
+
+    // 5. Scroll to the top to see the new video
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+}
+
+// Function to Render the List
+function renderVideoSuggestions(videos) {
+    videoSuggestionsList.innerHTML = ''; // Clear previous content
+    
+    videos.forEach(video => {
+        // Skip the current playing video using the updated VIDEO_ID
+        if (video.video_id === VIDEO_ID) return;
+
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        
+        // This is a div, not an <a> tag, because we prevent navigation/reload
+        item.innerHTML = `
+            <div class="suggestion-thumbnail">
+                <img src="${video.thumb_url}" alt="${video.title} thumbnail">
+            </div>
+            <div class="suggestion-details">
+                <div class="suggestion-title">${video.title}</div>
+                <div class="suggestion-creator">${video.creator}</div>
+            </div>
+        `;
+
+        // Add the click listener to change the video without reload
+        item.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            playSuggestedVideo(video); // Pass the entire video object
+        });
+        
+        videoSuggestionsList.appendChild(item);
+    });
+}
+
+// Call the function on initial load
+renderVideoSuggestions(ALL_VIDEOS);
+
+// Handle browser back/forward buttons for history.pushState
+window.onpopstate = (event) => {
+    // Note: event.state contains the videoData if it was pushed by our script
+    if (event.state) {
+        // You would need to re-render the content based on event.state here
+        console.log("History state changed. Need to load:", event.state.video_id);
+        // For now, we'll just log this, as re-rendering the full blog content is complex.
+    } else {
+        // If it's a state pushed by the browser initially
+        console.log("Moved to initial state.");
+    }
+};
+
+// --- End of New JavaScript Logic ---
+</script>
+
+</body>
+</html>
