@@ -1,402 +1,322 @@
-#!/usr/bin/env python3
-# Clipfy bot — FINAL FULL VERSION with Dynamic Suggested Videos
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>{{TITLE}} | Clipfy Player</title>
 
-import os
-import time
-import asyncio
-from uuid import uuid4
-from pathlib import Path
-from dotenv import load_dotenv
-import subprocess
-import shutil
-import requests
-from PIL import Image
-import json # Added for JSON serialization
+<meta name="twitter:card" content="summary_large_image" /> 
+<meta name="twitter:title" content="{{TITLE}}" />
+<meta name="twitter:description" content="{{DESCRIPTION}}" />
+<meta name="twitter:image" content="{{THUMB_URL}}" />
+<meta property="og:image" content="{{THUMB_URL}}" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
 
-import boto3
-from boto3.s3.transfer import TransferConfig
-from github import Github
+<meta name="twitter:player" content="{{PLAYER_PAGE_URL}}" />
+<meta name="twitter:player:width" content="720" />
+<meta name="twitter:player:height" content="405" />
+<meta name="twitter:player:stream" content="{{VIDEO_URL}}" />
+<meta name="twitter:player:stream:content_type" content="video/mp4" />
 
-from telegram import Update
-from telegram.ext import (
-    ApplicationBuilder,
-    MessageHandler,
-    filters,
-    ContextTypes
-)
+<style>
+/* 🎨 CSS - (No change in styles) */
+body {
+  background:#0f141a;
+  color:white;
+  font-family:Arial, sans-serif;
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+}
 
-# ---------------- LOAD ENV ----------------
-load_dotenv()
+/* Video fixed */
+.video-box {
+  width:100%;
+  height:40vh;
+  position:fixed;
+  top:0;
+  left:0;
+  background:#000;
+  overflow:hidden;
+  z-index:9999;
+}
 
-# ---------------- CONFIG ----------------
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "0"))
+video {
+  width:100%;
+  height:100%;
+  object-fit:contain; /* ⬅️ यहाँ बदलाव किया गया है: 'cover' से 'contain' */
+}
 
-R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID")
-R2_ACCESS_KEY = os.getenv("R2_ACCESS_KEY")
-R2_SECRET_KEY = os.getenv("R2_SECRET_KEY")
-R2_BUCKET = os.getenv("R2_BUCKET", "videos")
-R2_PUBLIC_URL = os.getenv("R2_PUBLIC_URL")
-R2_ENDPOINT = os.getenv("R2_ENDPOINT")
+/* Scroll content */
+.content-wrapper {
+  padding-top:40vh;
+  min-height:250vh;
+}
 
-DEFAULT_PLAY_ICON = "https://pub-51338658718349efb6e5193255e4131b.r2.dev/kindpng_2115738.png"
-PLAY_ICON_URL = os.getenv("PLAY_ICON_URL") or DEFAULT_PLAY_ICON
+.header {
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:20px;
+}
 
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GITHUB_REPO = os.getenv("GITHUB_REPO")
-SITE_DOMAIN = os.getenv("SITE_DOMAIN")
+.post {
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
 
-TEMP_DIR = Path("temp")
-TEMP_DIR.mkdir(exist_ok=True)
+.dp {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#555;
+}
 
-# ---------------- R2 CLIENT ----------------
-if not R2_ENDPOINT:
-    R2_ENDPOINT = f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+.stats {
+  display:flex;
+  gap:15px;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:14px;
+}
 
-s3 = boto3.client(
-    "s3",
-    endpoint_url=R2_ENDPOINT,
-    aws_access_key_id=R2_ACCESS_KEY,
-    aws_secret_access_key=R2_SECRET_KEY
-)
+.blog-content {
+  padding:20px;
+  font-size:17px;
+  line-height:1.7;
+}
 
-transfer_config = TransferConfig(
-    multipart_threshold=20 * 1024 * 1024,
-    multipart_chunksize=10 * 1024 * 1024
-)
+/* Ads */
+.ad-slot {
+  background:#1a2430;
+  padding:20px;
+  margin:25px 0;
+  border-radius:10px;
+  text-align:center;
+}
 
-def r2_public_url(key: str) -> str:
-    """Generates the full public URL for an R2 key."""
-    return f"{R2_PUBLIC_URL.rstrip('/')}/{key.lstrip('/')}"
+/* 🆕 CSS Added for Suggested Videos */
+.suggestions-header {
+  padding: 12px 20px 12px 20px;
+  font-size: 18px;
+  font-weight: 700;
+  border-top: 1px solid #222;
+}
 
-# ---------------- METADATA INDEX MANAGEMENT (Dynamic Fix) ----------------
+.suggestion-item {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #1a2430; 
+  align-items: center;
+}
 
-INDEX_FILE_KEY = "metadata/index.json"
+.suggestion-thumbnail {
+  width: 120px;
+  height: 67.5px; /* 16:9 Aspect Ratio */
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
 
-def get_video_index():
-    """Fetches the LIVE video index (list of all videos) from R2 storage."""
-    try:
-        response = s3.get_object(Bucket=R2_BUCKET, Key=INDEX_FILE_KEY)
-        content = response['Body'].read()
-        # Decode JSON content from the body
-        return json.loads(content)
-    except s3.exceptions.NoSuchKey:
-        # If the index file doesn't exist, start with an empty list
-        print("Index file not found on R2. Starting fresh.")
-        return []
-    except Exception as e:
-        print(f"Error fetching video index: {e}")
-        return []
+.suggestion-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-def update_video_index(new_entry: dict):
-    """Adds the new video entry to the index and updates index.json on R2."""
-    video_list = get_video_index()
-    # Check if entry already exists (using video_id as unique key)
-    if not any(item['video_id'] == new_entry['video_id'] for item in video_list):
-        video_list.append(new_entry)
+.suggestion-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.suggestion-title {
+  font-weight: 600;
+  font-size: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.suggestion-creator {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="video-box">
+  <video id="player" playsinline controls autoplay muted>
+    <source src="{{VIDEO_URL}}" type="video/mp4">
+  </video>
+</div>
+
+<div class="content-wrapper">
+
+  <div class="header">
+    <div>X</div>
+    <div>⋯</div>
+  </div>
+
+  <div class="post">
+    <div class="dp"></div>
+    <div>
+      <div style="font-weight:700;">Content Creator Name</div>
+      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    ❤️ <span id="likes">0</span>
+    👁️ <span id="views">0</span>
+    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
+
+
+  <div class="blog-content">
     
-    # Upload the updated JSON file back to R2
-    s3.put_object(
-        Bucket=R2_BUCKET,
-        Key=INDEX_FILE_KEY,
-        Body=json.dumps(video_list, indent=2),
-        ContentType='application/json'
-    )
-    print(f"✅ Metadata index updated with new video: {new_entry['video_id']}")
-
-
-# ---------------- BOT DATA LOGIC ----------------
-
-def get_all_video_data():
-    """Returns the live list of all videos from R2 to be injected into the template."""
-    return get_video_index()
-
-# ---------------- GITHUB CLIENT ----------------
-gh = Github(GITHUB_TOKEN)
-repo = gh.get_repo(GITHUB_REPO)
-
-def generate_page(video_url: str, thumb_url: str, video_id: str, title: str, description: str, time_ago: str) -> str:
-    """
-    Generate HTML player page with ALL new placeholders and push to repo.
-    Uses the correct .html URL format.
-    """
-    page_name = f"{video_id}.html"
-
-    try:
-        # 1. Fetch template from GitHub
-        template = repo.get_contents("template.html").decoded_content.decode()
-    except Exception as e:
-        print(f"Error fetching template: {e}")
-        raise Exception("Could not fetch template from GitHub.")
-
-    # 2. Get All Videos Data and Prepare JSON (for suggested list)
-    all_videos_data = get_all_video_data()
-    all_videos_json_str = json.dumps(all_videos_data)
+    <h2>{{TITLE}}</h2>
+    <p>{{DESCRIPTION}}</p>
     
-    # 3. Replace ALL Placeholders
-    html = template.replace("{{VIDEO_URL}}", video_url)
-    html = html.replace("{{THUMB_URL}}", thumb_url)
+    <div class="ad-slot">
+      <script>
+      atOptions={'key':'e8550078b37b6bf29c9b54eed61806f7','format':'iframe','height':250,'width':300,'params':{}};
+      </script>
+      <script src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
+    </div>
+
+    <div class="ad-slot">
+      <script>
+      atOptions={'key':'b40d9ebf8b9bb68f80451819ab41596e','format':'iframe','height':90,'width':728,'params':{}};
+      </script>
+      <script src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
+    </div>
     
-    # Correct URL format for the player meta tag
-    html = html.replace("{{PLAYER_PAGE_URL}}", f"{SITE_DOMAIN.rstrip('/')}/v/{page_name}") 
+  </div>
+  
+  <div class="suggestions-header">
+    More Viral Videos 🔥
+  </div>
+  
+  <div class="video-suggestions-list" id="videoSuggestionsList">
+    </div>
+
+</div>
+
+<script src='//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js'></script>
+
+<script>
+let VIDEO_ID='{{VIDEO_ID}}';
+const API_BASE='{{API_BASE}}';
+
+const likesEl=document.getElementById('likes');
+const viewsEl=document.getElementById('views');
+const shareBtn=document.getElementById('shareBtn');
+const player=document.getElementById('player');
+const timeAgoEl = document.getElementById('timeAgo');
+const videoSuggestionsList = document.getElementById('videoSuggestionsList');
+const mainTitleEl = document.querySelector('.blog-content h2');
+const mainDescEl = document.querySelector('.blog-content p');
+
+let viewCounted=false;
+player.addEventListener('play',()=>{
+  if(!viewCounted){
+    viewCounted=true;
+    fetch(`${API_BASE}/hit`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({video_id:VIDEO_ID,type:'view'})});
+  }
+});
+
+shareBtn.onclick=()=>{
+  if(navigator.share){ navigator.share({title:'{{TITLE}}',url:location.href}); }
+  else{ navigator.clipboard.writeText(location.href); alert("Link Copied!"); }
+};
+
+// --- New JavaScript Logic for Suggested Videos and In-Page Playback ---
+
+const ALL_VIDEOS = {{ALL_VIDEOS_JSON}};
+
+
+function playSuggestedVideo(videoData) {
+    // 1. Update Video Player
+    const sourceEl = player.querySelector('source');
+    sourceEl.src = videoData.video_url;
+    player.load(); 
+    player.play(); 
     
-    # Fill New Placeholders
-    html = html.replace("{{VIDEO_ID}}", video_id) 
-    html = html.replace("{{TITLE}}", title)
-    html = html.replace("{{DESCRIPTION}}", description)
-    html = html.replace("{{TIME_AGO}}", time_ago) 
+    // Reset view count tracking 
+    viewCounted = false; 
     
-    # Inject the Master JSON Data (The Dynamic Fix)
-    html = html.replace("{{ALL_VIDEOS_JSON}}", all_videos_json_str) 
+    // 2. Update Page Content (Title, Time, Description)
+    timeAgoEl.innerText = videoData.time_ago;
+    mainTitleEl.innerText = videoData.title;
+    mainDescEl.innerText = videoData.description;
+    document.title = videoData.title + " | Clipfy Player"; 
 
-    # 4. Create File in GitHub
-    repo.create_file(f"v/{page_name}", f"Add video page {page_name}", html)
-    return f"{SITE_DOMAIN.rstrip('/')}/v/{page_name}"
+    // 3. Update Global VIDEO_ID and URL in browser history
+    VIDEO_ID = videoData.video_id; 
+    const newURL = `/v/${videoData.video_id}.html`; 
 
-# ---------------- HELPER FUNCTIONS ----------------
+    if (location.pathname !== newURL) {
+        history.pushState(videoData, videoData.title, newURL);
+    }
+    
+    // 4. Re-render the suggestions list to update the 'exclude' logic
+    renderVideoSuggestions(ALL_VIDEOS); 
 
-async def safe_edit(msg, text):
-    try:
-        await msg.edit_text(text)
-    except:
-        pass
+    // 5. Scroll to the top to see the new video
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+}
 
-def make_thumbnail(video_path: Path, thumb_path: Path) -> bool:
-    """Extract single frame (1s or 2s) using ffmpeg."""
-    # Try extracting at 1 second
-    cmd = ["ffmpeg", "-y", "-i", str(video_path), "-ss", "00:00:01", "-vframes", "1", str(thumb_path)]
-    try:
-        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-        return True
-    except subprocess.CalledProcessError:
-        # Try fallback at 2s
-        try:
-            cmd[5] = "00:00:02"
-            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            return True
-        except:
-            return False
+function renderVideoSuggestions(videos) {
+    videoSuggestionsList.innerHTML = ''; 
+    
+    videos.forEach(video => {
+        if (video.video_id === VIDEO_ID) return;
 
-def download_file(url: str, dest: Path) -> bool:
-    try:
-        r = requests.get(url, stream=True, timeout=20)
-        r.raise_for_status()
-        with open(dest, "wb") as f:
-            for chunk in r.iter_content(8192):
-                f.write(chunk)
-        return True
-    except Exception as e:
-        print(f"Error downloading file: {e}")
-        return False
-
-def add_play_icon(thumb_path: Path, play_icon_url: str, out_path: Path) -> bool:
-    """Overlay the play icon (PNG) at the center of the thumbnail."""
-    print(f"Attempting to overlay play icon from: {play_icon_url}")
-
-    tmp_icon = TEMP_DIR / f"play_{uuid4().hex}.png"
-
-    if not download_file(play_icon_url, tmp_icon):
-        print("❌ Play icon download failed.")
-        return False
-
-    try:
-        thumb = Image.open(thumb_path).convert("RGBA")
-        icon = Image.open(tmp_icon).convert("RGBA")
-
-        # --- SIZE FIX: Play button size ko 15% of thumbnail width, max 150px tak rakho ---
-        target_w = min(int(thumb.width * 0.15), 150) # <- Size adjusted here
-
-        # Keep aspect ratio
-        icon_ratio = icon.width / icon.height
-        target_h = int(target_w / icon_ratio)
-
-        # Handle Pillow Version Differences (LANCZOS vs ANTIALIAS)
-        if hasattr(Image, 'Resampling'):
-            icon = icon.resize((target_w, target_h), Image.Resampling.LANCZOS)
-        else:
-            icon = icon.resize((target_w, target_h), Image.ANTIALIAS)
-
-        # Calculate center position
-        x = (thumb.width - target_w) // 2
-        y = (thumb.height - target_h) // 2
-
-        # Paste icon (using icon as mask for transparency)
-        thumb.paste(icon, (x, y), icon)
-
-        # Save as JPEG (RGB)
-        rgb = thumb.convert("RGB")
-        rgb.save(out_path, format="JPEG", quality=85)
-
-        print("✅ Play button overlay successful!")
-        tmp_icon.unlink(missing_ok=True)
-        return True
-
-    except Exception as e:
-        print(f"❌ Error adding play icon: {e}")
-        try:
-            tmp_icon.unlink(missing_ok=True)
-        except:
-            pass
-        return False
-
-# ---------------- MAIN BOT HANDLER ----------------
-async def handle_media(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = update.message
-
-    if ADMIN_USER_ID and msg.from_user.id != ADMIN_USER_ID:
-        return await msg.reply_text("Not allowed.")
-
-    progress = await msg.reply_text("⏳ Starting...")
-
-    local_video = None
-    local_thumb = None
-    final_thumb = None
-
-    try:
-        video = msg.video or (msg.document if msg.document and msg.document.mime_type.startswith("video/") else None)
-
-        if not video:
-            return await safe_edit(progress, "Send a video file.")
-
-        # 1. Download Video
-        tg_file = await video.get_file()
-        new_uuid = uuid4().hex # Generate UUID once for file name and video_id
-        fname = video.file_name or f"{new_uuid}.mp4"
-        local_video = TEMP_DIR / fname
-
-        await safe_edit(progress, "📥 Downloading video...")
-        await tg_file.download_to_drive(str(local_video))
-
-        # 2. Extract Raw Thumbnail
-        await safe_edit(progress, "🖼 Extracting thumbnail...")
-        local_thumb = TEMP_DIR / (f"{new_uuid}_raw.jpg")
-        if not make_thumbnail(local_video, local_thumb):
-            return await safe_edit(progress, "❌ Could not extract thumbnail from video.")
-
-        # 3. Overlay Play Button
-        await safe_edit(progress, "🎨 Adding Play Button...")
-        final_thumb = TEMP_DIR / (f"{new_uuid}_final.jpg")
-
-        overlay_success = add_play_icon(local_thumb, PLAY_ICON_URL, final_thumb)
-
-        if not overlay_success:
-            print("⚠️ Overlay failed, using raw thumbnail.")
-            final_thumb = local_thumb
-
-        # 4. Upload Video
-        key_video = f"videos/{new_uuid}.mp4"
-        fsize = local_video.stat().st_size
-
-        uploaded = {"v": 0}
-        loop = asyncio.get_event_loop()
-
-        def cb(bytes_amt):
-            uploaded["v"] += bytes_amt
-            pct = int(uploaded["v"] / fsize * 100)
-            if pct % 10 == 0: # Update less frequently
-                asyncio.run_coroutine_threadsafe(
-                    safe_edit(progress, f"☁️ Uploading Video {pct}%"), loop
-                )
-
-        def upload_video_to_s3():
-            s3.upload_file(
-                str(local_video),
-                R2_BUCKET,
-                key_video,
-                ExtraArgs={"ContentType": "video/mp4"},
-                Config=transfer_config,
-                Callback=cb
-            )
-
-        await loop.run_in_executor(None, upload_video_to_s3)
-        video_url = r2_public_url(key_video)
-
-        # 5. Upload Final Thumbnail
-        key_thumb = f"thumbs/{new_uuid}.jpg"
-        await safe_edit(progress, "📤 Uploading thumbnail...")
-
-        s3.upload_file(
-            str(final_thumb),
-            R2_BUCKET,
-            key_thumb,
-            ExtraArgs={"ContentType": "image/jpeg"}
-        )
-        thumb_url = r2_public_url(key_thumb)
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
         
-        # 6. Generate Metadata and Page
-        await safe_edit(progress, "📝 Creating Link...")
+        item.innerHTML = `
+            <div class="suggestion-thumbnail">
+                <img src="${video.thumb_url}" alt="${video.title} thumbnail">
+            </div>
+            <div class="suggestion-details">
+                <div class="suggestion-title">${video.title}</div>
+                <div class="suggestion-creator">${video.creator}</div>
+            </div>
+        `;
+
+        item.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            playSuggestedVideo(video); 
+        });
         
-        # --- Metadata Generation (Clickbait Titles) ---
-        new_video_id = new_uuid # The clean ID used for the .html file
-        
-        title_options = [
-            f"😱 ये राज़ आपके होश उड़ा देगा! (PART {new_video_id[:4]})",
-            "सिर्फ 2 मिनट में करोड़पति बनने का तरीका! (REAL TRUTH)",
-            "MUST WATCH: 99% लोग इसे नहीं देख पाए!",
-            "OMG! कैमरे में कैद हुआ अविश्वासनीय नज़ारा...",
-        ]
-        description_options = [
-            "देखने से पहले अपनी कुर्सी की पेटी बांध लें! यह वीडियो डिलीट होने वाला है।",
-            "आखिर वो क्या है जो दुनिया से छुपाया जा रहा है? पूरा सच देखें!",
-            "इस एक चीज़ ने मेरी ज़ंजीरें बदल दी! सिर्फ एक आदत... और मैं खुद बदल गया, जानो ये क्या है।",
-        ]
-        
-        import random
-        generated_title = random.choice(title_options)
-        generated_description = random.choice(description_options)
-        upload_time_ago = "just now"
-        # -----------------------------------------------
+        videoSuggestionsList.appendChild(item);
+    });
+}
 
-        page = await loop.run_in_executor(
-            None, 
-            lambda: generate_page(
-                video_url=video_url, 
-                thumb_url=thumb_url, 
-                video_id=new_video_id, 
-                title=generated_title, 
-                description=generated_description, 
-                time_ago=upload_time_ago
-            )
-        )
-        
-        # 7. Update the Persistent Metadata Index on R2
-        new_video_entry = {
-            "title": generated_title,
-            "creator": "Content Creator Name", 
-            "video_url": video_url,
-            "thumb_url": thumb_url,
-            "video_id": new_video_id,
-            "time_ago": upload_time_ago,
-            "description": generated_description,
-        }
-        
-        await loop.run_in_executor(None, lambda: update_video_index(new_video_entry))
+// Call the function on initial load
+renderVideoSuggestions(ALL_VIDEOS);
 
-        await safe_edit(progress, f"🎉 **Done!**\n\nLink: {page}")
+// Handle browser back/forward buttons
+window.onpopstate = (event) => {
+    if (event.state) {
+        playSuggestedVideo(event.state);
+    } 
+};
 
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        await safe_edit(progress, f"❌ Error:\n{e}")
+// --- End of New JavaScript Logic ---
+</script>
 
-    finally:
-        # Cleanup
-        try:
-            if local_video and local_video.exists():
-                local_video.unlink()
-            if local_thumb and local_thumb.exists() and local_thumb != final_thumb:
-                local_thumb.unlink()
-            if final_thumb and final_thumb.exists() and final_thumb != local_thumb:
-                final_thumb.unlink()
-        except Exception as cleanup_error:
-            print(f"Cleanup error: {cleanup_error}")
-
-# ---------------- START ----------------
-if __name__ == "__main__":
-    print("🚀 Clipfy Bot Started...")
-    print(f"🔹 Admin ID: {ADMIN_USER_ID}")
-    print(f"🔹 Play Icon URL: {PLAY_ICON_URL}")
-
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-    app.add_handler(MessageHandler(filters.ALL, handle_media))
-    app.run_polling()
+</body>
+</html>
