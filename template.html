@@ -23,6 +23,9 @@
 
   
 <style>
+
+
+  
 /* ---------------- Styles (clean + minimal changes) ---------------- */
 body{
   background:#0f141a;
@@ -48,12 +51,9 @@ video{ width:100%; height:100%; object-fit:contain; }
 .stats{ display:flex; gap:15px; padding:12px; border-bottom:1px solid #222; font-size:14px; align-items:center; }
 .blog-content{ padding:20px; font-size:17px; line-height:1.7; }
 
-
-
 /* Suggestions */
 .suggestions-header{ padding:12px 20px; font-size:18px; font-weight:700; border-top:1px solid #222; }
 .video-suggestions-list{ background:transparent; }
-
 
 /* FULL-WIDTH BIG CARD */
 .suggestion-item{
@@ -64,9 +64,9 @@ video{ width:100%; height:100%; object-fit:contain; }
   border-bottom:1px solid #1a2430;
   transition:background .12s;
 }
+.suggestion-item:hover{ background:#0b1216; }
 
-
-/* BIG THUMBNAIL */
+/* BIG THUMBNAIL (16:9, full width) */
 .suggestion-thumbnail{
   width:100%;
   aspect-ratio:16/9;
@@ -76,26 +76,20 @@ video{ width:100%; height:100%; object-fit:contain; }
   margin-bottom:10px;
 }
 
-
-.suggestion-item:hover{ background:#0b1216; }
-.suggestion-thumbnail{ width:120px; height:67.5px; background:#333; border-radius:4px; overflow:hidden; flex-shrink:0; }
-
-
-
+/* Text content */
 .suggestion-details{ display:flex; flex-direction:column; justify-content:center; }
-
-
 .suggestion-title{ font-weight:600; font-size:16px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-
-
 .suggestion-creator{ font-size:12px; color:#aaa; margin-top:4px; }
 
-/* Suggested ad slot (centered responsive container) */
+/* Suggested ad slot */
 .suggested-ad-slot{ display:flex; justify-content:center; padding:15px 0; border-bottom:1px solid #222; background:transparent; }
 
 /* small utility */
 .center{ text-align:center; }
 .hidden{ display:none !important; }
+
+
+  
 </style>
 </head>
 
