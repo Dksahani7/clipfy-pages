@@ -48,15 +48,46 @@ video{ width:100%; height:100%; object-fit:contain; }
 .stats{ display:flex; gap:15px; padding:12px; border-bottom:1px solid #222; font-size:14px; align-items:center; }
 .blog-content{ padding:20px; font-size:17px; line-height:1.7; }
 
+
+
 /* Suggestions */
 .suggestions-header{ padding:12px 20px; font-size:18px; font-weight:700; border-top:1px solid #222; }
 .video-suggestions-list{ background:transparent; }
-.suggestion-item{ display:flex; gap:10px; padding:12px 20px; cursor:pointer; border-bottom:1px solid #1a2430; align-items:center; transition:background .12s; }
+
+
+/* FULL-WIDTH BIG CARD */
+.suggestion-item{
+  display:block;
+  width:100%;
+  padding:14px 20px;
+  cursor:pointer;
+  border-bottom:1px solid #1a2430;
+  transition:background .12s;
+}
+
+
+/* BIG THUMBNAIL */
+.suggestion-thumbnail{
+  width:100%;
+  aspect-ratio:16/9;
+  background:#333;
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:10px;
+}
+
+
 .suggestion-item:hover{ background:#0b1216; }
 .suggestion-thumbnail{ width:120px; height:67.5px; background:#333; border-radius:4px; overflow:hidden; flex-shrink:0; }
-.suggestion-thumbnail img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+
+
 .suggestion-details{ display:flex; flex-direction:column; justify-content:center; }
+
+
 .suggestion-title{ font-weight:600; font-size:16px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+
 .suggestion-creator{ font-size:12px; color:#aaa; margin-top:4px; }
 
 /* Suggested ad slot (centered responsive container) */
@@ -79,10 +110,6 @@ video{ width:100%; height:100%; object-fit:contain; }
 
 <div class="content-wrapper">
 
-  <!-- Top slim ad placeholder (we inject ad script via JS) -->
-  <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
-    <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
-  </div>
 
   <div class="header">
     <div>X</div>
@@ -92,7 +119,7 @@ video{ width:100%; height:100%; object-fit:contain; }
   <div class="post">
     <div class="dp" id="creatorDp"></div>
     <div>
-      <div style="font-weight:700;" id="creatorName">Content Creator Name</div>
+      <div style="font-weight:300;" id="creatorName">Clipfy video</div>
       <div class="title" id="timeAgo">{{TIME_AGO}}</div>
     </div>
   </div>
@@ -102,9 +129,20 @@ video{ width:100%; height:100%; object-fit:contain; }
     <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
   </div>
 
+  <!-- Top slim ad placeholder (we inject ad script via JS) -->
+  <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
+    <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
+  </div>
+
+
+
   <div class="blog-content">
     <h2 id="mainTitle">{{TITLE}}</h2>
   </div>
+
+
+
+
 
   <div class="suggestions-header">More Viral Videos 🔥</div>
   <div class="video-suggestions-list" id="videoSuggestionsList"></div>
