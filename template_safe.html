@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>{{TITLE}} | Clipfy</title>
+
+<!-- =============================== -->
+<!-- SAFE META TAGS (PREVIEW ONLY)   -->
+<!-- =============================== -->
+
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:type" content="video.other">
+
+<!-- Blur thumbnail ONLY for preview -->
+<meta property="og:image" content="{{THUMB}}?blur=40">
+<meta name="twitter:image" content="{{THUMB}}?blur=40">
+
+<!-- Twitter safe preview -->
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- IMPORTANT: NO TWITTER PLAYER CARD HERE -->
+<!-- DO NOT ADD twitter:player TAGS -->
+
+<style>
+    body { margin:0; background:#000; font-family:Arial, sans-serif; }
+</style>
+
+</head>
+<body>
+
+<!-- =============================== -->
+<!-- ACTUAL VIDEO PLAYER (NORMAL)   -->
+<!-- =============================== -->
+
+<video
+    controls
+    preload="metadata"
+    poster="{{THUMB}}"   <!-- CLEAR POSTER -->
+    style="width:100%;background:#000;">
+    <source src="{{VIDEO_URL}}" type="video/mp4">
+</video>
+
+<!-- =============================== -->
+<!-- RECOMMENDED VIDEOS (CLEAR)     -->
+<!-- =============================== -->
+
+<div id="recommended">
+    {{RECOMMENDED_HTML}}
+</div>
+
+</body>
+</html>
