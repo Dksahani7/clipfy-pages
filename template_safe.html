@@ -2,54 +2,350 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>{{TITLE}} | Clipfy</title>
+<title>{{TITLE}} | Clipfy Player</title>
 
-<!-- SAFE VERSION META — only for preview -->
 <meta property="og:title" content="{{TITLE}}">
-<meta property="og:description" content="">
+<meta property="og:description" content="{{DESCRIPTION}}">
 <meta property="og:type" content="video.other">
 
-<!-- BLUR PREVIEW IMAGE -->
 <meta property="og:image" content="{{THUMB_URL}}?blur=40">
 <meta name="twitter:image" content="{{THUMB_URL}}?blur=40">
 <meta name="twitter:card" content="summary_large_image">
 
-<!-- IMPORTANT: NO TWITTER PLAYER TAGS HERE -->
-<!-- DO NOT ADD twitter:player, twitter:player:stream -->
-
 <style>
-  body{ background:#0f141a; color:#fff; font-family:Arial,sans-serif; margin:0; padding:0; }
-  .video-box{ width:100%; background:#000; }
-  video{ width:100%; height:auto; }
-  .suggestions-header{ padding:15px; font-size:20px; font-weight:bold; border-top:1px solid #222; margin-top:15px; }
-  .video-suggestions-list{ padding:0 15px; }
-  .suggestion-item{ margin-bottom:20px; display:block; }
-  .suggestion-thumbnail{ width:100%; aspect-ratio:16/9; background:#333; border-radius:6px; overflow:hidden; margin-bottom:8px; }
-  .suggestion-thumbnail img{ width:100%; height:100%; object-fit:cover; }
-  .suggestion-title{ font-size:16px; font-weight:600; }
-  .suggestion-creator{ font-size:12px; color:#aaa; margin-top:5px; }
+/* ---------------- Styles (copied from tamplate.html) ---------------- */
+body{
+  background:#0f141a;
+  color:#fff;
+  font-family:Arial, sans-serif;
+  margin:0;padding:0;overflow-x:hidden;
+}
+/* Video fixed */
+.video-box { width:100%; height:40vh; position:fixed; top:0; left:0; background:#000; overflow:hidden; z-index:9999; display:flex; align-items:center; justify-content:center; }
+video{ width:100%; height:100%; object-fit:contain; }
+/* Scroll content */
+.content-wrapper{ padding-top:40vh; min-height:250vh; }
+/* Top slim ad placeholder */
+.top-slim-ad{ background:#1a2430; padding:6px 0; margin:0; text-align:center; border-bottom:1px solid #222; }
+/* Header / post / stats */
+.header{ display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #222; font-size:20px; }
+.post{ padding:12px; display:flex; gap:10px; align-items:center; }
+.dp{ width:42px; height:42px; border-radius:50%; background:#555; }
+.stats{ display:flex; gap:15px; padding:12px; border-bottom:1px solid #222; font-size:14px; align-items:center; }
+.blog-content{ padding:20px; font-size:17px; line-height:1.7; }
+/* Suggestions */
+.suggestions-header{ padding:12px 20px; font-size:18px; font-weight:700; border-top:1px solid #222; }
+.video-suggestions-list{ background:transparent; }
+/* FULL-WIDTH BIG CARD */
+.suggestion-item{
+  display:block;
+  width:100%;
+  padding:14px 20px;
+  cursor:pointer;
+  border-bottom:1px solid #1a2430;
+  transition:background .12s;
+}
+.suggestion-item:hover{ background:#0b1216; }
+/* BIG THUMBNAIL (16:9, full width) */
+.suggestion-thumbnail{
+  width:100%;
+  aspect-ratio:16/9;
+  background:#333;
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:10px;
+}
+/* Text content */
+.suggestion-details{ display:flex; flex-direction:column; justify-content:center; }
+.suggestion-title{ font-weight:600; font-size:16px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.suggestion-creator{ font-size:12px; color:#aaa; margin-top:4px; }
+/* Suggested ad slot */
+.suggested-ad-slot{ display:flex; justify-content:center; padding:15px 0; border-bottom:1px solid #222; background:transparent; }
+/* small utility */
+.center{ text-align:center; }
+.hidden{ display:none !important; }
 </style>
 </head>
 
 <body>
 
-<!-- NORMAL PLAYER (CLEAR POSTER) -->
 <div class="video-box">
-  <video controls playsinline poster="{{THUMB_URL}}">
+  <video id="player" playsinline controls autoplay muted poster="{{THUMB_URL}}">
     <source src="{{VIDEO_URL}}" type="video/mp4">
   </video>
 </div>
 
-<!-- TITLE -->
-<div style="padding:15px; font-size:18px; font-weight:600;">
-  {{TITLE}}
+<div class="content-wrapper">
+
+
+  <div class="header">
+    <div>X</div>
+    <div>⋯</div>
+  </div>
+
+  <div class="post">
+    <div class="dp" id="creatorDp"></div>
+    <div>
+      <div style="font-weight:300;" id="creatorName">Clipfy video</div>
+      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <span id="likes">0</span> <span id="views">0</span>
+    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
+
+  <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
+    <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
+  </div>
+
+
+
+  <div class="blog-content">
+    <h2 id="mainTitle">{{TITLE}}</h2>
+  </div>
+
+
+
+
+
+  <div class="suggestions-header">More Viral Videos 🔥</div>
+  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
+
 </div>
 
-<!-- SUGGESTIONS LIST (STATIC) -->
-<div class="suggestions-header">More Viral Videos 🔥</div>
-<div class="video-suggestions-list">
-  {{RECOMMENDED_HTML}}
-</div>
+<script>
+/* ----------------- Config (templated server-side) ----------------- */
+let VIDEO_ID = '{{VIDEO_ID}}';
+const API_BASE = '{{API_BASE}}';
+const ALL_VIDEOS = {{ALL_VIDEOS_JSON}}; 
+const INITIAL_DATA = {
+  title: '{{TITLE}}',
+  thumb: '{{THUMB_URL}}',
+  description: '{{DESCRIPTION}}'
+};
+/* ----------------------------------------------------------------- */
 
+/* DOM refs */
+const player = document.getElementById('player');
+const likesEl = document.getElementById('likes');
+const viewsEl = document.getElementById('views');
+const timeAgoEl = document.getElementById('timeAgo');
+const mainTitleEl = document.getElementById('mainTitle');
+const videoSuggestionsList = document.getElementById('videoSuggestionsList');
+const shareBtn = document.getElementById('shareBtn');
+const creatorNameEl = document.getElementById('creatorName');
+const creatorDpEl = document.getElementById('creatorDp');
+
+/* View counting */
+let viewCounted = false;
+player.addEventListener('play', ()=>{
+  if (!viewCounted && VIDEO_ID){
+    viewCounted = true;
+    // fire view hit
+    try{
+      fetch(`${API_BASE}/hit`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({video_id: VIDEO_ID, type:'view'})
+      }).catch(()=>{/* ignore network errors silently */});
+    }catch(e){}
+  }
+});
+
+/* Share button */
+shareBtn.onclick = ()=>{
+  const shareTitle = document.querySelector('meta[name="twitter:title"]').getAttribute('content') || document.title;
+  if (navigator.share){
+    navigator.share({ title: shareTitle, url: location.href }).catch(()=>{/* ignore */});
+  } else {
+    navigator.clipboard?.writeText(location.href).then(()=>alert('Link Copied!')).catch(()=>alert(location.href));
+  }
+};
+
+/* ----------------- Ad injection utility ----------------- */
+function injectAtOptionsAd(key, container, width, height){
+  if(!container) return;
+  const marker = `data-atoptions-${key}-${width}x${height}`;
+  if (container.getAttribute(marker)) return;
+  container.setAttribute(marker, '1');
+
+  const inline = document.createElement('script');
+  inline.type = 'text/javascript';
+  inline.text = `atOptions = {'key':'${key}','format':'iframe','height':${height},'width':${width},'params':{}};`;
+  container.appendChild(inline);
+
+  const src = "//www.highperformanceformat.com/" + key + "/invoke.js";
+  const s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = src;
+  container.appendChild(s);
+}
+
+/* ----------------- Top slim ad injection ----------------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const topInner = document.getElementById('topSlimAdInner');
+  injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
+
+  renderVideoSuggestions(ALL_VIDEOS);
+
+  try{
+    const stateObj = { video_id: VIDEO_ID, title: INITIAL_DATA.title, video_url: player.querySelector('source').src, time_ago: '{{TIME_AGO}}', likes: likesEl.innerText || 0, views: viewsEl.innerText || 0, thumb: INITIAL_DATA.thumb };
+    history.replaceState(stateObj, INITIAL_DATA.title, location.pathname);
+  }catch(e){}
+});
+
+/* ----------------- Render suggestions with ad logic ----------------- */
+function renderVideoSuggestions(videos){
+  videoSuggestionsList.innerHTML = '';
+  let suggestion_count = 0;
+
+  for (let i=0;i<videos.length;i++){
+    const v = videos[i];
+    if (!v || v.video_id === VIDEO_ID) continue; 
+    if (suggestion_count > 0 && suggestion_count % 2 === 0){
+      const adDiv = document.createElement('div');
+      adDiv.className = 'suggested-ad-slot';
+      const inner = document.createElement('div');
+      inner.style.width = '300px';
+      inner.style.height = '250px';
+      inner.style.maxWidth = '95%';
+      adDiv.appendChild(inner);
+      videoSuggestionsList.appendChild(adDiv);
+      injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
+    }
+
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.setAttribute('data-video-id', v.video_id);
+
+    item.innerHTML = `
+      <div class="suggestion-thumbnail">
+        <img src="${v.thumb_url}" alt="${escapeHtml(v.title)} thumbnail" loading="lazy">
+      </div>
+      <div class="suggestion-details">
+        <div class="suggestion-title">${escapeHtml(v.title)}</div>
+        <div class="suggestion-creator">${escapeHtml(v.creator || '')}</div>
+      </div>
+    `;
+
+    item.addEventListener('click', (e)=>{
+      e.preventDefault();
+      playSuggestedVideo(v);
+    });
+
+    videoSuggestionsList.appendChild(item);
+    suggestion_count++;
+  }
+}
+
+/* ----------------- Play suggested video in-place ----------------- */
+function playSuggestedVideo(videoData){
+  if(!videoData || !videoData.video_url) return;
+
+  const sourceEl = player.querySelector('source');
+  sourceEl.src = videoData.video_url;
+  player.load();
+  player.play().catch(()=>{/* autoplay may be blocked on some platforms */});
+
+  viewCounted = false;
+
+  timeAgoEl.innerText = videoData.time_ago || '';
+  mainTitleEl.innerText = videoData.title || '';
+  creatorNameEl.innerText = videoData.creator || '';
+  likesEl.innerText = (typeof videoData.likes !== 'undefined') ? videoData.likes : (likesEl.innerText || '0');
+  viewsEl.innerText = (typeof videoData.views !== 'undefined') ? videoData.views : (viewsEl.innerText || '0');
+
+  safeUpdateMetaTags({
+    title: videoData.title || document.title,
+    description: videoData.description || '',
+    image: videoData.thumb_url || videoData.thumb || INITIAL_DATA.thumb,
+    player_page: videoData.player_page_url || `/v/${videoData.video_id}.html`,
+    stream: videoData.video_url || ''
+  });
+
+  document.title = (videoData.title ? (videoData.title + ' | Clipfy Player') : 'Clipfy Player');
+
+  const prevPath = location.pathname;
+  const newPath = `/v/${videoData.video_id}.html`;
+  VIDEO_ID = videoData.video_id;
+  const stateObj = Object.assign({}, videoData);
+  try{
+    if (prevPath !== newPath) history.pushState(stateObj, videoData.title, newPath);
+    else history.replaceState(stateObj, videoData.title, newPath);
+  }catch(e){}
+
+  renderVideoSuggestions(ALL_VIDEOS);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ----------------- Back / forward handling ----------------- */
+window.onpopstate = function(event){
+  if (event.state && event.state.video_id){
+    const s = event.state;
+    const vidData = (s.video_url ? s : (ALL_VIDEOS.find(x=>x.video_id===s.video_id) || s));
+    const sourceEl = player.querySelector('source');
+    if (vidData.video_url) sourceEl.src = vidData.video_url;
+    player.load();
+    player.play().catch(()=>{});
+    viewCounted = false;
+    timeAgoEl.innerText = vidData.time_ago || '';
+    mainTitleEl.innerText = vidData.title || '';
+    creatorNameEl.innerText = vidData.creator || '';
+    likesEl.innerText = vidData.likes || likesEl.innerText || '0';
+    viewsEl.innerText = vidData.views || viewsEl.innerText || '0';
+    safeUpdateMetaTags({
+      title: vidData.title || document.title,
+      description: vidData.description || '',
+      image: vidData.thumb_url || vidData.thumb || INITIAL_DATA.thumb,
+      player_page: vidData.player_page_url || `/v/${vidData.video_id}.html`,
+      stream: vidData.video_url || ''
+    });
+    VIDEO_ID = vidData.video_id;
+    renderVideoSuggestions(ALL_VIDEOS);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+/* ----------------- Meta tag updater (safe) ----------------- */
+function safeUpdateMetaTags({title, description, image, player_page, stream}){
+  try{
+    setOrCreateMeta('twitter:title', title);
+    setOrCreateMeta('twitter:description', description);
+    setOrCreateMeta('twitter:image', image);
+    setOrCreateMeta('og:image', image);
+    // When playing a suggested video, we must also update the twitter player tags 
+    // to point to the normal page of the new video ID.
+    setOrCreateMeta('twitter:player', player_page); 
+    setOrCreateMeta('twitter:player:stream', stream);
+    document.title = title + ' | Clipfy Player';
+  }catch(e){}
+}
+
+function setOrCreateMeta(nameOrProp, value){
+  if(!value) return;
+  let sel;
+  if (nameOrProp.startsWith('og:')) sel = `meta[property="${nameOrProp}"]`;
+  else sel = `meta[name="${nameOrProp}"]`;
+  let el = document.querySelector(sel);
+  if (!el){
+    el = document.createElement('meta');
+    if (nameOrProp.startsWith('og:')) el.setAttribute('property', nameOrProp);
+    else el.setAttribute('name', nameOrProp);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', value);
+}
+
+/* ----------------- helper: escape html for title text (very small) ----------------- */
+function escapeHtml(str){
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+}
+/* ----------------------------------------------------------------- */
+</script>
 </body>
 </html>
