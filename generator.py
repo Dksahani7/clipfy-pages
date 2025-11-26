@@ -1,93 +1,113 @@
 import json
-import os # 💡 os module फ़ाइल को चेक करने के लिए जोड़ा गया है
+import os
 
+# 🔥 LIVE VIDEO LIST — Bot R2 index ya DB se aayega future me
 def get_all_video_data():
-    # 🛑 YOUR LIVE DATA SOURCE HERE: Replace this list with a call to your database or file.
-    # Note: Description field added here for completeness, though it should ideally come from a real source.
     return [
-        { "title": "ये चीज़ें बदल देंगी आपकी ज़िंदगी | 5 Simple Habits", "creator": "The Motivator", "video_url": "/videos/v1.mp4", "thumb_url": "/thumbs/t1.jpg", "video_id": "v1", "time_ago": "3 days ago", "description": "The description for video 1." },
-        { "title": "जब किसी ने नहीं देखा | Secret Workout Routine", "creator": "Fitness Guru", "video_url": "/videos/v2.mp4", "thumb_url": "/thumbs/t2.jpg", "video_id": "v2", "time_ago": "1 week ago", "description": "The description for video 2." },
-        # ... more videos ...
+        {
+            "title": "ये चीज़ें बदल देंगी आपकी ज़िंदगी | 5 Simple Habits",
+            "creator": "The Motivator",
+            "video_url": "/videos/v1.mp4",
+            "thumb_url": "/thumbs/t1.jpg",
+            "video_id": "v1",
+            "time_ago": "3 days ago",
+            "description": "The description for video 1."
+        },
+        {
+            "title": "जब किसी ने नहीं देखा | Secret Workout Routine",
+            "creator": "Fitness Guru",
+            "video_url": "/videos/v2.mp4",
+            "thumb_url": "/thumbs/t2.jpg",
+            "video_id": "v2",
+            "time_ago": "1 week ago",
+            "description": "The description for video 2."
+        }
     ]
 
 
-def generate_html(video_url, page_name, thumb_url, title, description, time_ago):
-    
-    # 1. ⚙️ टेम्पलेट फ़ाइल चुनें और त्रुटि संभालें (Choose Template and Handle Errors)
-    template_file = "template.html"
-    fallback_file = "safe_template.html"
-    
-    if os.path.exists(template_file):
-        file_to_use = template_file
-    elif os.path.exists(fallback_file):
-        file_to_use = fallback_file
-    else:
-        print(f"Error: Neither {template_file} nor {fallback_file} was found.")
-        return None # या त्रुटि कोड वापस करें
+# ✅ FINAL FUNCTION: TWO PAGES (normal + safe)
+def generate_both(video):
 
-    try:
-        with open(file_to_use, "r") as f:
-            template = f.read()
-    except Exception as e:
-        print(f"Error reading template file {file_to_use}: {e}")
-        return None
+    video_id = video["video_id"]
+    title = video["title"]
+    description = video.get("description", "")
+    time_ago = video["time_ago"]
+    video_url = video["video_url"]
+    thumb_url = video["thumb_url"]
 
-    # 2. Prepare JSON Data for Injection
-    all_videos_data = get_all_video_data()
-    all_videos_json_str = json.dumps(all_videos_data)
-    
-    # 3. Inject ALL_VIDEOS_JSON 
-    html = template.replace("{{ALL_VIDEOS_JSON}}", all_videos_json_str) 
+    # ------------------------
+    # 1) LOAD TEMPLATES
+    # ------------------------
+    with open("template.html", "r", encoding="utf-8") as f:
+        normal_template = f.read()
 
-    # 4. Replace Standard Placeholders
-    html = html.replace("{{VIDEO_URL}}", video_url)
-    html = html.replace("{{PLAYER_PAGE_URL}}", f"https://clipfy.store/v/{page_name}.html") 
-    html = html.replace("{{THUMB_URL}}", thumb_url)
-    html = html.replace("{{VIDEO_ID}}", page_name) 
-    html = html.replace("{{TITLE}}", title)
-    # 💡 Description placeholder added to the replacement list
-    html = html.replace("{{DESCRIPTION}}", description) 
-    html = html.replace("{{TIME_AGO}}", time_ago) 
+    with open("template_safe.html", "r", encoding="utf-8") as f:
+        safe_template = f.read()
 
-    # 5. Write the final HTML file
-    # सुनिश्चित करें कि 'v/' डायरेक्टरी मौजूद है
+    # ------------------------
+    # 2) JSON FOR SUGGESTIONS
+    # ------------------------
+    all_videos = json.dumps(get_all_video_data())
+
+    # ------------------------
+    # 3) NORMAL PAGE
+    # ------------------------
+    normal_html = normal_template\
+        .replace("{{VIDEO_URL}}", video_url)\
+        .replace("{{THUMB_URL}}", thumb_url)\
+        .replace("{{VIDEO_ID}}", video_id)\
+        .replace("{{TITLE}}", title)\
+        .replace("{{DESCRIPTION}}", description)\
+        .replace("{{TIME_AGO}}", time_ago)\
+        .replace("{{ALL_VIDEOS_JSON}}", all_videos)\
+        .replace("{{PLAYER_PAGE_URL}}", f"https://clipfy.store/v/{video_id}.html")
+
+    # ------------------------
+    # 4) SAFE PAGE (BLUR + NO PLAYER TAG)
+    # ------------------------
+    safe_html = safe_template\
+        .replace("{{VIDEO_URL}}", video_url)\
+        .replace("{{THUMB_URL}}", thumb_url)\
+        .replace("{{VIDEO_ID}}", video_id)\
+        .replace("{{TITLE}}", title)\
+        .replace("{{DESCRIPTION}}", description)\
+        .replace("{{TIME_AGO}}", time_ago)\
+        .replace("{{ALL_VIDEOS_JSON}}", all_videos)\
+        .replace("{{PLAYER_PAGE_URL}}", f"https://clipfy.store/v/{video_id}_safe.html")
+
+    # ------------------------
+    # 5) SAVE BOTH FILES
+    # ------------------------
     if not os.path.exists("v"):
         os.makedirs("v")
 
-    output_path = f"v/{page_name}.html"
-    try:
-        with open(output_path, "w") as f: 
-            f.write(html)
-    except Exception as e:
-        print(f"Error writing output file {output_path}: {e}")
-        return None
+    with open(f"v/{video_id}.html", "w", encoding="utf-8") as f:
+        f.write(normal_html)
 
-    return f"https://clipfy.store/v/{page_name}.html"
+    with open(f"v/{video_id}_safe.html", "w", encoding="utf-8") as f:
+        f.write(safe_html)
 
-# 🚀 सभी वीडियो के लिए पेज बनाने का एक नया फ़ंक्शन
+    print("✔ Generated:", video_id)
+    return {
+        "normal": f"https://clipfy.store/v/{video_id}.html",
+        "safe": f"https://clipfy.store/v/{video_id}_safe.html"
+    }
+
+
+# ------------------------
+# 🔥 GENERATE ALL PAGES
+# ------------------------
 def generate_all_pages():
-    print("Starting static site generation...")
     videos = get_all_video_data()
-    
-    for video in videos:
-        # सुनिश्चित करें कि आपके डेटा में 'description' फील्ड मौजूद है
-        description = video.get('description', 'No description provided.') 
-        
-        result_url = generate_html(
-            video_url=video['video_url'],
-            page_name=video['video_id'],
-            thumb_url=video['thumb_url'],
-            title=video['title'],
-            description=description,
-            time_ago=video['time_ago']
-        )
-        if result_url:
-            print(f"Successfully generated: {result_url}")
-        else:
-            print(f"Failed to generate page for video ID: {video['video_id']}")
-            
-    print("Static site generation complete.")
 
-# 💡 यदि आप इस स्क्रिप्ट को सीधे चलाते हैं, तो यह फंक्शन कॉल होगा
+    for video in videos:
+        generate_both(video)
+
+    print("\n🎉 DONE — All pages generated!")
+
+
+# ------------------------
+# AUTO RUN
+# ------------------------
 if __name__ == "__main__":
     generate_all_pages()
