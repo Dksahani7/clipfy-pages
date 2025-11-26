@@ -55,8 +55,7 @@ def generate_both(video):
     thumb_url = video["thumb_url"]
 
     # SAFE THUMBNAIL (blur via CF)
-    safe_thumb = f"{thumb_url}?w=600&h=400&fit=cover&blur=40"
-
+    safe_thumb = f"{thumb_url}?blur=40"
     # ------------------------------------
     # LOAD TEMPLATES
     # ------------------------------------
@@ -115,9 +114,6 @@ def generate_both(video):
 
     print("✔ Generated:", video_id)
 
-    # ⭐ VERY IMPORTANT: GitHub deploy wait
-    # prevents workflow cancellation problem
-    time.sleep(1.5)
 
     return {
         "normal": f"https://clipfy.store/v/{video_id}.html",
