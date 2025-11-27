@@ -120,6 +120,7 @@ video{ width:100%; height:100%; object-fit:contain; }
 let VIDEO_ID = '{{VIDEO_ID}}';
 const API_BASE = '{{API_BASE}}';
 const ALL_VIDEOS = {{ALL_VIDEOS_JSON}}; 
+ALL_VIDEOS.sort(() => Math.random() - 0.5); // Randomize suggestion order per page load
 const INITIAL_DATA = {
   title: '{{TITLE}}',
   thumb: '{{THUMB_URL}}',
