@@ -9,237 +9,236 @@
 <meta property="og:type" content="video.other">
 
 <meta property="og:image" content="{{THUMB_URL}}">
-<meta name="twitter:image" content="{{THUMB_URL}">
+<meta name="twitter:image" content="{{THUMB_URL}}">
 <meta name="twitter:card" content="summary_large_image">
 
 <style>
 
-  
+  
 /* ---------------- Styles (clean + minimal changes) ---------------- */
 
 body{
-  background:#0f141a;
-  color:#fff;
-  font-family:Arial, sans-serif;
-  margin:0;
-  padding:0;
-  overflow-x:hidden;
+  background:#0f141a;
+  color:#fff;
+  font-family:Arial, sans-serif;
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
 }
 
 /* ---------------- Fixed Video Box ---------------- */
 .video-box{
-  width:100%;
-  height:40vh;
-  position:fixed;
-  top:0;
-  left:0;
-  background:#000;
-  overflow:hidden;
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:100%;
+  height:40vh;
+  position:fixed;
+  top:0;
+  left:0;
+  background:#000;
+  overflow:hidden;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 video{
-  width:100%;
-  height:100%;
-  object-fit:contain;
+  width:100%;
+  height:100%;
+  object-fit:contain;
 }
 
 /* ---------------- Scrollable Content ---------------- */
 .content-wrapper{
-  padding-top:40vh;
-  min-height:250vh;
+  padding-top:40vh;
+  min-height:250vh;
 }
 
 /* ---------------- Top Slim Ad ---------------- */
 .top-slim-ad{
-  background:#1a2430;
-  padding:6px 0;
-  margin:0;
-  text-align:center;
-  border-bottom:1px solid #222;
+  background:#1a2430;
+  padding:6px 0;
+  margin:0;
+  text-align:center;
+  border-bottom:1px solid #222;
 }
 
 /* ---------------- Header / Post / Stats ---------------- */
 .header{
-  display:flex;
-  justify-content:space-between;
-  padding:12px;
-  border-bottom:1px solid #222;
-  font-size:20px;
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:20px;
 }
 .post{
-  padding:12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
 }
 .dp{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#555;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#555;
 }
 .stats{
-  display:flex;
-  gap:15px;
-  padding:12px;
-  border-bottom:1px solid #222;
-  font-size:14px;
-  align-items:center;
+  display:flex;
+  gap:15px;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:14px;
+  align-items:center;
 }
 .blog-content{
-  padding:20px;
-  font-size:17px;
-  line-height:1.7;
+  padding:20px;
+  font-size:17px;
+  line-height:1.7;
 }
 
 /* ---------------- Suggestions Section ---------------- */
 .suggestions-header{
-  padding:12px 20px;
-  font-size:18px;
-  font-weight:700;
-  border-top:1px solid #222;
+  padding:12px 20px;
+  font-size:18px;
+  font-weight:700;
+  border-top:1px solid #222;
 }
 .video-suggestions-list{
-  background:transparent;
-  overflow:visible;
+  background:transparent;
+  overflow:visible;
 }
 
 /* Fix thumbnail cropping 100% */
 .suggestion-thumbnail img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
 /* ---------------- Full-width suggestion cards ---------------- */
 .suggestion-item{
-  display:block;
-  width:100%;
-  padding:14px 20px;
-  cursor:pointer;
-  border-bottom:1px solid #1a2430;
-  transition:background .12s;
-  overflow:visible;
-  height:auto;
+  display:block;
+  width:100%;
+  padding:14px 20px;
+  cursor:pointer;
+  border-bottom:1px solid #1a2430;
+  transition:background .12s;
+  overflow:visible;
+  height:auto;
 }
 .suggestion-item:hover{
-  background:#0b1216;
+  background:#0b1216;
 }
 
 /* Thumbnail box */
 .suggestion-thumbnail{
-  width:100%;
-  aspect-ratio:16/9;
-  background:#333;
-  border-radius:6px;
-  overflow:hidden;
-  margin-bottom:10px;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#333;
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:10px;
 }
 
 /* Text content */
 .suggestion-details{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 .suggestion-title{
-  font-weight:600;
-  font-size:16px;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
+  font-weight:600;
+  font-size:16px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
 }
 .suggestion-creator{
-  font-size:12px;
-  color:#aaa;
-  margin-top:4px;
+  font-size:12px;
+  color:#aaa;
+  margin-top:4px;
 }
 
 /* ---------------- Ad Slot ---------------- */
 .suggested-ad-slot{
-  display:flex;
-  justify-content:center;
-  padding:15px 0;
-  border-bottom:1px solid #222;
-  background:transparent;
+  display:flex;
+  justify-content:center;
+  padding:15px 0;
+  border-bottom:1px solid #222;
+  background:transparent;
 }
 
 /* ---------------- Utilities ---------------- */
 .center{
-  text-align:center;
+  text-align:center;
 }
 .hidden{
-  display:none !important;
+  display:none !important;
 }
 
-  
+  
 </style>
 </head>
 
 <body>
 
 <div class="video-box">
-  <video id="player" playsinline controls autoplay muted poster="{{THUMB_URL}}">
-    <source src="{{VIDEO_URL}}" type="video/mp4">
-  </video>
+  <video id="player" playsinline controls autoplay muted poster="{{THUMB_URL}}">
+    <source src="{{VIDEO_URL}}" type="video/mp4">
+  </video>
 </div>
 
 <div class="content-wrapper">
 
 
-  <div class="header">
-    <div>X</div>
-    <div>⋯</div>
-  </div>
+  <div class="header">
+    <div>X</div>
+    <div>⋯</div>
+  </div>
 
-  <div class="post">
-    <div class="dp" id="creatorDp"></div>
-    <div>
-      <div style="font-weight:300;" id="creatorName">Clipfy video</div>
-      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
-    </div>
-  </div>
+  <div class="post">
+    <div class="dp" id="creatorDp"></div>
+    <div>
+      <div style="font-weight:300;" id="creatorName">Clipfy video</div>
+      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
+    </div>
+  </div>
 
-  <div class="stats">
-    <span id="likes">0</span> <span id="views">0</span>
-    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
-  </div>
+  <div class="stats">
+    <span id="likes">0</span> <span id="views">0</span>
+    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
 
-  <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
-    <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
-  </div>
-
-
-
-  <div class="blog-content">
-    <h2 id="mainTitle">{{TITLE}}</h2>
-  </div>
+  <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
+    <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
+  </div>
 
 
 
+  <div class="blog-content">
+    <h2 id="mainTitle">{{TITLE}}</h2>
+  </div>
 
 
-  <div class="suggestions-header">More Viral Videos 🔥</div>
-  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
 
-  <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
-  </div>
 
-<script>
+
+  <div class="suggestions-header">More Viral Videos 🔥</div>
+  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
+
+    <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
+  
+</div> <script>
 /* ----------------- Config (templated server-side) ----------------- */
 let VIDEO_ID = '{{VIDEO_ID}}';
 const API_BASE = '{{API_BASE}}';
-const ALL_VIDEOS = {{ALL_VIDEOS_JSON}}; 
+const ALL_VIDEOS = {{ALL_VIDEOS_JSON}}; 
 ALL_VIDEOS.sort(() => Math.random() - 0.5); // Randomize suggestion order per page load
 const INITIAL_DATA = {
-  title: '{{TITLE}}',
-  thumb: '{{THUMB_URL}}',
-  description: '{{DESCRIPTION}}'
+  title: '{{TITLE}}',
+  thumb: '{{THUMB_URL}}',
+  description: '{{DESCRIPTION}}'
 };
 /* ----------------------------------------------------------------- */
 
@@ -253,245 +252,247 @@ const videoSuggestionsList = document.getElementById('videoSuggestionsList');
 const shareBtn = document.getElementById('shareBtn');
 const creatorNameEl = document.getElementById('creatorName');
 const creatorDpEl = document.getElementById('creatorDp');
-const nativeAdContainer = document.getElementById('nativeAd'); // Reference for Native Ad container
+const nativeAdContainer = document.getElementById('nativeAd'); // Correctly defined
+
 
 /* View counting */
 let viewCounted = false;
 player.addEventListener('play', ()=>{
-  if (!viewCounted && VIDEO_ID){
-    viewCounted = true;
-    // fire view hit
-    try{
-      fetch(`${API_BASE}/hit`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({video_id: VIDEO_ID, type:'view'})
-      }).catch(()=>{/* ignore network errors silently */});
-    }catch(e){}
-  }
+  if (!viewCounted && VIDEO_ID){
+    viewCounted = true;
+    // fire view hit
+    try{
+      fetch(`${API_BASE}/hit`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({video_id: VIDEO_ID, type:'view'})
+      }).catch(()=>{/* ignore network errors silently */});
+    }catch(e){}
+  }
 });
 
 /* Share button */
 shareBtn.onclick = ()=>{
-  const shareTitle = document.querySelector('meta[name="twitter:title"]').getAttribute('content') || document.title;
-  if (navigator.share){
-    navigator.share({ title: shareTitle, url: location.href }).catch(()=>{/* ignore */});
-  } else {
-    navigator.clipboard?.writeText(location.href).then(()=>alert('Link Copied!')).catch(()=>alert(location.href));
-  }
+  const shareTitle = document.querySelector('meta[name="twitter:title"]').getAttribute('content') || document.title;
+  if (navigator.share){
+    navigator.share({ title: shareTitle, url: location.href }).catch(()=>{/* ignore */});
+  } else {
+    navigator.clipboard?.writeText(location.href).then(()=>alert('Link Copied!')).catch(()=>alert(location.href));
+  }
 };
 
-/* ----------------- Ad injection utility (Updated) ----------------- */
+/* ----------------- Ad injection utility ----------------- */
 function injectAtOptionsAd(key, container, width, height){
-  if(!container) return;
-  const marker = `data-atoptions-${key}-${width}x${height}`;
-  if (container.getAttribute(marker)) return;
-  container.setAttribute(marker, '1');
+  if(!container) return;
+  const marker = `data-atoptions-${key}-${width}x${height}`;
+  if (container.getAttribute(marker)) return;
+  container.setAttribute(marker, '1');
 
-  const inline = document.createElement('script');
-  inline.type = 'text/javascript';
-  // Use 728x90 and 300x250 keys from previous context
-  inline.text = `atOptions = {'key':'${key}','format':'iframe','height':${height},'width':${width},'params':{}};`;
-  container.appendChild(inline);
+  const inline = document.createElement('script');
+  inline.type = 'text/javascript';
+  // 728x90 और 300x250 के लिए AtOptions
+  inline.text = `atOptions = {'key':'${key}','format':'iframe','height':${height},'width':${width},'params':{}};`;
+  container.appendChild(inline);
 
-  const src = "//www.highperformanceformat.com/" + key + "/invoke.js";
-  const s = document.createElement('script');
-  s.type = 'text/javascript';
-  s.async = true;
-  s.src = src;
-  container.appendChild(s);
+  const src = "//www.highperformanceformat.com/" + key + "/invoke.js";
+  const s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = src;
+  container.appendChild(s);
 }
 
 /*
-  injectNativeBannerAd: injects the Adsterra Native Banner script
-  container: DOM element where ad script should render
+  injectNativeBannerAd: injects the Adsterra Native Banner script
+  container: DOM element where ad script should render
 */
 function injectNativeBannerAd(container){
-  if(!container) return;
-  const marker = `data-adsterra-native`;
-  if (container.getAttribute(marker)) return;
-  container.setAttribute(marker, '1');
+  if(!container) return;
+  const marker = `data-adsterra-native`;
+  if (container.getAttribute(marker)) return;
+  container.setAttribute(marker, '1');
 
-  // 1) Async script 
-  const s1 = document.createElement('script');
-  s1.type = 'text/javascript';
-  s1.async = true;
-  s1.setAttribute('data-cfasync', 'false');
-  // Use your Native Banner source from previous context
-  s1.src = "//pl28119894.effectivegatecpm.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
-  container.appendChild(s1);
+  // 1) Async script 
+  const s1 = document.createElement('script');
+  s1.type = 'text/javascript';
+  s1.async = true;
+  s1.setAttribute('data-cfasync', 'false');
+  // Native Banner source
+  s1.src = "//pl28119894.effectivegatecpm.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
+  container.appendChild(s1);
 
-  // 2) Container div
-  const adDiv = document.createElement('div');
-  adDiv.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
-  container.appendChild(adDiv);
+  // 2) Container div
+  const adDiv = document.createElement('div');
+  adDiv.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
+  container.appendChild(adDiv);
 }
 
 
 /* ----------------- Ad injection on DOM load ----------------- */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // Top slim ad (728x90)
-  const topInner = document.getElementById('topSlimAdInner');
-  injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
+  // 1. Top slim ad (728x90)
+  const topInner = document.getElementById('topSlimAdInner');
+  injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
 
-  // Inject Native Banner at the bottom of the page
-  injectNativeBannerAd(nativeAdContainer);
+  // 3. Inject Native Banner at the bottom of the page
+  injectNativeBannerAd(nativeAdContainer);
 
-  renderVideoSuggestions(ALL_VIDEOS);
+  // initial render of suggestions
+  renderVideoSuggestions(ALL_VIDEOS);
 
-  try{
-    const stateObj = { video_id: VIDEO_ID, title: INITIAL_DATA.title, video_url: player.querySelector('source').src, time_ago: '{{TIME_AGO}}', likes: likesEl.innerText || 0, views: viewsEl.innerText || 0, thumb: INITIAL_DATA.thumb };
-    history.replaceState(stateObj, INITIAL_DATA.title, location.pathname);
-  }catch(e){}
+  try{
+    const stateObj = { video_id: VIDEO_ID, title: INITIAL_DATA.title, video_url: player.querySelector('source').src, time_ago: '{{TIME_AGO}}', likes: likesEl.innerText || 0, views: viewsEl.innerText || 0, thumb: INITIAL_DATA.thumb };
+    history.replaceState(stateObj, INITIAL_DATA.title, location.pathname);
+  }catch(e){}
 });
 
 /* ----------------- Render suggestions with ad logic ----------------- */
 function renderVideoSuggestions(videos){
-  videoSuggestionsList.innerHTML = '';
-  let suggestion_count = 0;
+  videoSuggestionsList.innerHTML = '';
+  let suggestion_count = 0;
 
-  for (let i=0;i<videos.length;i++){
-    const v = videos[i];
-    if (!v || v.video_id === VIDEO_ID) continue; 
-    // Insert 300x250 ad after every 2 shown suggestions
-    if (suggestion_count > 0 && suggestion_count % 2 === 0){
-      const adDiv = document.createElement('div');
-      adDiv.className = 'suggested-ad-slot';
-      const inner = document.createElement('div');
-      inner.style.width = '300px';
-      inner.style.height = '250px';
-      inner.style.maxWidth = '95%';
-      adDiv.appendChild(inner);
-      videoSuggestionsList.appendChild(adDiv);
-      // 300x250 key
-      injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
-    }
+  for (let i=0;i<videos.length;i++){
+    const v = videos[i];
+    if (!v || v.video_id === VIDEO_ID) continue; 
+    // 2. Insert 300x250 ad after every 2 shown suggestions
+    if (suggestion_count > 0 && suggestion_count % 2 === 0){
+      const adDiv = document.createElement('div');
+      adDiv.className = 'suggested-ad-slot';
+      const inner = document.createElement('div');
+      inner.style.width = '300px';
+      inner.style.height = '250px';
+      inner.style.maxWidth = '95%';
+      adDiv.appendChild(inner);
+      videoSuggestionsList.appendChild(adDiv);
+      // 300x250 key
+      injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
+    }
 
-    const item = document.createElement('div');
-    item.className = 'suggestion-item';
-    item.setAttribute('data-video-id', v.video_id);
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.setAttribute('data-video-id', v.video_id);
 
-    item.innerHTML = `
-      <div class="suggestion-thumbnail">
-        <img src="${v.thumb_url}" alt="${escapeHtml(v.title)} thumbnail" loading="lazy">
-      </div>
-      <div class="suggestion-details">
-        <div class="suggestion-title">${escapeHtml(v.title)}</div>
-        <div class="suggestion-creator">${escapeHtml(v.creator || '')}</div>
-      </div>
-    `;
+    item.innerHTML = `
+      <div class="suggestion-thumbnail">
+        <img src="${v.thumb_url}" alt="${escapeHtml(v.title)} thumbnail" loading="lazy">
+      </div>
+      <div class="suggestion-details">
+        <div class="suggestion-title">${escapeHtml(v.title)}</div>
+        <div class="suggestion-creator">${escapeHtml(v.creator || '')}</div>
+      </div>
+    `;
 
-    item.addEventListener('click', (e)=>{
-      e.preventDefault();
-      playSuggestedVideo(v);
-    });
+    item.addEventListener('click', (e)=>{
+      e.preventDefault();
+      playSuggestedVideo(v);
+    });
 
-    videoSuggestionsList.appendChild(item);
-    suggestion_count++;
-  }
+    videoSuggestionsList.appendChild(item);
+    suggestion_count++;
+  }
 }
 
 /* ----------------- Play suggested video in-place ----------------- */
 function playSuggestedVideo(videoData){
-  if(!videoData || !videoData.video_url) return;
+  if(!videoData || !videoData.video_url) return;
 
-  const sourceEl = player.querySelector('source');
-  sourceEl.src = videoData.video_url;
-  player.load();
-  player.play().catch(()=>{/* autoplay may be blocked on some platforms */});
+  const sourceEl = player.querySelector('source');
+  sourceEl.src = videoData.video_url;
+  player.load();
+  player.play().catch(()=>{/* autoplay may be blocked on some platforms */});
 
-  viewCounted = false;
+  viewCounted = false;
 
-  timeAgoEl.innerText = videoData.time_ago || '';
-  mainTitleEl.innerText = videoData.title || '';
-  creatorNameEl.innerText = videoData.creator || '';
-  likesEl.innerText = (typeof videoData.likes !== 'undefined') ? videoData.likes : (likesEl.innerText || '0');
-  viewsEl.innerText = (typeof videoData.views !== 'undefined') ? videoData.views : (viewsEl.innerText || '0');
+  timeAgoEl.innerText = videoData.time_ago || '';
+  mainTitleEl.innerText = videoData.title || '';
+  creatorNameEl.innerText = videoData.creator || '';
+  likesEl.innerText = (typeof videoData.likes !== 'undefined') ? videoData.likes : (likesEl.innerText || '0');
+  viewsEl.innerText = (typeof videoData.views !== 'undefined') ? videoData.views : (viewsEl.innerText || '0');
 
-  safeUpdateMetaTags({
-    title: videoData.title || document.title,
-    description: videoData.description || '',
-    image: videoData.thumb_url || videoData.thumb || INITIAL_DATA.thumb,
-    player_page: videoData.player_page_url || `/v/${videoData.video_id}.html`,
-    stream: videoData.video_url || ''
-  });
+  safeUpdateMetaTags({
+    title: videoData.title || document.title,
+    description: videoData.description || '',
+    image: videoData.thumb_url || videoData.thumb || INITIAL_DATA.thumb,
+    player_page: videoData.player_page_url || `/v/${videoData.video_id}.html`,
+    stream: videoData.video_url || ''
+  });
 
-  document.title = (videoData.title ? (videoData.title + ' | Clipfy Player') : 'Clipfy Player');
+  document.title = (videoData.title ? (videoData.title + ' | Clipfy Player') : 'Clipfy Player');
 
-  const prevPath = location.pathname;
-  const newPath = `/v/${videoData.video_id}.html`;
-  VIDEO_ID = videoData.video_id;
-  const stateObj = Object.assign({}, videoData);
-  try{
-    if (prevPath !== newPath) history.pushState(stateObj, videoData.title, newPath);
-    else history.replaceState(stateObj, videoData.title, newPath);
-  }catch(e){}
+  const prevPath = location.pathname;
+  const newPath = `/v/${videoData.video_id}.html`;
+  VIDEO_ID = videoData.video_id;
+  const stateObj = Object.assign({}, videoData);
+  try{
+    if (prevPath !== newPath) history.pushState(stateObj, videoData.title, newPath);
+    else history.replaceState(stateObj, videoData.title, newPath);
+  }catch(e){}
 
-  renderVideoSuggestions(ALL_VIDEOS);
+  renderVideoSuggestions(ALL_VIDEOS);
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ----------------- Back / forward handling ----------------- */
 window.onpopstate = function(event){
-  if (event.state && event.state.video_id){
-    const s = event.state;
-    const vidData = (s.video_url ? s : (ALL_VIDEOS.find(x=>x.video_id===s.video_id) || s));
-    const sourceEl = player.querySelector('source');
-    if (vidData.video_url) sourceEl.src = vidData.video_url;
-    player.load();
-    player.play().catch(()=>{});
-    viewCounted = false;
-    timeAgoEl.innerText = vidData.time_ago || '';
-    mainTitleEl.innerText = vidData.title || '';
-    creatorNameEl.innerText = vidData.creator || '';
-    likesEl.innerText = vidData.likes || likesEl.innerText || '0';
-    viewsEl.innerText = vidData.views || viewsEl.innerText || '0';
-    safeUpdateMetaTags({
-      title: vidData.title || document.title,
-      description: vidData.description || '',
-      image: vidData.thumb_url || vidData.thumb || INITIAL_DATA.thumb,
-      player_page: vidData.player_page_url || `/v/${vidData.video_id}.html`,
-      stream: vidData.video_url || ''
-    });
-    VIDEO_ID = vidData.video_id;
-    renderVideoSuggestions(ALL_VIDEOS);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  if (event.state && event.state.video_id){
+    const s = event.state;
+    const vidData = (s.video_url ? s : (ALL_VIDEOS.find(x=>x.video_id===s.video_id) || s));
+    const sourceEl = player.querySelector('source');
+    if (vidData.video_url) sourceEl.src = vidData.video_url;
+    player.load();
+    player.play().catch(()=>{});
+    viewCounted = false;
+    timeAgoEl.innerText = vidData.time_ago || '';
+    mainTitleEl.innerText = vidData.title || '';
+    creatorNameEl.innerText = vidData.creator || '';
+    likesEl.innerText = vidData.likes || likesEl.innerText || '0';
+    viewsEl.innerText = vidData.views || viewsEl.innerText || '0';
+    safeUpdateMetaTags({
+      title: vidData.title || document.title,
+      description: vidData.description || '',
+      image: vidData.thumb_url || vidData.thumb || INITIAL_DATA.thumb,
+      player_page: vidData.player_page_url || `/v/${vidData.video_id}.html`,
+      stream: vidData.video_url || ''
+    });
+    VIDEO_ID = vidData.video_id;
+    renderVideoSuggestions(ALL_VIDEOS);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 };
 
 /* ----------------- Meta tag updater (safe) ----------------- */
 function safeUpdateMetaTags({title, description, image, player_page, stream}){
-  try{
-    setOrCreateMeta('twitter:title', title);
-    setOrCreateMeta('twitter:description', description);
-    setOrCreateMeta('twitter:image', image);
-    setOrCreateMeta('og:image', image);
-    setOrCreateMeta('twitter:player', player_page); 
-    setOrCreateMeta('twitter:player:stream', stream);
-    document.title = title + ' | Clipfy Player';
-  }catch(e){}
+  try{
+    setOrCreateMeta('twitter:title', title);
+    setOrCreateMeta('twitter:description', description);
+    setOrCreateMeta('twitter:image', image);
+    setOrCreateMeta('og:image', image);
+    setOrCreateMeta('twitter:player', player_page); 
+    setOrCreateMeta('twitter:player:stream', stream);
+    document.title = title + ' | Clipfy Player';
+  }catch(e){}
 }
 
 function setOrCreateMeta(nameOrProp, value){
-  if(!value) return;
-  let sel;
-  if (nameOrProp.startsWith('og:')) sel = `meta[property="${nameOrProp}"]`;
-  else sel = `meta[name="${nameOrProp}"]`;
-  let el = document.querySelector(sel);
-  if (!el){
-    el = document.createElement('meta');
-    if (nameOrProp.startsWith('og:')) el.setAttribute('property', nameOrProp);
-    else el.setAttribute('name', nameOrProp);
-    document.head.appendChild(el);
-  }
-  el.setAttribute('content', value);
+  if(!value) return;
+  let sel;
+  if (nameOrProp.startsWith('og:')) sel = `meta[property="${nameOrProp}"]`;
+  else sel = `meta[name="${nameOrProp}"]`;
+  let el = document.querySelector(sel);
+  if (!el){
+    el = document.createElement('meta');
+    if (nameOrProp.startsWith('og:')) el.setAttribute('property', nameOrProp);
+    else el.setAttribute('name', nameOrProp);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', value);
 }
 
 /* ----------------- helper: escape html for title text (very small) ----------------- */
 function escapeHtml(str){
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
 }
 /* ----------------------------------------------------------------- */
 </script>
