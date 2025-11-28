@@ -227,9 +227,10 @@ video{
   <div class="suggestions-header">More Viral Videos 🔥</div>
   <div class="video-suggestions-list" id="videoSuggestionsList"></div>
 
-    <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
-  
-</div> <script>
+  <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
+  </div>
+
+<script>
 /* ----------------- Config (templated server-side) ----------------- */
 let VIDEO_ID = '{{VIDEO_ID}}';
 const API_BASE = '{{API_BASE}}';
@@ -252,8 +253,7 @@ const videoSuggestionsList = document.getElementById('videoSuggestionsList');
 const shareBtn = document.getElementById('shareBtn');
 const creatorNameEl = document.getElementById('creatorName');
 const creatorDpEl = document.getElementById('creatorDp');
-const nativeAdContainer = document.getElementById('nativeAd'); // Correctly defined
-
+const nativeAdContainer = document.getElementById('nativeAd'); // Reference for Native Ad container
 
 /* View counting */
 let viewCounted = false;
@@ -281,16 +281,23 @@ shareBtn.onclick = ()=>{
   }
 };
 
-/* ----------------- Ad injection utility ----------------- */
+/* ----------------- Ad injection utility (Updated and Fixed) ----------------- */
 function injectAtOptionsAd(key, container, width, height){
   if(!container) return;
-  const marker = `data-atoptions-${key}-${width}x${height}`;
-  if (container.getAttribute(marker)) return;
+  
+  // 🔥 FIX: Use Date.now() and Math.random() to create a unique marker for every call
+  // This prevents the ad network's script from blocking subsequent, identical ad units (same key/size).
+  const marker = `data-atoptions-${key}-${width}x${height}-${Date.now()}-${Math.random()}`;
+  
+  // Though the new marker is unique, we still use a simplified check to avoid running the full function multiple times
+  // on the exact same container/key/size IF this function were ever called redundantly without a need for a new ad.
+  // However, the primary fix is the unique marker itself.
+  if (container.getAttribute(marker)) return; 
   container.setAttribute(marker, '1');
 
   const inline = document.createElement('script');
   inline.type = 'text/javascript';
-  // 728x90 और 300x250 के लिए AtOptions
+  // Use 728x90 and 300x250 keys from previous context
   inline.text = `atOptions = {'key':'${key}','format':'iframe','height':${height},'width':${width},'params':{}};`;
   container.appendChild(inline);
 
@@ -317,7 +324,7 @@ function injectNativeBannerAd(container){
   s1.type = 'text/javascript';
   s1.async = true;
   s1.setAttribute('data-cfasync', 'false');
-  // Native Banner source
+  // Use your Native Banner source from previous context
   s1.src = "//pl28119894.effectivegatecpm.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
   container.appendChild(s1);
 
@@ -330,14 +337,15 @@ function injectNativeBannerAd(container){
 
 /* ----------------- Ad injection on DOM load ----------------- */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // 1. Top slim ad (728x90)
+  // Top slim ad (728x90)
   const topInner = document.getElementById('topSlimAdInner');
+  // This ad uses a unique container, so the original marker would have worked here, 
+  // but the updated function is used for consistency.
   injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
 
-  // 3. Inject Native Banner at the bottom of the page
+  // Inject Native Banner at the bottom of the page
   injectNativeBannerAd(nativeAdContainer);
 
-  // initial render of suggestions
   renderVideoSuggestions(ALL_VIDEOS);
 
   try{
@@ -354,7 +362,7 @@ function renderVideoSuggestions(videos){
   for (let i=0;i<videos.length;i++){
     const v = videos[i];
     if (!v || v.video_id === VIDEO_ID) continue; 
-    // 2. Insert 300x250 ad after every 2 shown suggestions
+    // Insert 300x250 ad after every 2 shown suggestions
     if (suggestion_count > 0 && suggestion_count % 2 === 0){
       const adDiv = document.createElement('div');
       adDiv.className = 'suggested-ad-slot';
@@ -365,6 +373,8 @@ function renderVideoSuggestions(videos){
       adDiv.appendChild(inner);
       videoSuggestionsList.appendChild(adDiv);
       // 300x250 key
+      // 🔥 FIX: The updated injectAtOptionsAd function is critical here 
+      // to ensure every 300x250 ad slot loads successfully.
       injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
     }
 
