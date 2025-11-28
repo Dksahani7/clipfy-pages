@@ -19,6 +19,7 @@
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 
 
+
   
 <style>
 
@@ -185,6 +186,7 @@ video{
 .hidden{
   display:none !important;
 }
+
   
   
 </style>
@@ -193,61 +195,62 @@ video{
 <body>
 
 <div class="video-box">
-  <video id="player" playsinline controls autoplay muted>
-    <source src="{{VIDEO_URL}}" type="video/mp4">
-  </video>
+  <video id="player" playsinline controls autoplay muted>
+    <source src="{{VIDEO_URL}}" type="video/mp4">
+  </video>
 </div>
 
 <div class="content-wrapper">
 
 
-  <div class="header">
-    <div>X</div>
-    <div>⋯</div>
-  </div>
+  <div class="header">
+    <div>X</div>
+    <div>⋯</div>
+  </div>
 
-  <div class="post">
-    <div class="dp" id="creatorDp"></div>
-    <div>
-      <div style="font-weight:300;" id="creatorName">Clipfy video</div>
-      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
-    </div>
-  </div>
+  <div class="post">
+    <div class="dp" id="creatorDp"></div>
+    <div>
+      <div style="font-weight:300;" id="creatorName">Clipfy video</div>
+      <div class="title" id="timeAgo">{{TIME_AGO}}</div>
+    </div>
+  </div>
 
-  <div class="stats">
-    <span id="likes">0</span> <span id="views">0</span>
-    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
-  </div>
+  <div class="stats">
+    <span id="likes">0</span> <span id="views">0</span>
+    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
 
-  <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
-    <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
-  </div>
-
-
-
-  <div class="blog-content">
-    <h2 id="mainTitle">{{TITLE}}</h2>
-  </div>
+  <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
+    <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
+  </div>
 
 
 
+  <div class="blog-content">
+    <h2 id="mainTitle">{{TITLE}}</h2>
+  </div>
 
 
-  <div class="suggestions-header">More Viral Videos 🔥</div>
-  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
 
-    <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
-  
-</div> <script>
+
+
+  <div class="suggestions-header">More Viral Videos 🔥</div>
+  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
+
+  <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
+  </div>
+
+<script>
 /* ----------------- Config (templated server-side) ----------------- */
 let VIDEO_ID = '{{VIDEO_ID}}';
 const API_BASE = '{{API_BASE}}';
 const ALL_VIDEOS = {{ALL_VIDEOS_JSON}}; // Array of video objects: {video_id, video_url, thumb_url, title, creator, time_ago, likes, views, description, player_page_url, thumb}
-ALL_VIDEOS.sort(() => Math.random() - 0.5);  // Randomize suggestion order per page load
+ALL_VIDEOS.sort(() => Math.random() - 0.5);  // Randomize suggestion order per page load
 const INITIAL_DATA = {
-  title: '{{TITLE}}',
-  thumb: '{{THUMB_URL}}',
-  description: '{{DESCRIPTION}}'
+  title: '{{TITLE}}',
+  thumb: '{{THUMB_URL}}',
+  description: '{{DESCRIPTION}}'
 };
 /* ----------------------------------------------------------------- */
 
@@ -261,277 +264,276 @@ const videoSuggestionsList = document.getElementById('videoSuggestionsList');
 const shareBtn = document.getElementById('shareBtn');
 const creatorNameEl = document.getElementById('creatorName');
 const creatorDpEl = document.getElementById('creatorDp');
-// FIXED: Native Ad container reference added here
-const nativeAdContainer = document.getElementById('nativeAd'); 
-
 
 /* View counting */
 let viewCounted = false;
 player.addEventListener('play', ()=>{
-  if (!viewCounted && VIDEO_ID){
-    viewCounted = true;
-    // fire view hit
-    try{
-      fetch(`${API_BASE}/hit`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({video_id: VIDEO_ID, type:'view'})
-      }).catch(()=>{/* ignore network errors silently */});
-    }catch(e){}
-  }
+  if (!viewCounted && VIDEO_ID){
+    viewCounted = true;
+    // fire view hit
+    try{
+      fetch(`${API_BASE}/hit`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({video_id: VIDEO_ID, type:'view'})
+      }).catch(()=>{/* ignore network errors silently */});
+    }catch(e){}
+  }
 });
 
 /* Share button */
 shareBtn.onclick = ()=>{
-  const shareTitle = document.querySelector('meta[name="twitter:title"]').getAttribute('content') || document.title;
-  if (navigator.share){
-    navigator.share({ title: shareTitle, url: location.href }).catch(()=>{/* ignore */});
-  } else {
-    navigator.clipboard?.writeText(location.href).then(()=>alert('Link Copied!')).catch(()=>alert(location.href));
-  }
+  const shareTitle = document.querySelector('meta[name="twitter:title"]').getAttribute('content') || document.title;
+  if (navigator.share){
+    navigator.share({ title: shareTitle, url: location.href }).catch(()=>{/* ignore */});
+  } else {
+    navigator.clipboard?.writeText(location.href).then(()=>alert('Link Copied!')).catch(()=>alert(location.href));
+  }
 };
 
-/* ----------------- Ad injection utility ----------------- */
+/* ----------------- Ad injection utility (Updated) ----------------- */
 /*
-  injectAtOptionsAd: injects atOptions and vendor script for iframe ad
-  key: ad key string (from your atOptions)
-  container: DOM element where ad script should render
-  width, height: numbers (ad frame size)
+  injectAtOptionsAd: injects atOptions and vendor script for iframe ad
+  key: ad key string (from your atOptions)
+  container: DOM element where ad script should render
+  width, height: numbers (ad frame size)
 */
 function injectAtOptionsAd(key, container, width, height){
-  if(!container) return;
-  // prevent duplicate by data attribute
-  const marker = `data-atoptions-${key}-${width}x${height}`;
-  if (container.getAttribute(marker)) return;
-  container.setAttribute(marker, '1');
+  if(!container) return;
+  // prevent duplicate by data attribute
+  const marker = `data-atoptions-${key}-${width}x${height}`;
+  if (container.getAttribute(marker)) return;
+  container.setAttribute(marker, '1');
 
-  // 1) inline script to set atOptions
-  const inline = document.createElement('script');
-  inline.type = 'text/javascript';
-  inline.text = `atOptions = {'key':'${key}','format':'iframe','height':${height},'width':${width},'params':{}};`;
-  container.appendChild(inline);
+  // 1) inline script to set atOptions
+  const inline = document.createElement('script');
+  inline.type = 'text/javascript';
+  inline.text = `atOptions = {'key':'${key}','format':'iframe','height':${height},'width':${width},'params':{}};`;
+  container.appendChild(inline);
 
-  // 2) vendor script (same domain used in original)
-  const src = "//www.highperformanceformat.com/" + key + "/invoke.js";
-  const s = document.createElement('script');
-  s.type = 'text/javascript';
-  s.async = true;
-  s.src = src;
-  container.appendChild(s);
+  // 2) vendor script (same domain used in original)
+  const src = "//www.highperformanceformat.com/" + key + "/invoke.js";
+  const s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = src;
+  container.appendChild(s);
 }
 
 /*
-  injectNativeBannerAd: injects the Adsterra Native Banner script
-  container: DOM element where ad script should render
+  injectNativeBannerAd: injects the Adsterra Native Banner script
+  container: DOM element where ad script should render
 */
 function injectNativeBannerAd(container){
-  if(!container) return;
-  // Use a unique marker for this specific ad unit
-  const marker = `data-adsterra-native`;
-  if (container.getAttribute(marker)) return;
-  container.setAttribute(marker, '1');
+  if(!container) return;
+  // Use a unique marker for this specific ad unit
+  const marker = `data-adsterra-native`;
+  if (container.getAttribute(marker)) return;
+  container.setAttribute(marker, '1');
 
-  // 1) Async script 
-  const s1 = document.createElement('script');
-  s1.type = 'text/javascript';
-  s1.async = true;
-  s1.setAttribute('data-cfasync', 'false');
-  // Use your Native Banner source
-  s1.src = "//pl28119894.effectivegatecpm.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
-  container.appendChild(s1);
+  // 1) Async script 
+  const s1 = document.createElement('script');
+  s1.type = 'text/javascript';
+  s1.async = true;
+  s1.setAttribute('data-cfasync', 'false');
+  // Use your Native Banner source
+  s1.src = "//pl28119894.effectivegatecpm.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
+  container.appendChild(s1);
 
-  // 2) Container div
-  const adDiv = document.createElement('div');
-  adDiv.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
-  container.appendChild(adDiv);
+  // 2) Container div
+  const adDiv = document.createElement('div');
+  adDiv.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
+  container.appendChild(adDiv);
 }
 
 /* ----------------- Top slim ad + Native ad injection ----------------- */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // top slim ad (728x90)
-  const topInner = document.getElementById('topSlimAdInner');
-  // 728x90 key: b40d9ebf8b9bb68f80451819ab41596e
-  injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
+  // top slim ad (728x90)
+  const topInner = document.getElementById('topSlimAdInner');
+  // use the key from original file: b40d9ebf8b9bb68f80451819ab41596e
+  injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
 
-  // Inject Native Banner at the bottom of the page 
-  injectNativeBannerAd(nativeAdContainer);
+  // Inject Native Banner at the bottom of the page (Added)
+  const nativeAdContainer = document.getElementById('nativeAd');
+  injectNativeBannerAd(nativeAdContainer);
 
-  // initial render of suggestions
-  renderVideoSuggestions(ALL_VIDEOS);
+  // initial render of suggestions
+  renderVideoSuggestions(ALL_VIDEOS);
 
-  // push initial state to history so back button works to original page
-  try{
-    const stateObj = { video_id: VIDEO_ID, title: INITIAL_DATA.title, video_url: player.querySelector('source').src, time_ago: '{{TIME_AGO}}', likes: likesEl.innerText || 0, views: viewsEl.innerText || 0, thumb: INITIAL_DATA.thumb };
-    history.replaceState(stateObj, INITIAL_DATA.title, location.pathname);
-  }catch(e){}
+  // push initial state to history so back button works to original page
+  try{
+    const stateObj = { video_id: VIDEO_ID, title: INITIAL_DATA.title, video_url: player.querySelector('source').src, time_ago: '{{TIME_AGO}}', likes: likesEl.innerText || 0, views: viewsEl.innerText || 0, thumb: INITIAL_DATA.thumb };
+    history.replaceState(stateObj, INITIAL_DATA.title, location.pathname);
+  }catch(e){}
 });
 
 /* ----------------- Render suggestions with ad logic ----------------- */
 function renderVideoSuggestions(videos){
-  videoSuggestionsList.innerHTML = '';
-  let suggestion_count = 0;
+  videoSuggestionsList.innerHTML = '';
+  let suggestion_count = 0;
 
-  for (let i=0;i<videos.length;i++){
-    const v = videos[i];
-    if (!v || v.video_id === VIDEO_ID) continue; // hide current video
-    // Insert ad after every 2 shown suggestions
-    if (suggestion_count > 0 && suggestion_count % 2 === 0){
-      const adDiv = document.createElement('div');
-      adDiv.className = 'suggested-ad-slot';
-      // container for ad script
-      const inner = document.createElement('div');
-      // responsive wrapper
-      inner.style.width = '300px';
-      inner.style.height = '250px';
-      inner.style.maxWidth = '95%';
-      adDiv.appendChild(inner);
-      videoSuggestionsList.appendChild(adDiv);
-      // inject ad (300x250 key: e8550078b37b6bf29c9b54eed61806f7)
-      injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
-    }
+  for (let i=0;i<videos.length;i++){
+    const v = videos[i];
+    if (!v || v.video_id === VIDEO_ID) continue; // hide current video
+    // Insert ad after every 2 shown suggestions
+    if (suggestion_count > 0 && suggestion_count % 2 === 0){
+      const adDiv = document.createElement('div');
+      adDiv.className = 'suggested-ad-slot';
+      // container for ad script
+      const inner = document.createElement('div');
+      // responsive wrapper
+      inner.style.width = '300px';
+      inner.style.height = '250px';
+      inner.style.maxWidth = '95%';
+      adDiv.appendChild(inner);
+      videoSuggestionsList.appendChild(adDiv);
+      // inject ad (300x250)
+      // use the key from original file: e8550078b37b6bf29c9b54eed61806f7
+      injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
+    }
 
-    // Suggestion item
-    const item = document.createElement('div');
-    item.className = 'suggestion-item';
-    item.setAttribute('data-video-id', v.video_id);
+    // Suggestion item
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.setAttribute('data-video-id', v.video_id);
 
-    item.innerHTML = `
-      <div class="suggestion-thumbnail">
-        <img src="${v.thumb_url}" alt="${escapeHtml(v.title)} thumbnail" loading="lazy">
-      </div>
-      <div class="suggestion-details">
-        <div class="suggestion-title">${escapeHtml(v.title)}</div>
-        <div class="suggestion-creator">${escapeHtml(v.creator || '')}</div>
-      </div>
-    `;
+    item.innerHTML = `
+      <div class="suggestion-thumbnail">
+        <img src="${v.thumb_url}" alt="${escapeHtml(v.title)} thumbnail" loading="lazy">
+      </div>
+      <div class="suggestion-details">
+        <div class="suggestion-title">${escapeHtml(v.title)}</div>
+        <div class="suggestion-creator">${escapeHtml(v.creator || '')}</div>
+      </div>
+    `;
 
-    item.addEventListener('click', (e)=>{
-      e.preventDefault();
-      // play and update
-      playSuggestedVideo(v);
-    });
+    item.addEventListener('click', (e)=>{
+      e.preventDefault();
+      // play and update
+      playSuggestedVideo(v);
+    });
 
-    videoSuggestionsList.appendChild(item);
-    suggestion_count++;
-  }
+    videoSuggestionsList.appendChild(item);
+    suggestion_count++;
+  }
 }
 
 /* ----------------- Play suggested video in-place ----------------- */
 function playSuggestedVideo(videoData){
-  if(!videoData || !videoData.video_url) return;
+  if(!videoData || !videoData.video_url) return;
 
-  // 1) update player source
-  const sourceEl = player.querySelector('source');
-  sourceEl.src = videoData.video_url;
-  player.load();
-  player.play().catch(()=>{/* autoplay may be blocked on some platforms */});
+  // 1) update player source
+  const sourceEl = player.querySelector('source');
+  sourceEl.src = videoData.video_url;
+  player.load();
+  player.play().catch(()=>{/* autoplay may be blocked on some platforms */});
 
-  // reset view counter
-  viewCounted = false;
+  // reset view counter
+  viewCounted = false;
 
-  // 2) update visible metadata: title, time, likes, views, creator
-  timeAgoEl.innerText = videoData.time_ago || '';
-  mainTitleEl.innerText = videoData.title || '';
-  creatorNameEl.innerText = videoData.creator || '';
-  likesEl.innerText = (typeof videoData.likes !== 'undefined') ? videoData.likes : (likesEl.innerText || '0');
-  viewsEl.innerText = (typeof videoData.views !== 'undefined') ? videoData.views : (viewsEl.innerText || '0');
+  // 2) update visible metadata: title, time, likes, views, creator
+  timeAgoEl.innerText = videoData.time_ago || '';
+  mainTitleEl.innerText = videoData.title || '';
+  creatorNameEl.innerText = videoData.creator || '';
+  likesEl.innerText = (typeof videoData.likes !== 'undefined') ? videoData.likes : (likesEl.innerText || '0');
+  viewsEl.innerText = (typeof videoData.views !== 'undefined') ? videoData.views : (viewsEl.innerText || '0');
 
-  // 3) update social/meta tags so share & crawler see new data
-  safeUpdateMetaTags({
-    title: videoData.title || document.title,
-    description: videoData.description || '',
-    image: videoData.thumb_url || videoData.thumb || INITIAL_DATA.thumb,
-    player_page: videoData.player_page_url || `/v/${videoData.video_id}.html`,
-    stream: videoData.video_url || ''
-  });
+  // 3) update social/meta tags so share & crawler see new data
+  safeUpdateMetaTags({
+    title: videoData.title || document.title,
+    description: videoData.description || '',
+    image: videoData.thumb_url || videoData.thumb || INITIAL_DATA.thumb,
+    player_page: videoData.player_page_url || `/v/${videoData.video_id}.html`,
+    stream: videoData.video_url || ''
+  });
 
-  // 4) update document title
-  document.title = (videoData.title ? (videoData.title + ' | Clipfy Player') : 'Clipfy Player');
+  // 4) update document title
+  document.title = (videoData.title ? (videoData.title + ' | Clipfy Player') : 'Clipfy Player');
 
-  // 5) update global VIDEO_ID and pushState
-  const prevPath = location.pathname;
-  const newPath = `/v/${videoData.video_id}.html`;
-  VIDEO_ID = videoData.video_id;
-  const stateObj = Object.assign({}, videoData);
-  try{
-    if (prevPath !== newPath) history.pushState(stateObj, videoData.title, newPath);
-    else history.replaceState(stateObj, videoData.title, newPath);
-  }catch(e){}
+  // 5) update global VIDEO_ID and pushState
+  const prevPath = location.pathname;
+  const newPath = `/v/${videoData.video_id}.html`;
+  VIDEO_ID = videoData.video_id;
+  const stateObj = Object.assign({}, videoData);
+  try{
+    if (prevPath !== newPath) history.pushState(stateObj, videoData.title, newPath);
+    else history.replaceState(stateObj, videoData.title, newPath);
+  }catch(e){}
 
-  // 6) re-render suggestions (to hide current)
-  renderVideoSuggestions(ALL_VIDEOS);
+  // 6) re-render suggestions (to hide current)
+  renderVideoSuggestions(ALL_VIDEOS);
 
-  // 7) scroll to top for UX
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // 7) scroll to top for UX
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ----------------- Back / forward handling ----------------- */
 window.onpopstate = function(event){
-  if (event.state && event.state.video_id){
-    // Play the state.video_id without pushing a new history entry
-    const s = event.state;
-    // If the state includes the video_url, use it; otherwise find in ALL_VIDEOS
-    const vidData = (s.video_url ? s : (ALL_VIDEOS.find(x=>x.video_id===s.video_id) || s));
-    // Set source and update UI, but do NOT push state (we're responding to popstate)
-    const sourceEl = player.querySelector('source');
-    if (vidData.video_url) sourceEl.src = vidData.video_url;
-    player.load();
-    player.play().catch(()=>{});
-    viewCounted = false;
-    // update UI fields
-    timeAgoEl.innerText = vidData.time_ago || '';
-    mainTitleEl.innerText = vidData.title || '';
-    creatorNameEl.innerText = vidData.creator || '';
-    likesEl.innerText = vidData.likes || likesEl.innerText || '0';
-    viewsEl.innerText = vidData.views || viewsEl.innerText || '0';
-    // update meta tags too
-    safeUpdateMetaTags({
-      title: vidData.title || document.title,
-      description: vidData.description || '',
-      image: vidData.thumb_url || vidData.thumb || INITIAL_DATA.thumb,
-      player_page: vidData.player_page_url || `/v/${vidData.video_id}.html`,
-      stream: vidData.video_url || ''
-    });
-    VIDEO_ID = vidData.video_id;
-    renderVideoSuggestions(ALL_VIDEOS);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  if (event.state && event.state.video_id){
+    // Play the state.video_id without pushing a new history entry
+    const s = event.state;
+    // If the state includes the video_url, use it; otherwise find in ALL_VIDEOS
+    const vidData = (s.video_url ? s : (ALL_VIDEOS.find(x=>x.video_id===s.video_id) || s));
+    // Set source and update UI, but do NOT push state (we're responding to popstate)
+    const sourceEl = player.querySelector('source');
+    if (vidData.video_url) sourceEl.src = vidData.video_url;
+    player.load();
+    player.play().catch(()=>{});
+    viewCounted = false;
+    // update UI fields
+    timeAgoEl.innerText = vidData.time_ago || '';
+    mainTitleEl.innerText = vidData.title || '';
+    creatorNameEl.innerText = vidData.creator || '';
+    likesEl.innerText = vidData.likes || likesEl.innerText || '0';
+    viewsEl.innerText = vidData.views || viewsEl.innerText || '0';
+    // update meta tags too
+    safeUpdateMetaTags({
+      title: vidData.title || document.title,
+      description: vidData.description || '',
+      image: vidData.thumb_url || vidData.thumb || INITIAL_DATA.thumb,
+      player_page: vidData.player_page_url || `/v/${vidData.video_id}.html`,
+      stream: vidData.video_url || ''
+    });
+    VIDEO_ID = vidData.video_id;
+    renderVideoSuggestions(ALL_VIDEOS);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 };
 
 /* ----------------- Meta tag updater (safe) ----------------- */
 function safeUpdateMetaTags({title, description, image, player_page, stream}){
-  // Update meta tags that matter for Twitter/OpenGraph and internal sharing
-  try{
-    setOrCreateMeta('twitter:title', title);
-    setOrCreateMeta('twitter:description', description);
-    setOrCreateMeta('twitter:image', image);
-    setOrCreateMeta('og:image', image);
-    setOrCreateMeta('twitter:player', player_page);
-    setOrCreateMeta('twitter:player:stream', stream);
-    // Update document title too (already set earlier, but keep safe)
-    document.title = title + ' | Clipfy Player';
-  }catch(e){}
+  // Update meta tags that matter for Twitter/OpenGraph and internal sharing
+  try{
+    setOrCreateMeta('twitter:title', title);
+    setOrCreateMeta('twitter:description', description);
+    setOrCreateMeta('twitter:image', image);
+    setOrCreateMeta('og:image', image);
+    setOrCreateMeta('twitter:player', player_page);
+    setOrCreateMeta('twitter:player:stream', stream);
+    // Update document title too (already set earlier, but keep safe)
+    document.title = title + ' | Clipfy Player';
+  }catch(e){}
 }
 
 function setOrCreateMeta(nameOrProp, value){
-  if(!value) return;
-  let sel;
-  if (nameOrProp.startsWith('og:')) sel = `meta[property="${nameOrProp}"]`; // Corrected: Check for og: property
-  else sel = `meta[name="${nameOrProp}"]`;
-  let el = document.querySelector(sel);
-  if (!el){
-    el = document.createElement('meta');
-    if (nameOrProp.startsWith('og:')) el.setAttribute('property', nameOrProp);
-    else el.setAttribute('name', nameOrProp);
-    document.head.appendChild(el);
-  }
-  el.setAttribute('content', value);
+  if(!value) return;
+  let sel;
+  if (nameOrProp.startsWith('og:')) sel = `meta[property="${nameOrProp}"]`; // Corrected: Check for og: property
+  else sel = `meta[name="${nameOrProp}"]`;
+  let el = document.querySelector(sel);
+  if (!el){
+    el = document.createElement('meta');
+    if (nameOrProp.startsWith('og:')) el.setAttribute('property', nameOrProp);
+    else el.setAttribute('name', nameOrProp);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', value);
 }
 
 /* ----------------- helper: escape html for title text (very small) ----------------- */
 function escapeHtml(str){
-  if (!str) return '';
-  return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
 }
 
 /* ----------------------------------------------------------------- */
