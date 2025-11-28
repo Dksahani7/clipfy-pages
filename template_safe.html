@@ -9,7 +9,7 @@
 <meta property="og:type" content="video.other">
 
 <meta property="og:image" content="{{THUMB_URL}}">
-<meta name="twitter:image" content="{{THUMB_URL}}">
+<meta name="twitter:image" content="{{THUMB_URL}">
 <meta name="twitter:card" content="summary_large_image">
 
 <style>
@@ -227,7 +227,8 @@ video{
   <div class="suggestions-header">More Viral Videos 🔥</div>
   <div class="video-suggestions-list" id="videoSuggestionsList"></div>
 
-</div>
+  <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
+  </div>
 
 <script>
 /* ----------------- Config (templated server-side) ----------------- */
@@ -252,6 +253,7 @@ const videoSuggestionsList = document.getElementById('videoSuggestionsList');
 const shareBtn = document.getElementById('shareBtn');
 const creatorNameEl = document.getElementById('creatorName');
 const creatorDpEl = document.getElementById('creatorDp');
+const nativeAdContainer = document.getElementById('nativeAd'); // Reference for Native Ad container
 
 /* View counting */
 let viewCounted = false;
@@ -279,7 +281,7 @@ shareBtn.onclick = ()=>{
   }
 };
 
-/* ----------------- Ad injection utility ----------------- */
+/* ----------------- Ad injection utility (Updated) ----------------- */
 function injectAtOptionsAd(key, container, width, height){
   if(!container) return;
   const marker = `data-atoptions-${key}-${width}x${height}`;
@@ -288,6 +290,7 @@ function injectAtOptionsAd(key, container, width, height){
 
   const inline = document.createElement('script');
   inline.type = 'text/javascript';
+  // Use 728x90 and 300x250 keys from previous context
   inline.text = `atOptions = {'key':'${key}','format':'iframe','height':${height},'width':${width},'params':{}};`;
   container.appendChild(inline);
 
@@ -299,10 +302,40 @@ function injectAtOptionsAd(key, container, width, height){
   container.appendChild(s);
 }
 
-/* ----------------- Top slim ad injection ----------------- */
+/*
+  injectNativeBannerAd: injects the Adsterra Native Banner script
+  container: DOM element where ad script should render
+*/
+function injectNativeBannerAd(container){
+  if(!container) return;
+  const marker = `data-adsterra-native`;
+  if (container.getAttribute(marker)) return;
+  container.setAttribute(marker, '1');
+
+  // 1) Async script 
+  const s1 = document.createElement('script');
+  s1.type = 'text/javascript';
+  s1.async = true;
+  s1.setAttribute('data-cfasync', 'false');
+  // Use your Native Banner source from previous context
+  s1.src = "//pl28119894.effectivegatecpm.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
+  container.appendChild(s1);
+
+  // 2) Container div
+  const adDiv = document.createElement('div');
+  adDiv.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
+  container.appendChild(adDiv);
+}
+
+
+/* ----------------- Ad injection on DOM load ----------------- */
 document.addEventListener('DOMContentLoaded', ()=>{
+  // Top slim ad (728x90)
   const topInner = document.getElementById('topSlimAdInner');
   injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
+
+  // Inject Native Banner at the bottom of the page
+  injectNativeBannerAd(nativeAdContainer);
 
   renderVideoSuggestions(ALL_VIDEOS);
 
@@ -320,6 +353,7 @@ function renderVideoSuggestions(videos){
   for (let i=0;i<videos.length;i++){
     const v = videos[i];
     if (!v || v.video_id === VIDEO_ID) continue; 
+    // Insert 300x250 ad after every 2 shown suggestions
     if (suggestion_count > 0 && suggestion_count % 2 === 0){
       const adDiv = document.createElement('div');
       adDiv.className = 'suggested-ad-slot';
@@ -329,6 +363,7 @@ function renderVideoSuggestions(videos){
       inner.style.maxWidth = '95%';
       adDiv.appendChild(inner);
       videoSuggestionsList.appendChild(adDiv);
+      // 300x250 key
       injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
     }
 
@@ -432,8 +467,6 @@ function safeUpdateMetaTags({title, description, image, player_page, stream}){
     setOrCreateMeta('twitter:description', description);
     setOrCreateMeta('twitter:image', image);
     setOrCreateMeta('og:image', image);
-    // When playing a suggested video, we must also update the twitter player tags 
-    // to point to the normal page of the new video ID.
     setOrCreateMeta('twitter:player', player_page); 
     setOrCreateMeta('twitter:player:stream', stream);
     document.title = title + ' | Clipfy Player';
