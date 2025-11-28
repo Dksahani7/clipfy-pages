@@ -4,7 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>{{TITLE}} | Clipfy Player</title>
 
-<!-- Social / Player meta (will be updated dynamically when user clicks suggestions) -->
 <meta name="twitter:card" content="summary_large_image" /> 
 <meta name="twitter:title" content="{{TITLE}}" />
 <meta name="twitter:description" content="{{DESCRIPTION}}" />
@@ -195,7 +194,6 @@ video{
 
 <body>
 
-<!-- Video -->
 <div class="video-box">
   <video id="player" playsinline controls autoplay muted>
     <source src="{{VIDEO_URL}}" type="video/mp4">
@@ -223,7 +221,6 @@ video{
     <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
   </div>
 
-  <!-- Top slim ad placeholder (we inject ad script via JS) -->
   <div class="top-slim-ad" id="topSlimAd" aria-hidden="true">
     <div id="topSlimAdInner" style="width:728px; max-width:95%; height:90px; margin:0 auto;"></div>
   </div>
@@ -241,7 +238,8 @@ video{
   <div class="suggestions-header">More Viral Videos 🔥</div>
   <div class="video-suggestions-list" id="videoSuggestionsList"></div>
 
-</div>
+  <div id="nativeAd" style="padding:20px 0; text-align:center;"></div>
+  </div>
 
 <script>
 /* ----------------- Config (templated server-side) ----------------- */
@@ -293,7 +291,7 @@ shareBtn.onclick = ()=>{
   }
 };
 
-/* ----------------- Ad injection utility ----------------- */
+/* ----------------- Ad injection utility (Updated) ----------------- */
 /*
   injectAtOptionsAd: injects atOptions and vendor script for iframe ad
   key: ad key string (from your atOptions)
@@ -322,12 +320,42 @@ function injectAtOptionsAd(key, container, width, height){
   container.appendChild(s);
 }
 
-/* ----------------- Top slim ad injection ----------------- */
+/*
+  injectNativeBannerAd: injects the Adsterra Native Banner script
+  container: DOM element where ad script should render
+*/
+function injectNativeBannerAd(container){
+  if(!container) return;
+  // Use a unique marker for this specific ad unit
+  const marker = `data-adsterra-native`;
+  if (container.getAttribute(marker)) return;
+  container.setAttribute(marker, '1');
+
+  // 1) Async script 
+  const s1 = document.createElement('script');
+  s1.type = 'text/javascript';
+  s1.async = true;
+  s1.setAttribute('data-cfasync', 'false');
+  // Use your Native Banner source
+  s1.src = "//pl28119894.effectivegatecpm.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
+  container.appendChild(s1);
+
+  // 2) Container div
+  const adDiv = document.createElement('div');
+  adDiv.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
+  container.appendChild(adDiv);
+}
+
+/* ----------------- Top slim ad + Native ad injection ----------------- */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // top slim ad
+  // top slim ad (728x90)
   const topInner = document.getElementById('topSlimAdInner');
-  // use the key from original file (replace if needed)
+  // use the key from original file: b40d9ebf8b9bb68f80451819ab41596e
   injectAtOptionsAd('b40d9ebf8b9bb68f80451819ab41596e', topInner, 728, 90);
+
+  // Inject Native Banner at the bottom of the page (Added)
+  const nativeAdContainer = document.getElementById('nativeAd');
+  injectNativeBannerAd(nativeAdContainer);
 
   // initial render of suggestions
   renderVideoSuggestions(ALL_VIDEOS);
@@ -359,7 +387,8 @@ function renderVideoSuggestions(videos){
       inner.style.maxWidth = '95%';
       adDiv.appendChild(inner);
       videoSuggestionsList.appendChild(adDiv);
-      // inject ad (use different ad key so it can vary)
+      // inject ad (300x250)
+      // use the key from original file: e8550078b37b6bf29c9b54eed61806f7
       injectAtOptionsAd('e8550078b37b6bf29c9b54eed61806f7', inner, 300, 250);
     }
 
@@ -489,7 +518,7 @@ function safeUpdateMetaTags({title, description, image, player_page, stream}){
 function setOrCreateMeta(nameOrProp, value){
   if(!value) return;
   let sel;
-  if (nameOrProp.startsWith('og:') || nameOrProp.startsWith('og:')) sel = `meta[property="${nameOrProp}"]`;
+  if (nameOrProp.startsWith('og:')) sel = `meta[property="${nameOrProp}"]`; // Corrected: Check for og: property
   else sel = `meta[name="${nameOrProp}"]`;
   let el = document.querySelector(sel);
   if (!el){
