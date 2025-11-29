@@ -24,8 +24,6 @@
       padding:0;
       overflow-x:hidden;
     }
-
-    /* FIXED safe preview box */
     .video-box{
       width:100%;
       height:40vh;
@@ -45,25 +43,16 @@
       filter:blur(4px);
       opacity:0.85;
     }
-
     .content-wrapper{
       padding-top:40vh;
       min-height:200vh;
     }
-
     .top-thin-ad{
       background:#1a2430;
       padding:6px 0;
       text-align:center;
       border-bottom:1px solid #222;
     }
-    .top-thin-ad-inner{
-      width:728px;
-      max-width:95%;
-      height:90px;
-      margin:auto;
-    }
-
     .post{
       padding:10px 16px;
       display:flex;
@@ -82,7 +71,6 @@
       font-size:15px;
     }
     #timeAgo{color:#aaa;font-size:12px;margin-top:2px;}
-
     .stats{
       display:flex;
       gap:14px;
@@ -91,12 +79,8 @@
       font-size:13px;
     }
     .stat-item{
-      display:flex;
-      align-items:center;
-      gap:4px;
       color:#d0d0d0;
     }
-
     .blog-content{
       padding:14px 16px;
       font-size:15px;
@@ -106,46 +90,20 @@
       font-size:18px;
       margin-bottom:6px;
     }
-
     .suggestions-header{
       padding:10px 16px;
       font-size:16px;
       font-weight:700;
     }
-    .video-suggestions-list{ }
-
     .suggestion-item{
-      display:block;
       padding:10px 16px;
       border-bottom:1px solid #1a2430;
-    }
-    .suggestion-thumbnail{
-      width:100%;
-      aspect-ratio:16/9;
-      background:#333;
-      border-radius:6px;
-      overflow:hidden;
     }
     .suggestion-thumbnail img{
       width:100%;
       height:100%;
       object-fit:cover;
-    }
-
-    .footer-ad-320x50{
-      position:fixed;
-      bottom:0;
-      width:100%;
-      background:#000;
-      padding:4px 0;
-      display:flex;
-      justify-content:center;
-      z-index:200;
-    }
-    .footer-ad-inner{
-      width:320px;
-      height:50px;
-      max-width:95%;
+      border-radius:6px;
     }
   </style>
 
@@ -161,16 +119,13 @@
 </head>
 <body>
 
-  <!-- SAFE BLUR PREVIEW -->
   <div class="video-box">
     <img src="{{SAFE_BLUR_THUMB}}" alt="preview">
   </div>
 
   <div class="content-wrapper">
 
-    <div class="top-thin-ad">
-      <div class="top-thin-ad-inner"></div>
-    </div>
+    <div class="top-thin-ad"></div>
 
     <div class="post">
       <div class="dp"></div>
@@ -181,8 +136,8 @@
     </div>
 
     <div class="stats">
-      <div class="stat-item">👁 {{VIEWS}}</div>
-      <div class="stat-item">❤️ {{LIKES}}</div>
+      <div class="stat-item">👁 Views</div>
+      <div class="stat-item">❤️ Likes</div>
     </div>
 
     <div class="blog-content">
@@ -192,17 +147,12 @@
     <div class="suggestions-header">More Viral Videos 🔥</div>
 
     <div class="video-suggestions-list">
-      <!-- This is safe page, suggestions static -->
       <div class="suggestion-item">
         <div class="suggestion-thumbnail"><img src="{{SAFE_BLUR_THUMB}}"></div>
         <div class="suggestion-title">{{TITLE}}</div>
       </div>
     </div>
 
-  </div>
-
-  <div class="footer-ad-320x50">
-    <div class="footer-ad-inner"></div>
   </div>
 
 </body>
