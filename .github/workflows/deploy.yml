@@ -1,9 +1,5 @@
 name: Deploy Clipfy Pages
 
-concurrency:
-  group: "clipfy-pages-deploy"
-  cancel-in-progress: true
-
 on:
   push:
     branches:
