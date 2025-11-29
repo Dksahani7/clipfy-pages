@@ -1,0 +1,522 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Clipfy Player</title>
+
+<meta name="twitter:card" content="summary_large_image" /> 
+<meta name="twitter:title" content="Clipfy Player" />
+<meta name="twitter:description" content="" />
+
+<style>
+/* Main Styling */
+body{
+  background:#0f141a;
+  color:#fff;
+  font-family:Arial, sans-serif;
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+}
+
+/* 40vh Video Box - Video player is fixed at the top */
+.video-box{
+  width:100%;
+  height:40vh; /* 40% of viewport height */
+  position:fixed;
+  top:0;
+  left:0;
+  background:#000;
+  overflow:hidden;
+  z-index:99; 
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+video{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+/* Content Wrapper padding adjusted for 40vh video and 60px fixed footer ad */
+.content-wrapper{
+  padding-top:40vh; 
+  padding-bottom: 60px; 
+  min-height:140vh;
+}
+
+/* Floating Message/Notification Ad Style (320x50) */
+#floatingOverlayAd {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000; 
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  opacity: 1; 
+  transition: opacity 0.5s ease;
+  max-width: 320px;
+}
+.ad-message-box {
+  background: #1e3a8a; /* Dark blue/chat color */
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.5s ease-out;
+}
+.ad-message-box .close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 5px;
+  line-height: 1;
+}
+.ad-message-box .ad-text {
+  font-weight: 600;
+}
+
+/* Keyframes for sliding in the floating ad */
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* General UI elements */
+.post{
+  padding:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.dp{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#555;
+}
+.stats{
+  display:flex;
+  gap:15px;
+  padding:12px;
+  border-bottom:1px solid #222;
+  font-size:14px;
+  align-items:center;
+}
+
+.suggestions-header{
+  padding:12px 20px;
+  font-size:18px;
+  font-weight:700;
+  border-top:1px solid #222;
+}
+.video-suggestions-list{
+  background:transparent;
+  overflow:visible;
+}
+.suggestion-item{
+  display:flex;
+  gap:12px;
+  width:100%;
+  padding:14px 20px;
+  cursor:pointer;
+  border-bottom:1px solid #1a2430;
+  transition:background .12s;
+}
+.suggestion-item:hover{
+  background:#0b1216;
+}
+.suggestion-thumbnail{
+  width:150px;
+  height:84px;
+  min-width:150px;
+  border-radius:8px;
+  overflow:hidden;
+  background:#333;
+}
+.suggestion-thumbnail img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.suggestion-details{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  flex:1;
+}
+.suggestion-title{
+  font-weight:600;
+  font-size:15px;
+  line-height:1.25;
+  margin-bottom:6px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.suggestion-creator{
+  font-size:12px;
+  color:#aaa;
+}
+
+/* Fixed Bottom Ad Style (320x50 Banner) */
+#fixedFooterAd {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px; 
+    background: #0f141a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100; 
+    border-top: 1px solid #222;
+}
+#fixedFooterAd .ad-slot {
+    width: 320px; 
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Social Bar Container - Fixed above the footer ad */
+#socialBarContainer {
+    position: fixed;
+    bottom: 60px; 
+    right: 10px;
+    z-index: 101;
+}
+
+.center{ text-align:center }
+.hidden{ display:none !important }
+</style>
+</head>
+<body>
+
+<div class="video-box">
+  <video id="player" playsinline controls autoplay muted>
+    <!-- Placeholder video source -->
+    <source src="https://cdn.glitch.me/c4524c52-4754-47b6-963d-4299b6851b2e/sample-video.mp4" type="video/mp4">
+  </video>
+</div>
+
+<!-- FLOATING MESSAGE AD (320x50 Banner) -->
+<div id="floatingOverlayAd">
+  <div class="ad-message-box">
+    <!-- Close button added for user control -->
+    <button class="close-btn" onclick="document.getElementById('floatingOverlayAd').style.opacity = '0'; setTimeout(() => document.getElementById('floatingOverlayAd').style.display = 'none', 500);">X</button>
+    <div class="ad-text">New Message! Tap to view</div>
+    <div class="ad-slot" style="width:320px; height:50px;">
+      <!-- Banner 320x50 Ad Code 4 -->
+      <script type="text/javascript">
+        atOptions = {
+          'key' : 'b43458b980a14fc9fc68555f58ae039f',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/b43458b980a14fc9fc68555f58ae039f/invoke.js"></script>
+    </div>
+  </div>
+</div>
+<!-- Floating Ad Visibility Management (Hides after 10 seconds) -->
+<script>
+  setTimeout(() => {
+    const ad = document.getElementById('floatingOverlayAd');
+    if (ad) {
+      ad.style.opacity = '0';
+      setTimeout(() => ad.style.display = 'none', 500);
+    }
+  }, 10000); // 10 seconds
+</script>
+
+
+<div class="content-wrapper">
+
+  <!-- Thin Ad Under Video (728x90 Banner) -->
+  <div id="thinAd" style="width:100%; height:90px; background:transparent; display:flex; align-items:center; justify-content:center; border-bottom:1px solid #222;">
+    <div class="ad-slot" style="width:728px; height:90px; max-width:100%;">
+      <!-- Banner 728x90 Ad Code 2 -->
+      <script type="text/javascript">
+        atOptions = {
+          'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
+    </div>
+  </div>
+
+
+  <div class="post">
+    <div class="dp" id="creatorDp"></div>
+    <div>
+      <div style="font-weight:300;" id="creatorName">Clipfy video</div>
+      <div class="title" id="timeAgo">just now</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div style="display:flex; align-items:center; gap:6px;">
+      <span id="likes">0</span>
+      <span style="opacity:0.7; font-size:12px;">likes</span>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:6px;">
+      <span id="views">0</span>
+      <span style="opacity:0.7; font-size:12px;">views</span>
+    </div>
+
+    <div style="margin-left:auto; cursor:pointer;" id="shareBtn">🔗 Share</div>
+  </div>
+
+  <div class="blog-content" style="padding:12px 20px; font-size:17px; line-height:1.4; margin-bottom:6px; border-bottom: 1px solid #222;">
+    <h2 id="mainTitle" style="font-size:20px; font-weight:600; margin:0; padding:0;">Clipfy Player</h2>
+  </div>
+
+
+  <div class="suggestions-header">More Viral Videos 🔥</div>
+  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
+</div>
+
+<!-- FIXED FOOTER AD (320x50 Banner) -->
+<div id="fixedFooterAd">
+    <div class="ad-slot">
+      <!-- Banner 320x50 Ad Code 1 -->
+      <script type="text/javascript">
+        atOptions = {
+          'key' : 'b43458b980a14fc9fc68555f58ae039f',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/b43458b980a14fc9fc68555f58ae039f/invoke.js"></script>
+    </div>
+</div>
+
+<!-- SOCIAL BAR CONTAINER -->
+<div id="socialBarContainer">
+  <!-- Social Bar Ad Code 5 -->
+  <script type='text/javascript' src='//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js'></script>
+</div>
+
+<script>
+// --- CORE VARIABLES AND UTILITIES ---
+let VIDEO_ID = '';
+const ALL_VIDEOS = []; 
+const INITIAL_DATA = { title: 'Clipfy Player', thumb: '' };
+
+/* DOM refs */
+const player = document.getElementById('player');
+const likesEl = document.getElementById('likes');
+const viewsEl = document.getElementById('views');
+const timeAgoEl = document.getElementById('timeAgo');
+const mainTitleEl = document.getElementById('mainTitle');
+const videoSuggestionsList = document.getElementById('videoSuggestionsList');
+const shareBtn = document.getElementById('shareBtn');
+const creatorNameEl = document.getElementById('creatorName');
+
+let viewCounted = false;
+
+// --- EXISTING PLAYER LOGIC ---
+
+player.addEventListener('play', ()=>{
+  if (!viewCounted && VIDEO_ID){
+    viewCounted = true;
+    // optional: analytics hit
+  }
+});
+
+shareBtn.onclick = ()=>{
+  const shareTitle = document.querySelector('meta[name="twitter:title"]').getAttribute('content') || document.title;
+  // Use clipboard or alert as fallback
+  navigator.clipboard?.writeText(location.href).then(()=>alert('Link Copied!')).catch(()=>alert(location.href));
+};
+
+function escapeHtml(str){ return String(str).replace(/[&<>"]/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[s])); }
+
+// Ad Injection function for the Native/Interstitial Ad (300x250)
+function injectNativeSuggestionAd(){
+    const adHtml = `
+      <div class="suggestion-item ad-item" style="background:#1a1f26; border-radius:8px; display:block; padding:12px; margin-bottom:10px;">
+        <div style="font-size:14px; color:#aaa; text-align:center; margin-bottom:8px;">Advertisement</div>
+        <div style="width:300px; height:250px; margin:0 auto; overflow:hidden;">
+          <!-- Banner 300x250 Ad Code 3 -->
+          <script type="text/javascript">
+            atOptions = {
+              'key' : 'e8550078b37b6bf29c9b54eed61806f7',
+              'format' : 'iframe',
+              'height' : 250,
+              'width' : 300,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="//www.highperformanceformat.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"></script>
+        </div>
+      </div>
+    `;
+    return adHtml;
+}
+
+
+function renderVideoSuggestions(videos){
+  videoSuggestionsList.innerHTML = '';
+  // Temporary storage for elements to be appended
+  const fragment = document.createDocumentFragment(); 
+
+  for (let i=0;i<videos.length;i++){
+    const v = videos[i];
+    if (!v || v.video_id === VIDEO_ID) continue;
+    
+    // Inject Ad every 2 videos (i=1, i=3, i=5, etc.)
+    // We inject AFTER the 2nd video (index 1), 4th video (index 3), etc.
+    if (i > 0 && (i % 2 === 1)) { 
+        const adContainer = document.createElement('div');
+        adContainer.innerHTML = injectNativeSuggestionAd();
+        fragment.appendChild(adContainer.firstChild); // Append the native ad
+    }
+
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.setAttribute('data-video-id', v.video_id);
+    item.innerHTML = `
+      <div class="suggestion-thumbnail">
+        <!-- Using placeholder image for thumbnails -->
+        <img src="${v.thumb_url}" alt="${escapeHtml(v.title)} thumbnail" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/150x84/1f2937/ffffff?text=Video';">
+      </div>
+      <div class="suggestion-details">
+        <div class="suggestion-title">${escapeHtml(v.title)}</div>
+        <div class="suggestion-creator">${escapeHtml(v.creator || 'Clipfy')}</div>
+      </div>
+    `;
+    item.addEventListener('click', (e)=>{ e.preventDefault(); playSuggestedVideo(v); });
+    fragment.appendChild(item);
+  }
+  videoSuggestionsList.appendChild(fragment);
+}
+
+function playSuggestedVideo(videoData){
+  if(!videoData || !videoData.video_url) return;
+  const sourceEl = player.querySelector('source');
+  sourceEl.src = videoData.video_url;
+  player.load();
+  player.play().catch(()=>{});
+  viewCounted = false;
+  timeAgoEl.innerText = videoData.time_ago || '';
+  mainTitleEl.innerText = videoData.title || '';
+  creatorNameEl.innerText = videoData.creator || '';
+  likesEl.innerText = (typeof videoData.likes !== 'undefined') ? videoData.likes : (likesEl.innerText || '0');
+  viewsEl.innerText = (typeof videoData.views !== 'undefined') ? videoData.views : (viewsEl.innerText || '0');
+  document.title = (videoData.title ? (videoData.title + ' | Clipfy Player') : 'Clipfy Player');
+  VIDEO_ID = videoData.video_id;
+  const newPath = `/v/${videoData.video_id}.html`;
+  try{ history.pushState(Object.assign({}, videoData), videoData.title, newPath); }catch(e){}
+  renderVideoSuggestions(ALL_VIDEOS);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.onpopstate = function(event){
+  if (event.state && event.state.video_id){
+    const s = event.state;
+    const vidData = (s.video_url ? s : (ALL_VIDEOS.find(x=>x.video_id===s.video_id) || s));
+    const sourceEl = player.querySelector('source');
+    if (vidData.video_url) sourceEl.src = vidData.video_url;
+    player.load();
+    player.play().catch(()=>{});
+    viewCounted = false;
+    timeAgoEl.innerText = vidData.time_ago || '';
+    mainTitleEl.innerText = vidData.title || '';
+    creatorNameEl.innerText = vidData.creator || '';
+    likesEl.innerText = vidData.likes || likesEl.innerText || '0';
+    viewsEl.innerText = vidData.views || viewsEl.innerText || '0';
+    VIDEO_ID = vidData.video_id;
+    renderVideoSuggestions(ALL_VIDEOS);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+function safeUpdateMetaTags(){ /* noop for cleaned file */ }
+
+// Initialize - plug in server-rendered data if present
+document.addEventListener('DOMContentLoaded', function(){
+  try{ 
+    // --- START: Simulated Data for Preview ---
+    if (!window.__CLIPFY_INIT) {
+        window.__CLIPFY_INIT = {
+            video_id: 'sample-123',
+            video_url: player.querySelector('source').src,
+            title: 'Epic Gaming Montage 2025',
+            creator: 'GamerGod47',
+            likes: 1542,
+            views: 89000,
+            time_ago: '2 hours ago',
+            all_videos: [
+                { video_id: 'vid-456', title: 'Top 10 Fails of the Week - Funny Moments', creator: 'Clipfy Fails', thumb_url: 'https://placehold.co/150x84/1f2937/ffffff?text=Fails+1', video_url: 'https://cdn.glitch.me/c4524c52-4754-47b6-963d-4299b6851b2e/sample-video-2.mp4', likes: 500, views: 25000, time_ago: '1 day ago' },
+                { video_id: 'vid-789', title: 'How to Build a High-End PC in 5 Minutes (Speedrun)', creator: 'Tech Reviews', thumb_url: 'https://placehold.co/150x84/1f2937/ffffff?text=PC+Build+2', video_url: 'https://cdn.glitch.me/c4524c52-4754-47b6-963d-4299b6851b2e/sample-video.mp4', likes: 900, views: 100000, time_ago: '3 days ago' },
+                { video_id: 'vid-012', title: 'The Best Travel Destinations 2025: Hidden Gems', creator: 'Wanderlust', thumb_url: 'https://placehold.co/150x84/1f2937/ffffff?text=Travel+3', video_url: 'https://cdn.glitch.me/c4524c52-4754-47b6-963d-4299b6851b2e/sample-video-2.mp4', likes: 300, views: 15000, time_ago: '4 hours ago' },
+                { video_id: 'vid-345', title: 'Mastering JavaScript ES14 in 1 Hour Tutorial', creator: 'Code King', thumb_url: 'https://placehold.co/150x84/1f2937/ffffff?text=JS+4', video_url: 'https://cdn.glitch.me/c4524c52-4754-47b6-963d-4299b6851b2e/sample-video.mp4', likes: 1200, views: 50000, time_ago: '5 days ago' }
+            ]
+        };
+    }
+    // --- END: Simulated Data for Preview ---
+
+
+    if (window.__CLIPFY_INIT){
+      // if templating injected data exists, use it
+      const d = window.__CLIPFY_INIT;
+      VIDEO_ID = d.video_id || VIDEO_ID;
+      const src = d.video_url || '';
+      if (src) player.querySelector('source').src = src;
+      
+      // Clear and populate ALL_VIDEOS
+      ALL_VIDEOS.length = 0;
+      if (Array.isArray(d.all_videos)) d.all_videos.forEach(x=>ALL_VIDEOS.push(x));
+
+      // Update UI elements with initial video data
+      mainTitleEl.innerText = d.title || mainTitleEl.innerText;
+      creatorNameEl.innerText = d.creator || creatorNameEl.innerText;
+      timeAgoEl.innerText = d.time_ago || timeAgoEl.innerText;
+      likesEl.innerText = d.likes || likesEl.innerText;
+      viewsEl.innerText = d.views || viewsEl.innerText;
+    }
+    
+    // Fallback: If no server data is injected, render empty suggestions list.
+    renderVideoSuggestions(ALL_VIDEOS);
+    
+    // Set initial history state
+    const stateObj = { video_id: VIDEO_ID, title: INITIAL_DATA.title, video_url: player.querySelector('source').src, time_ago: 'just now', likes: likesEl.innerText || 0, views: viewsEl.innerText || 0, thumb: INITIAL_DATA.thumb }; 
+    history.replaceState(stateObj, INITIAL_DATA.title, location.pathname);
+  }catch(e){
+    console.error("Initialization/History Error:", e);
+  }
+});
+</script>
+</body>
+</html>
