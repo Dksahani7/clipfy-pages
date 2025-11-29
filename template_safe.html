@@ -1,33 +1,18 @@
 <!doctype html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <title>{{TITLE}} | Clipfy Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>{{TITLE}} | Clipfy Player</title>
 
-  <!-- ====== SAFE PREVIEW META: use BLURRED thumb for social previews ====== -->
-  <!-- Facebook / Telegram / general OG -->
-  <meta property="og:type" content="video.other">
-  <meta property="og:title" content="{{TITLE}}">
-  <meta property="og:description" content="{{DESCRIPTION}}">
-  <meta property="og:image" content="{{BLUR_THUMB_URL}}">
-  <meta property="og:image:secure_url" content="{{BLUR_THUMB_URL}}">
-  <meta property="og:image:width" content="1280">
-  <meta property="og:image:height" content="720">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:type" content="video.other">
 
-  <!-- Twitter card preview (won't be used by you per note, but keep image as blurred) -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{TITLE}}">
-  <meta name="twitter:description" content="{{DESCRIPTION}}">
-  <meta name="twitter:image" content="{{BLUR_THUMB_URL}}">
+<meta property="og:image" content="{{THUMB_URL}}">
+<meta name="twitter:image" content="{{THUMB_URL}}">
+<meta name="twitter:card" content="summary_large_image">
 
-  <!-- Keep player meta (if you want embed behavior on some platforms). These point to normal player/stream -->
-  <meta name="twitter:player" content="{{PLAYER_PAGE_URL}}">
-  <meta name="twitter:player:width" content="720">
-  <meta name="twitter:player:height" content="405">
-  <meta name="twitter:player:stream" content="{{VIDEO_URL}}">
-  <meta name="twitter:player:stream:content_type" content="video/mp4">
-
-  <style>
+<style>
     body{
       background:#0f141a;
       color:#fff;
