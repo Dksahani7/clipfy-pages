@@ -1,10 +1,6 @@
 import json
 import os
-import time
 
-# ------------------------------------
-# LIVE VIDEO LIST (future: DB / R2)
-# ------------------------------------
 def get_all_video_data():
     return [
         {
@@ -28,51 +24,31 @@ def get_all_video_data():
     ]
 
 
-# ------------------------------------
-# CLEAN TITLE + SAFE TITLE
-# ------------------------------------
-def clean_text(t):
-    bad = ["💦", "🔥", "💋", "😈", "hot", "sexy", "fuck", "dangerous"]
-    for b in bad:
-        t = t.replace(b, "")
-    return t.strip()
-
-
-# ------------------------------------
-# MAKE BOTH PAGES
-# ------------------------------------
+# ---------------------------------------
+# GENERATE BOTH PAGES (NORMAL + SAFE)
+# ---------------------------------------
 def generate_both(video):
 
     video_id = video["video_id"]
     title = video["title"]
-    safe_title = clean_text(title)
-
-    description = video.get("description", "")
-    safe_desc = clean_text(description)
-
+    description = video["description"]
     time_ago = video["time_ago"]
     video_url = video["video_url"]
     thumb_url = video["thumb_url"]
 
-    # SAFE THUMBNAIL (blur via CF)
-    safe_thumb = f"{thumb_url}?blur=40"
-    # ------------------------------------
+    # SAFE THUMBNAIL (20% BLUR)
+    safe_thumb = f"{thumb_url}?blur=20"
+
     # LOAD TEMPLATES
-    # ------------------------------------
     with open("template.html", "r", encoding="utf-8") as f:
         normal_template = f.read()
 
     with open("template_safe.html", "r", encoding="utf-8") as f:
         safe_template = f.read()
 
-    # ------------------------------------
-    # JSON FOR SUGGESTIONS
-    # ------------------------------------
-    all_videos = json.dumps(get_all_video_data(), ensure_ascii=False)
+    # NORMAL PAGE (full JSON / JS)
+    all_videos_json = json.dumps(get_all_video_data(), ensure_ascii=False)
 
-    # ------------------------------------
-    # NORMAL PAGE
-    # ------------------------------------
     normal_html = (
         normal_template
         .replace("{{VIDEO_URL}}", video_url)
@@ -81,28 +57,21 @@ def generate_both(video):
         .replace("{{TITLE}}", title)
         .replace("{{DESCRIPTION}}", description)
         .replace("{{TIME_AGO}}", time_ago)
-        .replace("{{ALL_VIDEOS_JSON}}", all_videos)
+        .replace("{{ALL_VIDEOS_JSON}}", all_videos_json)
         .replace("{{PLAYER_PAGE_URL}}", f"https://clipfy.store/v/{video_id}.html")
     )
 
-    # ------------------------------------
-    # SAFE PAGE (BLUR / CLEAN META)
-    # ------------------------------------
+    # SAFE PAGE (no JSON – no unsafe loads)
     safe_html = (
         safe_template
-        .replace("{{VIDEO_URL}}", video_url)
-        .replace("{{THUMB_URL}}", safe_thumb)       # BLURRED IMAGE
-        .replace("{{VIDEO_ID}}", video_id)
-        .replace("{{TITLE}}", safe_title)           # SAFE TITLE
-        .replace("{{DESCRIPTION}}", safe_desc)      # SAFE DESCRIPTION
+        .replace("{{TITLE}}", title)
+        .replace("{{DESCRIPTION}}", description)
+        .replace("{{SAFE_BLUR_THUMB}}", safe_thumb)
+        .replace("{{NORMAL_PLAYER_URL}}", f"https://clipfy.store/v/{video_id}.html")
         .replace("{{TIME_AGO}}", time_ago)
-        .replace("{{ALL_VIDEOS_JSON}}", all_videos)
-        .replace("{{NORMAL_LINK}}", f"https://clipfy.store/v/{video_id}.html")
     )
 
-    # ------------------------------------
-    # SAVE FILES
-    # ------------------------------------
+    # SAVE OUTPUT FILES
     if not os.path.exists("v"):
         os.makedirs("v")
 
@@ -114,27 +83,18 @@ def generate_both(video):
 
     print("✔ Generated:", video_id)
 
-
     return {
         "normal": f"https://clipfy.store/v/{video_id}.html",
         "safe": f"https://clipfy.store/v/{video_id}_safe.html"
     }
 
 
-# ------------------------------------
-# GENERATE ALL PAGES
-# ------------------------------------
 def generate_all_pages():
-    videos = get_all_video_data()
-
-    for video in videos:
+    for video in get_all_video_data():
         generate_both(video)
-
     print("\n🎉 DONE — All pages generated!")
 
 
-# ------------------------------------
-# AUTO RUN
-# ------------------------------------
 if __name__ == "__main__":
     generate_all_pages()
+
