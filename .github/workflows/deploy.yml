@@ -2,7 +2,7 @@ name: Deploy Clipfy Pages
 
 concurrency:
   group: "clipfy-pages-deploy"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 on:
   push:
