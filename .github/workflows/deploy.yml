@@ -1,13 +1,13 @@
 name: Deploy Clipfy Pages
 
+concurrency:
+  group: "clipfy-pages-deploy"
+  cancel-in-progress: false   # No more cancelled builds
+
 on:
   push:
     branches:
       - main
-
-concurrency:
-  group: "clipfy-pages-deploy"
-  cancel-in-progress: false   # No more cancelled builds
 
 permissions:
   contents: read
