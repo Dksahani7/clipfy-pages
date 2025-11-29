@@ -29,7 +29,6 @@
       overflow-x:hidden;
     }
 
-    /* Fixed video */
     .video-box{
       width:100%;
       height:40vh;
@@ -49,7 +48,6 @@
       object-fit:contain;
     }
 
-    /* Floating message ad (video ke upar) */
     .floating-ad-320x50{
       position:fixed;
       top:4px;
@@ -62,13 +60,11 @@
       pointer-events:auto;
     }
 
-    /* Content starts just below video + top thin ad */
     .content-wrapper{
       padding-top:40vh;
       min-height:200vh;
     }
 
-    /* Thin 728x90 ad (video ke neeche) */
     .top-thin-ad{
       background:#1a2430;
       padding:6px 0;
@@ -83,7 +79,6 @@
       margin:0 auto;
     }
 
-    /* Profile row */
     .post{
       padding:10px 16px;
       display:flex;
@@ -107,7 +102,6 @@
       margin-top:2px;
     }
 
-    /* Stats row with icons */
     .stats{
       display:flex;
       gap:14px;
@@ -134,7 +128,6 @@
       font-size:13px;
     }
 
-    /* Title only */
     .blog-content{
       padding:14px 16px;
       font-size:15px;
@@ -146,7 +139,6 @@
       font-weight:600;
     }
 
-    /* Suggestions */
     .suggestions-header{
       padding:10px 16px;
       font-size:16px;
@@ -200,7 +192,6 @@
       margin-top:3px;
     }
 
-    /* Suggested ad slot (300x250) */
     .suggested-ad-slot{
       display:flex;
       justify-content:center;
@@ -209,7 +200,6 @@
       background:transparent;
     }
 
-    /* Fixed footer banner 320x50 */
     .footer-ad-320x50{
       position:fixed;
       bottom:0;
@@ -227,7 +217,6 @@
       height:50px;
     }
 
-    /* Social bar bottom-right */
     .social-bar-wrap{
       position:fixed;
       bottom:60px;
@@ -240,25 +229,20 @@
 </head>
 <body>
 
-  <!-- Floating message ad (320x50) -->
   <div class="floating-ad-320x50" id="floatingAd320x50"></div>
 
-  <!-- Fixed Video Player -->
   <div class="video-box">
     <video id="player" playsinline controls autoplay muted>
       <source src="{{VIDEO_URL}}" type="video/mp4">
     </video>
   </div>
 
-  <!-- Scrollable Content -->
   <div class="content-wrapper">
 
-    <!-- Thin 728x90 ad just below video -->
     <div class="top-thin-ad">
       <div class="top-thin-ad-inner" id="topThinAdInner"></div>
     </div>
 
-    <!-- Profile + time -->
     <div class="post">
       <div class="dp" id="creatorDp"></div>
       <div>
@@ -267,10 +251,8 @@
       </div>
     </div>
 
-    <!-- Stats with icons -->
     <div class="stats">
       <div class="stat-item">
-        <!-- eye icon -->
         <svg class="stat-icon" viewBox="0 0 24 24">
           <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
           <circle cx="12" cy="12" r="3"/>
@@ -279,7 +261,6 @@
       </div>
 
       <div class="stat-item">
-        <!-- heart icon -->
         <svg class="stat-icon" viewBox="0 0 24 24">
           <path d="M12 21s-5-3.3-8-6.7C2 12.5 2 9.5 4 7.5 5.1 6.4 6.6 6 8 6c1.6 0 3.1.8 4 2 0.9-1.2 2.4-2 4-2 1.4 0 2.9.4 4 1.5 2 2 2 5 0 6.8C17 17.7 12 21 12 21z"/>
         </svg>
@@ -289,29 +270,24 @@
       <div class="stats-right" id="shareBtn">Share</div>
     </div>
 
-    <!-- Title only -->
     <div class="blog-content">
       <h2 id="mainTitle">{{TITLE}}</h2>
     </div>
 
-    <!-- Suggestions -->
     <div class="suggestions-header">More Viral Videos 🔥</div>
     <div class="video-suggestions-list" id="videoSuggestionsList"></div>
   </div>
 
-  <!-- Fixed footer ad 320x50 -->
   <div class="footer-ad-320x50">
     <div class="footer-ad-inner" id="footerAdInner"></div>
   </div>
 
-  <!-- Social bar bottom-right -->
   <div class="social-bar-wrap" id="socialBarWrap"></div>
 
   <script>
-    // ---------- Server templated values ----------
     let VIDEOID = '{{VIDEO_ID}}';
     const APIBASE = '{{API_BASE}}';
-    const ALLVIDEOS = {{ALL_VIDEOS_JSON}}; // array of videos
+    const ALLVIDEOS = {{ALL_VIDEOS_JSON}};
 
     ALLVIDEOS.sort(() => Math.random() - 0.5);
 
@@ -321,37 +297,30 @@
       description: '{{DESCRIPTION}}'
     };
 
-    // ---------- DOM refs ----------
     const player = document.getElementById('player');
     const likesEl = document.getElementById('likes');
     const viewsEl = document.getElementById('views');
     const timeAgoEl = document.getElementById('timeAgo');
     const mainTitleEl = document.getElementById('mainTitle');
     const creatorNameEl = document.getElementById('creatorName');
-    const creatorDpEl = document.getElementById('creatorDp');
     const videoSuggestionsList = document.getElementById('videoSuggestionsList');
     const shareBtn = document.getElementById('shareBtn');
-
     const topThinAdInner = document.getElementById('topThinAdInner');
     const footerAdInner = document.getElementById('footerAdInner');
     const floatingAd320 = document.getElementById('floatingAd320x50');
     const socialBarWrap = document.getElementById('socialBarWrap');
 
-    // ---------- View counting ----------
     let viewCounted = false;
     player.addEventListener('play', () => {
       if(viewCounted) return;
       viewCounted = true;
-      try{
-        fetch(APIBASE + 'hit', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({videoid:VIDEOID,type:'view'})
-        });
-      }catch(e){}
+      fetch(APIBASE + 'hit', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({videoid:VIDEOID,type:'view'})
+      }).catch(()=>{});
     });
 
-    // ---------- Share button ----------
     shareBtn.onclick = () => {
       const mt = document.querySelector('meta[name="twitter:title"]');
       const shareTitle = (mt && mt.getAttribute('content')) || document.title;
@@ -364,35 +333,32 @@
       }
     };
 
-    // ---------- Generic atOptions banner injector ----------
-    function injectBannerAd(opts){
-      const {key, width, height, container} = opts;
-      if(!container) return;
-      const marker = 'data-at-key-' + key + '-' + width + 'x' + height;
-      if(container.getAttribute(marker)) return;
-      container.setAttribute(marker,'1');
+    /* --------------------------------------------------
+       FINAL FIXED CSP-SAFE AD LOADER
+    -------------------------------------------------- */
+    function injectBannerAd({key, width, height, container}) {
+      if (!container) return;
 
-      const inline = document.createElement('script');
-      inline.type = 'text/javascript';
-      inline.text = `
-        atOptions = {
-          'key':'${key}',
-          'format':'iframe',
-          'height':${height},
-          'width':${width},
-          'params':{}
-        };
-      `;
-      container.appendChild(inline);
+      const marker = 'data-at-key-' + key + '-' + width + 'x' + height;
+      if (container.getAttribute(marker)) return;
+      container.setAttribute(marker, '1');
+
+      window.atOptions = {
+        'key': key,
+        'format': 'iframe',
+        'height': height,
+        'width': width,
+        'params': {}
+      };
 
       const s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
+      s.src = `https://www.highperformanceformat.com/${key}/invoke.js`;
       s.async = true;
+
+      container.innerHTML = "";
       container.appendChild(s);
     }
 
-    // ---------- Social bar injector ----------
     function injectSocialBar(container){
       if(!container) return;
       const marker = 'data-social-bar';
@@ -400,13 +366,11 @@
       container.setAttribute(marker,'1');
 
       const s = document.createElement('script');
-      s.type = 'text/javascript';
       s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
       s.async = true;
       container.appendChild(s);
     }
 
-    // ---------- Suggestions (with 300x250 every 2 videos) ----------
     function renderVideoSuggestions(videos){
       videoSuggestionsList.innerHTML = '';
       let shown = 0;
@@ -414,7 +378,6 @@
       for(const v of videos){
         if(!v || v.videoid === VIDEOID) continue;
 
-        // Insert 300x250 ad after every 2 suggestion items
         if(shown > 0 && shown % 2 === 0){
           const adSlot = document.createElement('div');
           adSlot.className = 'suggested-ad-slot';
@@ -425,7 +388,7 @@
           adSlot.appendChild(inner);
           videoSuggestionsList.appendChild(adSlot);
           injectBannerAd({
-            key:'e8550078b37b6bf29c9b54eed61806f7', // 300x250
+            key:'e8550078b37b6bf29c9b54eed61806f7',
             width:300,
             height:250,
             container:inner
@@ -444,16 +407,16 @@
             <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
           </div>
         `;
-        item.addEventListener('click', e => {
+        item.onclick = e => {
           e.preventDefault();
           playSuggestedVideo(v);
-        });
+        };
+
         videoSuggestionsList.appendChild(item);
         shown++;
       }
     }
 
-    // ---------- Play suggested video ----------
     function playSuggestedVideo(v){
       if(!v || !v.videourl) return;
 
@@ -467,8 +430,8 @@
       mainTitleEl.innerText = v.title || '';
       timeAgoEl.innerText = v.timeago || '';
       creatorNameEl.innerText = v.creator || 'Clipfy Videos';
-      likesEl.innerText = (v.likes != null ? v.likes : 0);
-      viewsEl.innerText = (v.views != null ? v.views : 0);
+      likesEl.innerText = v.likes ?? 0;
+      viewsEl.innerText = v.views ?? 0;
 
       safeUpdateMetaTags({
         title: v.title,
@@ -479,47 +442,36 @@
         stream: v.videourl
       });
 
-      const prevPath = location.pathname;
       const newPath = 'v/' + v.videoid + '.html';
-      const stateObj = Object.assign({}, v);
-
       try{
-        if(prevPath !== newPath){
-          history.pushState(stateObj, v.title, newPath);
-        }else{
-          history.replaceState(stateObj, v.title, newPath);
-        }
+        history.pushState({...v}, v.title, newPath);
       }catch(e){}
 
       renderVideoSuggestions(ALLVIDEOS);
       window.scrollTo({top:0,behavior:'smooth'});
     }
 
-    // ---------- Back/forward ----------
     window.onpopstate = ev => {
       if(!ev.state || !ev.state.videoid) return;
-      const s = ev.state;
-      const v = s.videourl ? s : ALLVIDEOS.find(x => x.videoid === s.videoid);
-      if(!v) return;
-
+      const v = ev.state;
       const src = player.querySelector('source');
+
       src.src = v.videourl;
       player.load();
       player.play().catch(()=>{});
-      viewCounted = false;
 
       VIDEOID = v.videoid;
       mainTitleEl.innerText = v.title || '';
       timeAgoEl.innerText = v.timeago || '';
       creatorNameEl.innerText = v.creator || 'Clipfy Videos';
-      likesEl.innerText = (v.likes != null ? v.likes : 0);
-      viewsEl.innerText = (v.views != null ? v.views : 0);
+      likesEl.innerText = v.likes ?? 0;
+      viewsEl.innerText = v.views ?? 0;
 
       safeUpdateMetaTags({
         title: v.title,
         document_title: v.title ? (v.title + ' | Clipfy Player') : 'Clipfy Player',
         description: v.description,
-        image: v.thumburl || v.thumb || INITIALDATA.thumb,
+        image: v.thumburl || v.thumb,
         playerpage: 'v/' + v.videoid + '.html',
         stream: v.videourl
       });
@@ -528,7 +480,6 @@
       window.scrollTo({top:0,behavior:'smooth'});
     };
 
-    // ---------- Meta helpers ----------
     function safeUpdateMetaTags(o){
       try{
         setOrCreateMeta('twitter:title', o.title);
@@ -537,14 +488,14 @@
         setOrCreateMeta('og:image', o.image);
         setOrCreateMeta('twitter:player', o.playerpage);
         setOrCreateMeta('twitter:player:stream', o.stream);
-        document.title = o.document_title || document.title;
+        document.title = o.document_title;
       }catch(e){}
     }
+
     function setOrCreateMeta(nameOrProp, value){
       if(!value) return;
       const isOg = nameOrProp.startsWith('og');
-      const sel = isOg ? `meta[property="${nameOrProp}"]`
-                       : `meta[name="${nameOrProp}"]`;
+      const sel = isOg ? `meta[property="${nameOrProp}"]` : `meta[name="${nameOrProp}"]`;
       let el = document.querySelector(sel);
       if(!el){
         el = document.createElement('meta');
@@ -554,9 +505,9 @@
       }
       el.setAttribute('content', value);
     }
+
     function escapeHtml(str){
-      if(!str) return '';
-      return String(str)
+      return (str || "")
         .replace(/&/g,'&amp;')
         .replace(/</g,'&lt;')
         .replace(/>/g,'&gt;')
@@ -564,12 +515,10 @@
         .replace(/'/g,'&#39;');
     }
 
-    // ---------- Initial render + ad inject ----------
     document.addEventListener('DOMContentLoaded', () => {
       creatorNameEl.innerText = 'Clipfy Videos';
       renderVideoSuggestions(ALLVIDEOS);
 
-      // 728x90 thin ad below video
       injectBannerAd({
         key:'b40d9ebf8b9bb68f80451819ab41596e',
         width:728,
@@ -577,7 +526,6 @@
         container:topThinAdInner
       });
 
-      // Fixed footer 320x50
       injectBannerAd({
         key:'b43458b980a14fc9fc68555f58ae039f',
         width:320,
@@ -585,7 +533,6 @@
         container:footerAdInner
       });
 
-      // Floating message ad 320x50 (top of screen)
       injectBannerAd({
         key:'b43458b980a14fc9fc68555f58ae039f',
         width:320,
@@ -593,20 +540,18 @@
         container:floatingAd320
       });
 
-      // Social bar bottom-right
       injectSocialBar(socialBarWrap);
 
       try{
-        const stateObj = {
+        history.replaceState({
           videoid: VIDEOID,
           title: INITIALDATA.title,
           videourl: player.querySelector('source').src,
           timeago: '{{TIME_AGO}}',
-          likes: likesEl.innerText || '0',
-          views: viewsEl.innerText || '0',
+          likes: likesEl.innerText,
+          views: viewsEl.innerText,
           thumb: INITIALDATA.thumb
-        };
-        history.replaceState(stateObj, INITIALDATA.title, location.pathname);
+        }, INITIALDATA.title, location.pathname);
       }catch(e){}
     });
   </script>
