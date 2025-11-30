@@ -81,26 +81,20 @@
 </head>
 <body>
 
-  <!-- Floating message ad (320x50) -->
   <div class="floating-ad-320x50" id="floatingAd320x50"></div>
 
-  <!-- Fixed Video Player -->
   <div class="video-box">
-    <!-- player uses the normal (non-blurred) source -->
     <video id="player" playsinline controls autoplay muted>
       <source src="{{VIDEO_URL}}" type="video/mp4">
     </video>
   </div>
 
-  <!-- Scrollable Content -->
   <div class="content-wrapper">
 
-    <!-- Thin 728x90 ad just below video -->
     <div class="top-thin-ad">
       <div class="top-thin-ad-inner" id="topThinAdInner"></div>
     </div>
 
-    <!-- Profile + time -->
     <div class="post">
       <div class="dp" id="creatorDp"></div>
       <div>
@@ -109,7 +103,6 @@
       </div>
     </div>
 
-    <!-- Stats with icons -->
     <div class="stats">
       <div class="stat-item">
         <svg class="stat-icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -124,38 +117,32 @@
       <div class="stats-right" id="shareBtn">Share</div>
     </div>
 
-    <!-- Title only -->
     <div class="blog-content">
       <h2 id="mainTitle">{{TITLE}}</h2>
     </div>
 
-    <!-- Suggestions -->
     <div class="suggestions-header">More Viral Videos 🔥</div>
     <div class="video-suggestions-list" id="videoSuggestionsList"></div>
   </div>
 
-  <!-- Fixed footer ad 320x50 -->
   <div class="footer-ad-320x50">
     <div class="footer-ad-inner" id="footerAdInner"></div>
   </div>
 
-  <!-- Social bar bottom-right -->
   <div class="social-bar-wrap" id="socialBarWrap"></div>
 
   <script>
-    // ---------- Server templated values ----------
     let VIDEOID = '{{VIDEO_ID}}';
     const APIBASE = '{{API_BASE}}';
-    const ALLVIDEOS = {{ALL_VIDEOS_JSON}}; // array of videos; keep normal thumbs here
+    const ALLVIDEOS = {{ALL_VIDEOS_JSON}};
     ALLVIDEOS.sort(() => Math.random() - 0.5);
 
     const INITIALDATA = {
       title: '{{TITLE}}',
-      thumb: '{{THUMB_URL}}',        // NORMAL thumb used inside page
+      thumb: '{{THUMB_URL}}',
       description: '{{DESCRIPTION}}'
     };
 
-    // DOM refs
     const player = document.getElementById('player');
     const likesEl = document.getElementById('likes');
     const viewsEl = document.getElementById('views');
@@ -169,7 +156,6 @@
     const floatingAd320 = document.getElementById('floatingAd320x50');
     const socialBarWrap = document.getElementById('socialBarWrap');
 
-    // View counting
     let viewCounted = false;
     player.addEventListener('play', () => {
       if(viewCounted) return;
@@ -183,7 +169,6 @@
       }catch(e){}
     });
 
-    // Share
     shareBtn.onclick = () => {
       const mt = document.querySelector('meta[name="twitter:title"]');
       const shareTitle = (mt && mt.getAttribute('content')) || document.title;
@@ -196,7 +181,6 @@
       }
     };
 
-    // Banner ad injector (same as original)
     function injectBannerAd(opts){
       const {key, width, height, container} = opts;
       if(!container) return;
@@ -204,24 +188,51 @@
       if(container.getAttribute(marker)) return;
       container.setAttribute(marker,'1');
 
-      const inline = document.createElement('script');
-      inline.type = 'text/javascript';
-      inline.text = `
-        atOptions = {
-          'key':'${key}',
-          'format':'iframe',
-          'height':${height},
-          'width':${width},
-          'params':{}
-        };
-      `;
-      container.appendChild(inline);
+      try {
+        // Create wrapper div
+        const wrapper = document.createElement('div');
+        wrapper.style.width = '100%';
+        wrapper.style.height = '100%';
+        container.innerHTML = "";
+        container.appendChild(wrapper);
 
-      const s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
-      s.async = true;
-      container.appendChild(s);
+        // Create inline config script
+        const inline = document.createElement('script');
+        inline.type = 'text/javascript';
+        inline.text = `
+          atOptions = {
+            'key':'${key}',
+            'format':'iframe',
+            'height':${height},
+            'width':${width},
+            'params':{}
+          };
+        `;
+        wrapper.appendChild(inline);
+
+        // Create ad invoke script with error handling
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
+        s.async = true;
+        
+        // Fallback if script fails to load
+        s.onerror = function() {
+          console.warn('Ad script failed to load for key:', key);
+          // Retry once after 3 seconds
+          setTimeout(() => {
+            const retryScript = document.createElement('script');
+            retryScript.type = 'text/javascript';
+            retryScript.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
+            retryScript.async = true;
+            wrapper.appendChild(retryScript);
+          }, 3000);
+        };
+
+        wrapper.appendChild(s);
+      } catch(e) {
+        console.error('Error injecting banner ad:', e);
+      }
     }
 
     function injectSocialBar(container){
@@ -230,19 +241,38 @@
       if(container.getAttribute(marker)) return;
       container.setAttribute(marker,'1');
 
-      const s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
-      s.async = true;
-      container.appendChild(s);
+      try {
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+        s.async = true;
+        
+        // Retry on error
+        s.onerror = function() {
+          console.warn('Social bar script failed to load');
+          setTimeout(() => {
+            const retryScript = document.createElement('script');
+            retryScript.type = 'text/javascript';
+            retryScript.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+            retryScript.async = true;
+            container.appendChild(retryScript);
+          }, 2000);
+        };
+        
+        container.appendChild(s);
+      } catch(e) {
+        console.error('Error injecting social bar:', e);
+      }
     }
 
-    // Suggestions with 300x250 ad every 2 items
     function renderVideoSuggestions(videos){
       videoSuggestionsList.innerHTML = '';
       let shown = 0;
       for(const v of videos){
         if(!v || v.videoid === VIDEOID) continue;
+
+        // 🔥 FIX: Skip safe links in recommendations
+        if(v.videoid && v.videoid.includes('_safe')) continue;
 
         if(shown > 0 && shown % 2 === 0){
           const adSlot = document.createElement('div');
@@ -355,7 +385,6 @@
       window.scrollTo({top:0,behavior:'smooth'});
     };
 
-    // client-side meta updates (useful for live navigation inside page)
     function safeUpdateMetaTags(o){
       try{
         setOrCreateMeta('twitter:title', o.title);
@@ -391,14 +420,24 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // keep page content normal: use INITIALDATA.thumb inside page (non-blurred)
       renderVideoSuggestions(ALLVIDEOS);
 
-      // inject ads (same keys as original)
-      injectBannerAd({ key:'b40d9ebf8b9bb68f80451819ab41596e', width:728, height:90, container:topThinAdInner });
-      injectBannerAd({ key:'b43458b980a14fc9fc68555f58ae039f', width:320, height:50, container:footerAdInner });
-      injectBannerAd({ key:'b43458b980a14fc9fc68555f58ae039f', width:320, height:50, container:floatingAd320 });
-      injectSocialBar(socialBarWrap);
+      // Inject ads with delays to ensure proper loading
+      setTimeout(() => {
+        injectBannerAd({ key:'b40d9ebf8b9bb68f80451819ab41596e', width:728, height:90, container:topThinAdInner });
+      }, 500);
+
+      setTimeout(() => {
+        injectBannerAd({ key:'b43458b980a14fc9fc68555f58ae039f', width:320, height:50, container:footerAdInner });
+      }, 1000);
+
+      setTimeout(() => {
+        injectBannerAd({ key:'b43458b980a14fc9fc68555f58ae039f', width:320, height:50, container:floatingAd320 });
+      }, 1500);
+
+      setTimeout(() => {
+        injectSocialBar(socialBarWrap);
+      }, 2000);
 
       try{
         const stateObj = {
