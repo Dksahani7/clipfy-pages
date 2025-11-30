@@ -21,6 +21,7 @@
       padding:0;
       overflow-x:hidden;
     }
+    /* Prevent ads from covering video player */
     .video-box{
       width:100%;
       height:40vh;
@@ -29,7 +30,8 @@
       left:0;
       background:#000;
       overflow:hidden;
-      z-index:9999;
+      /* keep video below ad layers so floating/footer ads appear on top */
+      z-index:9998;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -135,7 +137,15 @@
     let VIDEOID = '{{VIDEO_ID}}';
     const APIBASE = '{{API_BASE}}';
     const ALLVIDEOS = {{ALL_VIDEOS_JSON}};
-    ALLVIDEOS.sort(() => Math.random() - 0.5);
+    try{
+      if(!Array.isArray(ALLVIDEOS)){
+        console.error('ALLVIDEOS payload is not an array — check server template substitution:', ALLVIDEOS);
+      } else {
+        ALLVIDEOS.sort(() => Math.random() - 0.5);
+      }
+    }catch(e){
+      console.error('Error preparing ALLVIDEOS:', e, ALLVIDEOS);
+    }
 
     const INITIALDATA = {
       title: '{{TITLE}}',
@@ -200,7 +210,7 @@
         const inline = document.createElement('script');
         inline.type = 'text/javascript';
         inline.text = `
-          atOptions = {
+          window.atOptions = {
             'key':'${key}',
             'format':'iframe',
             'height':${height},
@@ -213,8 +223,10 @@
         // Create ad invoke script with error handling
         const s = document.createElement('script');
         s.type = 'text/javascript';
-        s.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
+        // prefer explicit https to avoid mixed-content issues
+        s.src = 'https://www.highperformanceformat.com/' + key + '/invoke.js';
         s.async = true;
+        s.onload = function(){ console.info('Ad script loaded:', key, width+'x'+height); };
         
         // Fallback if script fails to load
         s.onerror = function() {
@@ -223,7 +235,7 @@
           setTimeout(() => {
             const retryScript = document.createElement('script');
             retryScript.type = 'text/javascript';
-            retryScript.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
+            retryScript.src = 'https://www.highperformanceformat.com/' + key + '/invoke.js';
             retryScript.async = true;
             wrapper.appendChild(retryScript);
           }, 3000);
@@ -244,7 +256,7 @@
       try {
         const s = document.createElement('script');
         s.type = 'text/javascript';
-        s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+        s.src = 'https://pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
         s.async = true;
         
         // Retry on error
@@ -253,7 +265,7 @@
           setTimeout(() => {
             const retryScript = document.createElement('script');
             retryScript.type = 'text/javascript';
-            retryScript.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+            retryScript.src = 'https://pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
             retryScript.async = true;
             container.appendChild(retryScript);
           }, 2000);
@@ -303,9 +315,12 @@
             <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
           </div>
         `;
+        // 🔥 FIX: Use direct function call instead of href navigation
         item.addEventListener('click', e => {
           e.preventDefault();
+          e.stopPropagation();
           playSuggestedVideo(v);
+          return false;
         });
         videoSuggestionsList.appendChild(item);
         shown++;
@@ -315,12 +330,14 @@
     function playSuggestedVideo(v){
       if(!v || !v.videourl) return;
 
+      // Update video source and play
       const src = player.querySelector('source');
       src.src = v.videourl;
       player.load();
       player.play().catch(()=>{});
       viewCounted = false;
 
+      // Update page content
       VIDEOID = v.videoid;
       mainTitleEl.innerText = v.title || '';
       timeAgoEl.innerText = v.timeago || '';
@@ -328,6 +345,7 @@
       likesEl.innerText = (v.likes != null ? v.likes : 0);
       viewsEl.innerText = (v.views != null ? v.views : 0);
 
+      // Update meta tags
       safeUpdateMetaTags({
         title: v.title,
         document_title: v.title ? (v.title + ' | Clipfy Player') : 'Clipfy Player',
@@ -337,11 +355,13 @@
         stream: v.videourl
       });
 
-      const prevPath = location.pathname;
-      const newPath = 'v/' + v.videoid + '.html';
-      const stateObj = Object.assign({}, v);
+      // 🔥 FIX: Always use normal video ID for URL (remove _safe suffix)
+      const normalVideoId = v.videoid.replace('_safe', '');
+      const newPath = 'v/' + normalVideoId + '.html';
+      const stateObj = Object.assign({}, v, {videoid: normalVideoId});
 
       try{
+        const prevPath = location.pathname;
         if(prevPath !== newPath){
           history.pushState(stateObj, v.title, newPath);
         }else{
@@ -349,7 +369,10 @@
         }
       }catch(e){}
 
+      // Re-render suggestions
       renderVideoSuggestions(ALLVIDEOS);
+      
+      // Scroll to top smoothly
       window.scrollTo({top:0,behavior:'smooth'});
     }
 
