@@ -37,7 +37,7 @@
       left:0;
       background:#000;
       overflow:hidden;
-      z-index:9999;
+      z-index:9998;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -289,12 +289,20 @@
     const APIBASE = '{{API_BASE}}';
     const ALLVIDEOS = {{ALL_VIDEOS_JSON}};
 
-    ALLVIDEOS.sort(() => Math.random() - 0.5);
+    try{
+      if(!Array.isArray(ALLVIDEOS)){
+        console.error('ALLVIDEOS payload is not an array:', ALLVIDEOS);
+      } else {
+        ALLVIDEOS.sort(() => Math.random() - 0.5);
+      }
+    }catch(e){
+      console.error('Error preparing ALLVIDEOS:', e, ALLVIDEOS);
+    }
 
     const INITIALDATA = {
-      title: '{{TITLE}}',
-      thumb: '{{THUMB_URL}}',
-      description: '{{DESCRIPTION}}'
+      title: `{{TITLE}}`,
+      thumb: `{{THUMB_URL}}`,
+      description: `{{DESCRIPTION}}`
     };
 
     const player = document.getElementById('player');
@@ -333,79 +341,94 @@
       }
     };
 
+    // 🔥 FIX: Unique ad injection with iframe approach
     function injectBannerAd({key, width, height, container}) {
-      if (!container) return;
+      if (!container) {
+        console.warn('Ad container not found for key:', key);
+        return;
+      }
 
-      const marker = 'data-at-key-' + key + '-' + width + 'x' + height;
-      if (container.getAttribute(marker)) return;
+      const marker = 'data-ad-loaded-' + key;
+      if (container.getAttribute(marker)) {
+        console.log('Ad already loaded for key:', key);
+        return;
+      }
       container.setAttribute(marker, '1');
 
       try {
-        // Create wrapper div
-        const wrapper = document.createElement('div');
-        wrapper.style.width = '100%';
-        wrapper.style.height = '100%';
+        // Clear container
         container.innerHTML = "";
-        container.appendChild(wrapper);
-
-        // Create inline config script with unique variable
-        const configScript = document.createElement('script');
-        configScript.type = 'text/javascript';
-        configScript.text = `
-          atOptions = {
-            'key': '${key}',
-            'format': 'iframe',
-            'height': ${height},
-            'width': ${width},
-            'params': {}
-          };
-        `;
-        wrapper.appendChild(configScript);
-
-        // Create ad invoke script with error handling
-        const adScript = document.createElement('script');
-        adScript.type = 'text/javascript';
-        adScript.src = `//www.highperformanceformat.com/${key}/invoke.js`;
-        adScript.async = true;
         
-        // Fallback if script fails to load
-        adScript.onerror = function() {
-          console.warn('Ad script failed to load for key:', key);
-          // Retry once after 3 seconds
-          setTimeout(() => {
-            const retryScript = document.createElement('script');
-            retryScript.type = 'text/javascript';
-            retryScript.src = `//www.highperformanceformat.com/${key}/invoke.js`;
-            retryScript.async = true;
-            wrapper.appendChild(retryScript);
-          }, 3000);
-        };
-
-        wrapper.appendChild(adScript);
+        // Create unique iframe for isolation
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        iframe.style.overflow = 'hidden';
+        iframe.scrolling = 'no';
+        
+        container.appendChild(iframe);
+        
+        // Write ad code into iframe
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { margin: 0; padding: 0; overflow: hidden; }
+            </style>
+          </head>
+          <body>
+            <script type="text/javascript">
+              window.atOptions = {
+                'key': '${key}',
+                'format': 'iframe',
+                'height': ${height},
+                'width': ${width},
+                'params': {}
+              };
+            <\/script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/${key}/invoke.js"><\/script>
+          </body>
+          </html>
+        `);
+        doc.close();
+        
+        console.info('✅ Ad injected successfully:', key, width+'x'+height);
+        
       } catch(e) {
-        console.error('Error injecting banner ad:', e);
+        console.error('❌ Error injecting banner ad:', key, e);
       }
     }
 
     function injectSocialBar(container){
-      if(!container) return;
+      if(!container) {
+        console.warn('Social bar container not found');
+        return;
+      }
+      
       const marker = 'data-social-bar';
-      if(container.getAttribute(marker)) return;
+      if(container.getAttribute(marker)) {
+        console.log('Social bar already loaded');
+        return;
+      }
       container.setAttribute(marker,'1');
 
       try {
         const s = document.createElement('script');
         s.type = 'text/javascript';
-        s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+        s.src = 'https://pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
         s.async = true;
         
-        // Retry on error
-        s.onerror = function() {
-          console.warn('Social bar script failed to load');
+        s.onload = () => console.info('✅ Social bar loaded');
+        s.onerror = () => {
+          console.warn('❌ Social bar script failed, retrying...');
           setTimeout(() => {
             const retryScript = document.createElement('script');
             retryScript.type = 'text/javascript';
-            retryScript.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+            retryScript.src = 'https://pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
             retryScript.async = true;
             container.appendChild(retryScript);
           }, 2000);
@@ -413,7 +436,7 @@
         
         container.appendChild(s);
       } catch(e) {
-        console.error('Error injecting social bar:', e);
+        console.error('❌ Error injecting social bar:', e);
       }
     }
 
@@ -423,8 +446,6 @@
 
       for(const v of videos){
         if(!v || v.videoid === VIDEOID) continue;
-        
-        // 🔥 FIX: Skip safe links in recommendations
         if(v.videoid && v.videoid.includes('_safe')) continue;
 
         if(shown > 0 && shown % 2 === 0){
@@ -436,12 +457,16 @@
           inner.style.maxWidth = '95%';
           adSlot.appendChild(inner);
           videoSuggestionsList.appendChild(adSlot);
-          injectBannerAd({
-            key:'e8550078b37b6bf29c9b54eed61806f7',
-            width:300,
-            height:250,
-            container:inner
-          });
+          
+          // Delayed injection for suggestion ads
+          setTimeout(() => {
+            injectBannerAd({
+              key:'e8550078b37b6bf29c9b54eed61806f7',
+              width:300,
+              height:250,
+              container:inner
+            });
+          }, 100);
         }
 
         const item = document.createElement('div');
@@ -458,7 +483,9 @@
         `;
         item.onclick = e => {
           e.preventDefault();
+          e.stopPropagation();
           playSuggestedVideo(v);
+          return false;
         };
 
         videoSuggestionsList.appendChild(item);
@@ -491,9 +518,11 @@
         stream: v.videourl
       });
 
-      const newPath = 'v/' + v.videoid + '.html';
+      const normalVideoId = v.videoid.replace('_safe', '');
+      const newPath = 'v/' + normalVideoId + '.html';
+      
       try{
-        history.pushState({...v}, v.title, newPath);
+        history.pushState({...v, videoid: normalVideoId}, v.title, newPath);
       }catch(e){}
 
       renderVideoSuggestions(ALLVIDEOS);
@@ -564,41 +593,48 @@
         .replace(/'/g,'&#39;');
     }
 
+    // 🔥 FIX: Sequential ad loading with proper delays
     document.addEventListener('DOMContentLoaded', () => {
       creatorNameEl.innerText = 'Clipfy Videos';
       renderVideoSuggestions(ALLVIDEOS);
 
-      // Inject ads with slight delays to prevent blocking
+      console.log('🚀 Starting ad injection sequence...');
+
+      // Load ads sequentially with delays
       setTimeout(() => {
+        console.log('Loading top banner ad...');
         injectBannerAd({
           key:'b40d9ebf8b9bb68f80451819ab41596e',
           width:728,
           height:90,
           container:topThinAdInner
         });
-      }, 100);
+      }, 800);
 
       setTimeout(() => {
+        console.log('Loading footer ad...');
         injectBannerAd({
           key:'b43458b980a14fc9fc68555f58ae039f',
           width:320,
           height:50,
           container:footerAdInner
         });
-      }, 200);
+      }, 1600);
 
       setTimeout(() => {
+        console.log('Loading floating ad...');
         injectBannerAd({
           key:'b43458b980a14fc9fc68555f58ae039f',
           width:320,
           height:50,
           container:floatingAd320
         });
-      }, 300);
+      }, 2400);
 
       setTimeout(() => {
+        console.log('Loading social bar...');
         injectSocialBar(socialBarWrap);
-      }, 400);
+      }, 3200);
 
       try{
         history.replaceState({
