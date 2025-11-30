@@ -1,13 +1,13 @@
 name: Deploy Clipfy Pages
 
 concurrency:
-  group: ${{ github.ref }} # ✅ सुधार: अब हर ब्रांच का अपना अलग concurrency group होगा
-  cancel-in-progress: false # यह सुनिश्चित करता है कि पहले से चल रहा job cancel न हो
+  group: "pages-deployment"
+  cancel-in-progress: false
 
 on:
   push:
     branches:
-      - '**'
+      - main
 
 permissions:
   contents: read
@@ -15,15 +15,40 @@ permissions:
   id-token: write
 
 jobs:
+  # Job 1: Generate pages fast
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Generate Pages
+        run: python generator.py
+
+      - name: Upload generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-pages
+          path: .
+
+  # Job 2: Deploy to GitHub Pages
   deploy:
+    needs: generate
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-pages
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
