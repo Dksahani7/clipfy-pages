@@ -525,7 +525,8 @@
         history.pushState({...v, videoid: normalVideoId}, v.title, newPath);
       }catch(e){}
 
-      renderVideoSuggestions(ALLVIDEOS);
+ALLVIDEOS.sort(() => Math.random() - 0.5);
+          renderVideoSuggestions(ALLVIDEOS);
       window.scrollTo({top:0,behavior:'smooth'});
     }
 
@@ -554,7 +555,8 @@
         stream: v.videourl
       });
 
-      renderVideoSuggestions(ALLVIDEOS);
+ALLVIDEOS.sort(() => Math.random() - 0.5);
+          renderVideoSuggestions(ALLVIDEOS);
       window.scrollTo({top:0,behavior:'smooth'});
     };
 
