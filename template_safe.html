@@ -135,7 +135,7 @@
   <script>
     let VIDEOID = '{{VIDEO_ID}}';
     const APIBASE = '{{API_BASE}}';
-    const ALLVIDEOS = {{ALL_VIDEOS_JSON}};
+    let ALLVIDEOS = []; fetch('https://YOUR_DOMAIN/videos.json').then(r=>r.json()).then(d=>{ALLVIDEOS=d.sort(()=>Math.random()-0.5);renderVideoSuggestions(ALLVIDEOS);}).catch(e=>console.error('❌ Failed to load videos:',e));;
     
     try{
       if(!Array.isArray(ALLVIDEOS)){
