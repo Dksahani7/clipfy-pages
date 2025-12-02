@@ -613,6 +613,32 @@
         }, INITIALDATA.title, location.pathname);
       }catch(e){}
     });
+
+      // ⚡ 12-HOUR POP-UNDER SYSTEM (Adsterra Safe)
+  (function(){
+    const POP_KEY = 'clipfy_pop_ts';
+    const now = Date.now();
+    const limit = 12 * 60 * 60 * 1000; // 12 hours
+    const lastShown = localStorage.getItem(POP_KEY);
+    
+    // Agar 12 ghante nahi hue → pop skip
+    if(lastShown && (now - lastShown) < limit) {
+      console.log('⚡ Popunder skipped (12-hour rule)');
+      return;
+    }
+    
+    // 15 seconds delay after page load
+    setTimeout(() => {
+      console.log('🔥 Popunder triggered after 15 sec');
+      localStorage.setItem(POP_KEY, now);
+      
+      // Insert Adsterra pop script
+      let s = document.createElement('script');
+      s.src = 'https://pl28118221.effectivegatecpm.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }, 15000); // 15 seconds delay
+  })();
   </script>
 </body>
 </html>
