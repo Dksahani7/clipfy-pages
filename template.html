@@ -1,4 +1,3 @@
-280
 <!doctype html>
 <html>
 <head>
@@ -288,9 +287,17 @@
   <script>
     let VIDEOID = '{{VIDEO_ID}}';
     const APIBASE = '{{API_BASE}}';
-    let ALLVIDEOS = []; fetch('https://YOUR_DOMAIN/videos.json').then(r=>r.json()).then(d=>{ALLVIDEOS=d.sort(()=>Math.random()-0.5);renderVideoSuggestions(ALLVIDEOS);}).catch(e=>console.error('❌ Failed to load videos:',e)); ;
+    
+    // 🔥 FIX: Load videos THEN render (not before!)
+    let ALLVIDEOS = [];
+    fetch('https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/metadata/index.json')
 
-    ALLVIDEOS.sort(() => Math.random() - 0.5);
+      .then(r => r.json())
+      .then(d => {
+        ALLVIDEOS = d.sort(() => Math.random() - 0.5);
+        renderVideoSuggestions(ALLVIDEOS);
+      })
+      .catch(e => console.error('❌ Failed to load videos:', e));
 
     const INITIALDATA = {
       title: `{{TITLE}}`,
@@ -342,14 +349,12 @@
       container.setAttribute(marker, '1');
 
       try {
-        // Create wrapper div
         const wrapper = document.createElement('div');
         wrapper.style.width = '100%';
         wrapper.style.height = '100%';
         container.innerHTML = "";
         container.appendChild(wrapper);
 
-        // Create inline config script with unique variable
         const configScript = document.createElement('script');
         configScript.type = 'text/javascript';
         configScript.text = `
@@ -363,16 +368,13 @@
         `;
         wrapper.appendChild(configScript);
 
-        // Create ad invoke script with error handling
         const adScript = document.createElement('script');
         adScript.type = 'text/javascript';
         adScript.src = `//www.highperformanceformat.com/${key}/invoke.js`;
         adScript.async = true;
         
-        // Fallback if script fails to load
         adScript.onerror = function() {
           console.warn('Ad script failed to load for key:', key);
-          // Retry once after 3 seconds
           setTimeout(() => {
             const retryScript = document.createElement('script');
             retryScript.type = 'text/javascript';
@@ -400,7 +402,6 @@
         s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
         s.async = true;
         
-        // Retry on error
         s.onerror = function() {
           console.warn('Social bar script failed to load');
           setTimeout(() => {
@@ -425,7 +426,6 @@
       for(const v of videos){
         if(!v || v.videoid === VIDEOID) continue;
         
-        // 🔥 FIX: Skip safe links in recommendations
         if(v.videoid && v.videoid.includes('_safe')) continue;
 
         if(shown > 0 && shown % 2 === 0){
@@ -457,7 +457,6 @@
             <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
           </div>
         `;
-        // 🔥 FIX: Use direct function call instead of href navigation
         item.onclick = e => {
           e.preventDefault();
           e.stopPropagation();
@@ -473,14 +472,12 @@
     function playSuggestedVideo(v){
       if(!v || !v.videourl) return;
 
-      // Update video source and play
       const src = player.querySelector('source');
       src.src = v.videourl;
       player.load();
       player.play().catch(()=>{});
       viewCounted = false;
 
-      // Update page content
       VIDEOID = v.videoid;
       mainTitleEl.innerText = v.title || '';
       timeAgoEl.innerText = v.timeago || '';
@@ -488,7 +485,6 @@
       likesEl.innerText = v.likes ?? 0;
       viewsEl.innerText = v.views ?? 0;
 
-      // Update meta tags
       safeUpdateMetaTags({
         title: v.title,
         document_title: v.title ? (v.title + ' | Clipfy Player') : 'Clipfy Player',
@@ -498,19 +494,13 @@
         stream: v.videourl
       });
 
-      // 🔥 FIX: Always use normal video ID for URL (remove _safe suffix)
       const normalVideoId = v.videoid.replace('_safe', '');
       const newPath = 'v/' + normalVideoId + '.html';
       
       try{
         history.pushState({...v, videoid: normalVideoId}, v.title, newPath);
       }catch(e){}
-
-      // 🔥 CRITICAL FIX: DO NOT re-render suggestions
-      // Suggestions stay static = Ads stay stable
-      // renderVideoSuggestions(ALLVIDEOS); // ❌ REMOVED - This was killing ads
       
-      // Scroll to top smoothly
       window.scrollTo({top:0,behavior:'smooth'});
     }
 
@@ -538,9 +528,6 @@
         playerpage: 'v/' + v.videoid + '.html',
         stream: v.videourl
       });
-
-      // 🔥 CRITICAL FIX: DO NOT re-render on back/forward navigation
-      // renderVideoSuggestions(ALLVIDEOS); // ❌ REMOVED
       
       window.scrollTo({top:0,behavior:'smooth'});
     };
@@ -582,12 +569,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       creatorNameEl.innerText = 'Clipfy Videos';
-      
-      // 🔥 LOAD SUGGESTIONS ONLY ONCE ON PAGE LOAD
-      renderVideoSuggestions(ALLVIDEOS);
 
-      // 🔥 CRITICAL FIX: Increased delays to prevent ad network rate limiting
-      // Ad networks need breathing room between requests
       setTimeout(() => {
         injectBannerAd({
           key:'b40d9ebf8b9bb68f80451819ab41596e',
@@ -595,7 +577,7 @@
           height:90,
           container:topThinAdInner
         });
-      }, 2000);  // 2 seconds
+      }, 2000);
 
       setTimeout(() => {
         injectBannerAd({
@@ -604,7 +586,7 @@
           height:50,
           container:footerAdInner
         });
-      }, 3500);  // 3.5 seconds
+      }, 3500);
 
       setTimeout(() => {
         injectBannerAd({
@@ -613,11 +595,11 @@
           height:50,
           container:floatingAd320
         });
-      }, 5000);  // 5 seconds
+      }, 5000);
 
       setTimeout(() => {
         injectSocialBar(socialBarWrap);
-      }, 6500);  // 6.5 seconds
+      }, 6500);
 
       try{
         history.replaceState({
