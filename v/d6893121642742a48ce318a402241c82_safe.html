@@ -1,0 +1,481 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Uploaded from URL | Clipfy Player</title>
+
+<meta property="og:title" content="Uploaded from URL">
+<meta property="og:description" content="">
+<meta property="og:type" content="video.other">
+
+<meta property="og:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/d6893121642742a48ce318a402241c82_blur.jpg">
+<meta name="twitter:image" content="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/d6893121642742a48ce318a402241c82_blur.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+    body{
+      background:#0f141a;
+      color:#fff;
+      font-family:Arial, sans-serif;
+      margin:0;
+      padding:0;
+      overflow-x:hidden;
+    }
+    .video-box{
+      width:100%;
+      height:40vh;
+      position:fixed;
+      top:0;
+      left:0;
+      background:#000;
+      overflow:hidden;
+      z-index:99999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .video-box video{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+    .floating-ad-320x50{
+      position:fixed;
+      top:4px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:10000;
+      width:320px;
+      max-width:95%;
+      height:50px;
+      pointer-events:auto;
+    }
+    .content-wrapper{ padding-top:40vh; min-height:200vh; }
+    .top-thin-ad{ background:#1a2430; padding:6px 0; margin:0; text-align:center; border-bottom:1px solid #222; }
+    .top-thin-ad-inner{ width:728px; max-width:95%; height:90px; margin:0 auto; }
+    .post{ padding:10px 16px; display:flex; gap:10px; align-items:center; border-bottom:1px solid #222; }
+    .dp{ width:42px; height:42px; border-radius:50%; background:#555; }
+    #creatorName{ font-weight:600; font-size:15px; }
+    #timeAgo{ font-size:12px; color:#aaa; margin-top:2px; }
+    .stats{ display:flex; gap:14px; padding:8px 16px; border-bottom:1px solid #222; font-size:13px; align-items:center; }
+    .stat-item{ display:flex; align-items:center; gap:4px; color:#d0d0d0; }
+    .stat-icon{ width:14px; height:14px; stroke:#d0d0d0; fill:none; }
+    .stats-right{ margin-left:auto; cursor:pointer; font-size:13px; }
+    .blog-content{ padding:14px 16px; font-size:15px; line-height:1.5; }
+    #mainTitle{ margin:0 0 6px 0; font-size:18px; font-weight:600; }
+    .suggestions-header{ padding:10px 16px; font-size:16px; font-weight:700; border-top:1px solid #222; }
+    .video-suggestions-list{ background:transparent; }
+    .suggestion-item{ display:block; width:100%; padding:10px 16px 14px; cursor:pointer; border-bottom:1px solid #1a2430; transition:background .12s; }
+    .suggestion-item:hover{ background:#0b1216; }
+    .suggestion-thumbnail{ width:100%; aspect-ratio:16/9; background:#333; border-radius:6px; overflow:hidden; margin-bottom:8px; }
+    .suggestion-thumbnail img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .suggestion-details{ display:flex; flex-direction:column; justify-content:center; }
+    .suggestion-title{ font-weight:600; font-size:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .suggestion-creator{ font-size:12px; color:#aaa; margin-top:3px; }
+    .suggested-ad-slot{ display:flex; justify-content:center; padding:12px 0; border-bottom:1px solid #222; background:transparent; }
+    .footer-ad-320x50{ position:fixed; bottom:0; left:0; width:100%; z-index:10001; background:#000; display:flex; justify-content:center; padding:4px 0; }
+    .footer-ad-inner{ width:320px; max-width:95%; height:50px; }
+    .social-bar-wrap{ position:fixed; bottom:60px; right:8px; z-index:10002; }
+    .hidden{display:none!important;}
+  </style>
+</head>
+<body>
+
+  <div class="floating-ad-320x50" id="floatingAd320x50"></div>
+
+  <div class="video-box">
+    <video id="player" playsinline controls autoplay muted>
+      <source src="https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/Different_sex_positi...ex_MMS.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="content-wrapper">
+
+    <div class="top-thin-ad">
+      <div class="top-thin-ad-inner" id="topThinAdInner"></div>
+    </div>
+
+    <div class="post">
+      <div class="dp" id="creatorDp"></div>
+      <div>
+        <div id="creatorName">Clipfy Videos</div>
+        <div id="timeAgo">just now</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <svg class="stat-icon" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span id="views">19054</span>
+      </div>
+
+      <div class="stat-item">
+        <svg class="stat-icon" viewBox="0 0 24 24"><path d="M12 21s-5-3.3-8-6.7C2 12.5 2 9.5 4 7.5 5.1 6.4 6.6 6 8 6c1.6 0 3.1.8 4 2 0.9-1.2 2.4-2 4-2 1.4 0 2.9.4 4 1.5 2 2 2 5 0 6.8C17 17.7 12 21 12 21z"/></svg>
+        <span id="likes">687</span>
+      </div>
+
+      <div class="stats-right" id="shareBtn">Share</div>
+    </div>
+
+    <div class="blog-content">
+      <h2 id="mainTitle">Uploaded from URL</h2>
+    </div>
+
+    <div class="suggestions-header">More Viral Videos 🔥</div>
+    <div class="video-suggestions-list" id="videoSuggestionsList"></div>
+  </div>
+
+  <div class="footer-ad-320x50">
+    <div class="footer-ad-inner" id="footerAdInner"></div>
+  </div>
+
+  <div class="social-bar-wrap" id="socialBarWrap"></div>
+
+  <script>
+    let VIDEOID = 'd6893121642742a48ce318a402241c82';
+    const APIBASE = 'https://clipfy.store/api/';
+    
+    // 🔥 FIX: Load videos THEN render (not before!)
+    let ALLVIDEOS = [];
+    fetch('https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/metadata/index.json')
+      .then(r => r.json())
+      .then(d => {
+        ALLVIDEOS = d.sort(() => Math.random() - 0.5);
+        renderVideoSuggestions(ALLVIDEOS);
+      })
+      .catch(e => console.error('❌ Failed to load videos:', e));
+
+    const INITIALDATA = {
+      title: `Uploaded from URL`,
+      thumb: `https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/thumbs/d6893121642742a48ce318a402241c82_blur.jpg`,
+      description: ``
+    };
+
+    const player = document.getElementById('player');
+    const likesEl = document.getElementById('likes');
+    const viewsEl = document.getElementById('views');
+    const timeAgoEl = document.getElementById('timeAgo');
+    const mainTitleEl = document.getElementById('mainTitle');
+    const creatorNameEl = document.getElementById('creatorName');
+    const videoSuggestionsList = document.getElementById('videoSuggestionsList');
+    const shareBtn = document.getElementById('shareBtn');
+    const topThinAdInner = document.getElementById('topThinAdInner');
+    const footerAdInner = document.getElementById('footerAdInner');
+    const floatingAd320 = document.getElementById('floatingAd320x50');
+    const socialBarWrap = document.getElementById('socialBarWrap');
+
+    let viewCounted = false;
+    player.addEventListener('play', () => {
+      if(viewCounted) return;
+      viewCounted = true;
+      try{
+        fetch(APIBASE + 'hit', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({videoid:VIDEOID,type:'view'})
+        });
+      }catch(e){}
+    });
+
+    shareBtn.onclick = () => {
+      const mt = document.querySelector('meta[name="twitter:title"]');
+      const shareTitle = (mt && mt.getAttribute('content')) || document.title;
+      if(navigator.share){
+        navigator.share({title:shareTitle,url:location.href}).catch(()=>{});
+      }else{
+        navigator.clipboard?.writeText(location.href)
+          .then(()=>alert('Link Copied!'))
+          .catch(()=>alert(location.href));
+      }
+    };
+
+    function injectBannerAd(opts){
+      const {key, width, height, container} = opts;
+      if(!container) return;
+      const marker = 'data-at-key-' + key + '-' + width + 'x' + height;
+      if(container.getAttribute(marker)) return;
+      container.setAttribute(marker,'1');
+
+      try {
+        const wrapper = document.createElement('div');
+        wrapper.style.width = '100%';
+        wrapper.style.height = '100%';
+        container.innerHTML = "";
+        container.appendChild(wrapper);
+
+        const inline = document.createElement('script');
+        inline.type = 'text/javascript';
+        inline.text = `
+          atOptions = {
+            'key':'${key}',
+            'format':'iframe',
+            'height':${height},
+            'width':${width},
+            'params':{}
+          };
+        `;
+        wrapper.appendChild(inline);
+
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
+        s.async = true;
+        
+        s.onerror = function() {
+          console.warn('Ad script failed to load for key:', key);
+          setTimeout(() => {
+            const retryScript = document.createElement('script');
+            retryScript.type = 'text/javascript';
+            retryScript.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
+            retryScript.async = true;
+            wrapper.appendChild(retryScript);
+          }, 3000);
+        };
+
+        wrapper.appendChild(s);
+      } catch(e) {
+        console.error('Error injecting banner ad:', e);
+      }
+    }
+
+    function injectSocialBar(container){
+      if(!container) return;
+      const marker = 'data-social-bar';
+      if(container.getAttribute(marker)) return;
+      container.setAttribute(marker,'1');
+
+      try {
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+        s.async = true;
+        
+        s.onerror = function() {
+          console.warn('Social bar script failed to load');
+          setTimeout(() => {
+            const retryScript = document.createElement('script');
+            retryScript.type = 'text/javascript';
+            retryScript.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+            retryScript.async = true;
+            container.appendChild(retryScript);
+          }, 2000);
+        };
+        
+        container.appendChild(s);
+      } catch(e) {
+        console.error('Error injecting social bar:', e);
+      }
+    }
+
+    function renderVideoSuggestions(videos){
+      videoSuggestionsList.innerHTML = '';
+      let shown = 0;
+      for(const v of videos){
+        if(!v || v.videoid === VIDEOID) continue;
+
+        if(v.videoid && v.videoid.includes('_safe')) continue;
+
+        if(shown > 0 && shown % 2 === 0){
+          const adSlot = document.createElement('div');
+          adSlot.className = 'suggested-ad-slot';
+          const inner = document.createElement('div');
+          inner.style.width = '300px';
+          inner.style.height = '250px';
+          inner.style.maxWidth = '95%';
+          adSlot.appendChild(inner);
+          videoSuggestionsList.appendChild(adSlot);
+          injectBannerAd({
+            key:'e8550078b37b6bf29c9b54eed61806f7',
+            width:300,
+            height:250,
+            container:inner
+          });
+        }
+
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        item.dataset.videoId = v.videoid;
+        item.innerHTML = `
+          <div class="suggestion-thumbnail">
+            <img src="${escapeHtml(v.thumburl)}" alt="${escapeHtml(v.title)}" loading="lazy">
+          </div>
+          <div class="suggestion-details">
+            <div class="suggestion-title">${escapeHtml(v.title)}</div>
+            <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
+          </div>
+        `;
+        item.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          playSuggestedVideo(v);
+          return false;
+        });
+        videoSuggestionsList.appendChild(item);
+        shown++;
+      }
+    }
+
+    function playSuggestedVideo(v){
+      if(!v || !v.videourl) return;
+
+      const src = player.querySelector('source');
+      src.src = v.videourl;
+      player.load();
+      player.play().catch(()=>{});
+      viewCounted = false;
+
+      VIDEOID = v.videoid;
+      mainTitleEl.innerText = v.title || '';
+      timeAgoEl.innerText = v.timeago || '';
+      creatorNameEl.innerText = v.creator || 'Clipfy Videos';
+      likesEl.innerText = (v.likes != null ? v.likes : 0);
+      viewsEl.innerText = (v.views != null ? v.views : 0);
+
+      safeUpdateMetaTags({
+        title: v.title,
+        document_title: v.title ? (v.title + ' | Clipfy Player') : 'Clipfy Player',
+        description: v.description,
+        image: v.thumburl || v.thumb || INITIALDATA.thumb,
+        playerpage: 'v/' + v.videoid + '.html',
+        stream: v.videourl
+      });
+
+      const normalVideoId = v.videoid.replace('_safe', '');
+      const newPath = 'v/' + normalVideoId + '.html';
+      const stateObj = Object.assign({}, v, {videoid: normalVideoId});
+
+      try{
+        const prevPath = location.pathname;
+        if(prevPath !== newPath){
+          history.pushState(stateObj, v.title, newPath);
+        }else{
+          history.replaceState(stateObj, v.title, newPath);
+        }
+      }catch(e){}
+      
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    window.onpopstate = ev => {
+      if(!ev.state || !ev.state.videoid) return;
+      const s = ev.state;
+      const v = s.videourl ? s : ALLVIDEOS.find(x => x.videoid === s.videoid);
+      if(!v) return;
+
+      const src = player.querySelector('source');
+      src.src = v.videourl;
+      player.load();
+      player.play().catch(()=>{});
+      viewCounted = false;
+
+      VIDEOID = v.videoid;
+      mainTitleEl.innerText = v.title || '';
+      timeAgoEl.innerText = v.timeago || '';
+      creatorNameEl.innerText = v.creator || 'Clipfy Videos';
+      likesEl.innerText = (v.likes != null ? v.likes : 0);
+      viewsEl.innerText = (v.views != null ? v.views : 0);
+
+      safeUpdateMetaTags({
+        title: v.title,
+        document_title: v.title ? (v.title + ' | Clipfy Player') : 'Clipfy Player',
+        description: v.description,
+        image: v.thumburl || v.thumb || INITIALDATA.thumb,
+        playerpage: 'v/' + v.videoid + '.html',
+        stream: v.videourl
+      });
+      
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+
+    function safeUpdateMetaTags(o){
+      try{
+        setOrCreateMeta('twitter:title', o.title);
+        setOrCreateMeta('twitter:description', o.description);
+        setOrCreateMeta('twitter:image', o.image);
+        setOrCreateMeta('og:image', o.image);
+        setOrCreateMeta('twitter:player', o.playerpage);
+        setOrCreateMeta('twitter:player:stream', o.stream);
+        document.title = o.document_title || document.title;
+      }catch(e){}
+    }
+    
+    function setOrCreateMeta(nameOrProp, value){
+      if(!value) return;
+      const isOg = nameOrProp.startsWith('og');
+      const sel = isOg ? `meta[property="${nameOrProp}"]` : `meta[name="${nameOrProp}"]`;
+      let el = document.querySelector(sel);
+      if(!el){
+        el = document.createElement('meta');
+        if(isOg) el.setAttribute('property', nameOrProp);
+        else el.setAttribute('name', nameOrProp);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', value);
+    }
+    
+    function escapeHtml(str){
+      if(!str) return '';
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        injectBannerAd({ key:'b40d9ebf8b9bb68f80451819ab41596e', width:728, height:90, container:topThinAdInner });
+      }, 2000);
+
+      setTimeout(() => {
+        injectBannerAd({ key:'b43458b980a14fc9fc68555f58ae039f', width:320, height:50, container:footerAdInner });
+      }, 3500);
+
+      setTimeout(() => {
+        injectBannerAd({ key:'b43458b980a14fc9fc68555f58ae039f', width:320, height:50, container:floatingAd320 });
+      }, 5000);
+
+      setTimeout(() => {
+        injectSocialBar(socialBarWrap);
+      }, 6500);
+
+      try{
+        const stateObj = {
+          videoid: VIDEOID,
+          title: INITIALDATA.title,
+          videourl: player.querySelector('source').src,
+          timeago: 'just now',
+          likes: likesEl.innerText || '0',
+          views: viewsEl.innerText || '0',
+          thumb: INITIALDATA.thumb
+        };
+        history.replaceState(stateObj, INITIALDATA.title, location.pathname);
+      }catch(e){}
+    });
+      
+    // ⚡ 12-HOUR POP-UNDER SYSTEM (Adsterra Safe)
+    (function(){
+      const POP_KEY = 'clipfy_pop_ts';
+      const now = Date.now();
+      const limit = 12 * 60 * 60 * 1000;
+      const lastShown = localStorage.getItem(POP_KEY);
+      
+      if(lastShown && (now - lastShown) < limit) {
+        console.log('⚡ Popunder skipped (12-hour rule)');
+        return;
+      }
+      
+      setTimeout(() => {
+        console.log('🔥 Popunder triggered after 15 sec');
+        localStorage.setItem(POP_KEY, now);
+        
+        let s = document.createElement('script');
+        s.src = '//pl28118221.effectivegatecpm.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js';
+        s.async = true;
+        document.body.appendChild(s);
+      }, 15000);
+    })();
+  </script>
+</body>
+</html>
