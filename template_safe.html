@@ -137,7 +137,7 @@
     
     // 🔥 FIX: Load videos THEN render (not before!)
     let ALLVIDEOS = [];
-    fetch('https://YOUR_DOMAIN/videos.json')
+    fetch('https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/metadata/index.json')
       .then(r => r.json())
       .then(d => {
         ALLVIDEOS = d.sort(() => Math.random() - 0.5);
