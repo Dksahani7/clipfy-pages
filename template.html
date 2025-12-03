@@ -217,13 +217,6 @@
       height:50px;
     }
 
-    .social-bar-wrap{
-      position:fixed;
-      bottom:60px;
-      right:8px;
-      z-index:10002;
-    }
-
     .hidden{display:none!important;}
   </style>
 </head>
@@ -282,374 +275,268 @@
     <div class="footer-ad-inner" id="footerAdInner"></div>
   </div>
 
-  <div class="social-bar-wrap" id="socialBarWrap"></div>
+<script>
+let VIDEOID='{{VIDEO_ID}}';
+const APIBASE='{{API_BASE}}';
 
-  <script>
-    let VIDEOID = '{{VIDEO_ID}}';
-    const APIBASE = '{{API_BASE}}';
-    
-    // 🔥 FIX: Load videos THEN render (not before!)
-    let ALLVIDEOS = [];
-    fetch('https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/metadata/index.json')
+let ALLVIDEOS=[];
+fetch('https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/metadata/index.json')
+.then(r=>r.json())
+.then(d=>{
+ ALLVIDEOS=d.sort(()=>Math.random()-0.5);
+ renderVideoSuggestions(ALLVIDEOS);
+})
+.catch(e=>console.error(e));
 
-      .then(r => r.json())
-      .then(d => {
-        ALLVIDEOS = d.sort(() => Math.random() - 0.5);
-        renderVideoSuggestions(ALLVIDEOS);
-      })
-      .catch(e => console.error('❌ Failed to load videos:', e));
+const player=document.getElementById('player');
+const likesEl=document.getElementById('likes');
+const viewsEl=document.getElementById('views');
+const timeAgoEl=document.getElementById('timeAgo');
+const mainTitleEl=document.getElementById('mainTitle');
+const creatorNameEl=document.getElementById('creatorName');
+const videoSuggestionsList=document.getElementById('videoSuggestionsList');
+const shareBtn=document.getElementById('shareBtn');
+const topThinAdInner=document.getElementById('topThinAdInner');
+const footerAdInner=document.getElementById('footerAdInner');
+const floatingAd320=document.getElementById('floatingAd320x50');
 
-    const INITIALDATA = {
-      title: `{{TITLE}}`,
-      thumb: `{{THUMB_URL}}`,
-      description: `{{DESCRIPTION}}`
-    };
+let viewCounted=false;
+player.addEventListener('play',()=>{
+ if(viewCounted) return;
+ viewCounted=true;
+ fetch(APIBASE+'hit',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({videoid:VIDEOID,type:'view'})
+ }).catch(()=>{});
+});
 
-    const player = document.getElementById('player');
-    const likesEl = document.getElementById('likes');
-    const viewsEl = document.getElementById('views');
-    const timeAgoEl = document.getElementById('timeAgo');
-    const mainTitleEl = document.getElementById('mainTitle');
-    const creatorNameEl = document.getElementById('creatorName');
-    const videoSuggestionsList = document.getElementById('videoSuggestionsList');
-    const shareBtn = document.getElementById('shareBtn');
-    const topThinAdInner = document.getElementById('topThinAdInner');
-    const footerAdInner = document.getElementById('footerAdInner');
-    const floatingAd320 = document.getElementById('floatingAd320x50');
-    const socialBarWrap = document.getElementById('socialBarWrap');
+shareBtn.onclick=()=>{
+ const mt=document.querySelector('meta[name="twitter:title"]');
+ const shareTitle=(mt && mt.getAttribute('content')) || document.title;
+ if(navigator.share){
+   navigator.share({title:shareTitle,url:location.href}).catch(()=>{});
+ } else {
+   navigator.clipboard?.writeText(location.href)
+     .then(()=>alert('Link Copied!'))
+     .catch(()=>alert(location.href));
+ }
+};
 
-    let viewCounted = false;
-    player.addEventListener('play', () => {
-      if(viewCounted) return;
-      viewCounted = true;
-      fetch(APIBASE + 'hit', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({videoid:VIDEOID,type:'view'})
-      }).catch(()=>{});
-    });
+function injectBannerAd({key,width,height,container}){
+ if(!container)return;
+ const marker='data-at-key-'+key+'-'+width+'x'+height;
+ if(container.getAttribute(marker))return;
+ container.setAttribute(marker,'1');
 
-    shareBtn.onclick = () => {
-      const mt = document.querySelector('meta[name="twitter:title"]');
-      const shareTitle = (mt && mt.getAttribute('content')) || document.title;
-      if(navigator.share){
-        navigator.share({title:shareTitle,url:location.href}).catch(()=>{});
-      }else{
-        navigator.clipboard?.writeText(location.href)
-          .then(()=>alert('Link Copied!'))
-          .catch(()=>alert(location.href));
-      }
-    };
+ try{
+   const wrapper=document.createElement('div');
+   wrapper.style.width='100%';
+   wrapper.style.height='100%';
+   container.innerHTML="";
+   container.appendChild(wrapper);
 
-    function injectBannerAd({key, width, height, container}) {
-      if (!container) return;
+   const configScript=document.createElement('script');
+   configScript.type='text/javascript';
+   configScript.text=`
+     atOptions={
+       'key':'${key}',
+       'format':'iframe',
+       'height':${height},
+       'width':${width},
+       'params':{}
+     };
+   `;
+   wrapper.appendChild(configScript);
 
-      const marker = 'data-at-key-' + key + '-' + width + 'x' + height;
-      if (container.getAttribute(marker)) return;
-      container.setAttribute(marker, '1');
+   const adScript=document.createElement('script');
+   adScript.type='text/javascript';
+   adScript.src=`//www.highperformanceformat.com/${key}/invoke.js`;
+   adScript.async=true;
 
-      try {
-        const wrapper = document.createElement('div');
-        wrapper.style.width = '100%';
-        wrapper.style.height = '100%';
-        container.innerHTML = "";
-        container.appendChild(wrapper);
+   wrapper.appendChild(adScript);
+ }catch(e){}
+}
 
-        const configScript = document.createElement('script');
-        configScript.type = 'text/javascript';
-        configScript.text = `
-          atOptions = {
-            'key': '${key}',
-            'format': 'iframe',
-            'height': ${height},
-            'width': ${width},
-            'params': {}
-          };
-        `;
-        wrapper.appendChild(configScript);
+function renderVideoSuggestions(videos){
+ videoSuggestionsList.innerHTML='';
+ let shown=0;
 
-        const adScript = document.createElement('script');
-        adScript.type = 'text/javascript';
-        adScript.src = `//www.highperformanceformat.com/${key}/invoke.js`;
-        adScript.async = true;
-        
-        adScript.onerror = function() {
-          console.warn('Ad script failed to load for key:', key);
-          setTimeout(() => {
-            const retryScript = document.createElement('script');
-            retryScript.type = 'text/javascript';
-            retryScript.src = `//www.highperformanceformat.com/${key}/invoke.js`;
-            retryScript.async = true;
-            wrapper.appendChild(retryScript);
-          }, 3000);
-        };
+ for(const v of videos){
+   if(!v||v.videoid===VIDEOID)continue;
+   if(v.videoid && v.videoid.includes('_safe')) continue;
 
-        wrapper.appendChild(adScript);
-      } catch(e) {
-        console.error('Error injecting banner ad:', e);
-      }
-    }
+   if(shown>0 && shown%2===0){
+     const adSlot=document.createElement('div');
+     adSlot.className='suggested-ad-slot';
+     const inner=document.createElement('div');
+     inner.style.width='300px';
+     inner.style.height='250px';
+     inner.style.maxWidth='95%';
+     adSlot.appendChild(inner);
+     videoSuggestionsList.appendChild(adSlot);
+     injectBannerAd({
+       key:'e8550078b37b6bf29c9b54eed61806f7',
+       width:300,
+       height:250,
+       container:inner
+     });
+   }
 
-    // ✅ PROPER SANDBOXED SOCIAL BAR - 100% SAFE
-    function injectSocialBar(container){
-      if(!container) return;
-      if(container.getAttribute("data-social-bar")) return;
-      container.setAttribute("data-social-bar","1");
+   const item=document.createElement('div');
+   item.className='suggestion-item';
+   item.dataset.videoId=v.videoid;
+   item.innerHTML=`
+     <div class="suggestion-thumbnail">
+       <img src="${escapeHtml(v.thumburl)}" loading="lazy">
+     </div>
+     <div class="suggestion-details">
+       <div class="suggestion-title">${escapeHtml(v.title)}</div>
+       <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
+     </div>
+   `;
+   item.onclick=e=>{
+     e.preventDefault();
+     playSuggestedVideo(v);
+   };
+   videoSuggestionsList.appendChild(item);
+   shown++;
+ }
+}
 
-      try {
-        const iframe = document.createElement("iframe");
-        iframe.src = "about:blank";
-        iframe.style.width = "160px";
-        iframe.style.height = "60px";
-        iframe.style.border = "0";
-        iframe.style.overflow = "hidden";
+function playSuggestedVideo(v){
+ if(!v||!v.videourl)return;
+ const src=player.querySelector('source');
+ src.src=v.videourl;
+ player.load();
+ player.play().catch(()=>{});
+ viewCounted=false;
 
-        // 🔒 SANDBOX = Blocks ANY redirect outside iframe
-        iframe.setAttribute("sandbox","allow-scripts allow-same-origin");
+ VIDEOID=v.videoid;
+ mainTitleEl.innerText=v.title||'';
+ timeAgoEl.innerText=v.timeago||'';
+ creatorNameEl.innerText=v.creator||'Clipfy Videos';
+ likesEl.innerText=v.likes??0;
+ viewsEl.innerText=v.views??0;
 
-        container.appendChild(iframe);
+ safeUpdateMetaTags({
+   title:v.title,
+   document_title:v.title+' | Clipfy Player',
+   description:v.description,
+   image:v.thumburl,
+   playerpage:'v/'+v.videoid+'.html',
+   stream:v.videourl
+ });
 
-        iframe.onload = () => {
-          try {
-            iframe.contentWindow.document.open();
-            iframe.contentWindow.document.write(`
-              <script src="//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js"></scr` + `ipt>
-            `);
-            iframe.contentWindow.document.close();
-          } catch(e) {
-            console.error('Error loading social bar inside iframe:', e);
-          }
-        };
+ history.pushState({...v},v.title,'v/'+v.videoid+'.html');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
 
-        iframe.onerror = function() {
-          console.warn('Social bar iframe failed to load');
-        };
-        
-      } catch(e) {
-        console.error('Error injecting social bar:', e);
-      }
-    }
+window.onpopstate=ev=>{
+ if(!ev.state)return;
+ const v=ev.state;
+ const src=player.querySelector('source');
+ src.src=v.videourl;
+ player.load();
+ player.play();
 
-    function renderVideoSuggestions(videos){
-      videoSuggestionsList.innerHTML = '';
-      let shown = 0;
+ VIDEOID=v.videoid;
+ mainTitleEl.innerText=v.title||'';
+ timeAgoEl.innerText=v.timeago||'';
+ creatorNameEl.innerText=v.creator||'Clipfy Videos';
+ likesEl.innerText=v.likes??0;
+ viewsEl.innerText=v.views??0;
 
-      for(const v of videos){
-        if(!v || v.videoid === VIDEOID) continue;
-        
-        if(v.videoid && v.videoid.includes('_safe')) continue;
+ safeUpdateMetaTags({
+   title:v.title,
+   document_title:v.title+' | Clipfy Player',
+   description:v.description,
+   image:v.thumburl,
+   playerpage:'v/'+v.videoid+'.html',
+   stream:v.videourl
+ });
 
-        if(shown > 0 && shown % 2 === 0){
-          const adSlot = document.createElement('div');
-          adSlot.className = 'suggested-ad-slot';
-          const inner = document.createElement('div');
-          inner.style.width = '300px';
-          inner.style.height = '250px';
-          inner.style.maxWidth = '95%';
-          adSlot.appendChild(inner);
-          videoSuggestionsList.appendChild(adSlot);
-          injectBannerAd({
-            key:'e8550078b37b6bf29c9b54eed61806f7',
-            width:300,
-            height:250,
-            container:inner
-          });
-        }
+ window.scrollTo({top:0,behavior:'smooth'});
+};
 
-        const item = document.createElement('div');
-        item.className = 'suggestion-item';
-        item.dataset.videoId = v.videoid;
-        item.innerHTML = `
-          <div class="suggestion-thumbnail">
-            <img src="${escapeHtml(v.thumburl)}" alt="${escapeHtml(v.title)}" loading="lazy">
-          </div>
-          <div class="suggestion-details">
-            <div class="suggestion-title">${escapeHtml(v.title)}</div>
-            <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
-          </div>
-        `;
-        item.onclick = e => {
-          e.preventDefault();
-          e.stopPropagation();
-          playSuggestedVideo(v);
-          return false;
-        };
+function safeUpdateMetaTags(o){
+ try{
+   setOrCreateMeta('twitter:title',o.title);
+   setOrCreateMeta('twitter:image',o.image);
+   setOrCreateMeta('twitter:description',o.description);
+   setOrCreateMeta('og:image',o.image);
+   setOrCreateMeta('twitter:player',o.playerpage);
+   setOrCreateMeta('twitter:player:stream',o.stream);
+   document.title=o.document_title;
+ }catch(e){}
+}
 
-        videoSuggestionsList.appendChild(item);
-        shown++;
-      }
-    }
+function setOrCreateMeta(name,value){
+ if(!value)return;
+ const isOg=name.startsWith('og');
+ const sel=isOg?`meta[property="${name}"]`:`meta[name="${name}"]`;
+ let el=document.querySelector(sel);
+ if(!el){
+   el=document.createElement('meta');
+   if(isOg)el.setAttribute('property',name);
+   else el.setAttribute('name',name);
+   document.head.appendChild(el);
+ }
+ el.setAttribute('content',value);
+}
 
-    function playSuggestedVideo(v){
-      if(!v || !v.videourl) return;
+function escapeHtml(str){
+ return (str||"").replace(/&/g,'&amp;').replace(/</g,'&lt;');
+}
 
-      const src = player.querySelector('source');
-      src.src = v.videourl;
-      player.load();
-      player.play().catch(()=>{});
-      viewCounted = false;
+document.addEventListener('DOMContentLoaded',()=>{
+ setTimeout(()=>{
+   injectBannerAd({
+     key:'b40d9ebf8b9bb68f80451819ab41596e',
+     width:728,
+     height:90,
+     container:topThinAdInner
+   });
+ },2000);
 
-      VIDEOID = v.videoid;
-      mainTitleEl.innerText = v.title || '';
-      timeAgoEl.innerText = v.timeago || '';
-      creatorNameEl.innerText = v.creator || 'Clipfy Videos';
-      likesEl.innerText = v.likes ?? 0;
-      viewsEl.innerText = v.views ?? 0;
+ setTimeout(()=>{
+   injectBannerAd({
+     key:'b43458b980a14fc9fc68555f58ae039f',
+     width:320,
+     height:50,
+     container:footerAdInner
+   });
+ },3500);
 
-      safeUpdateMetaTags({
-        title: v.title,
-        document_title: v.title ? (v.title + ' | Clipfy Player') : 'Clipfy Player',
-        description: v.description,
-        image: v.thumburl || v.thumb || INITIALDATA.thumb,
-        playerpage: 'v/' + v.videoid + '.html',
-        stream: v.videourl
-      });
+ setTimeout(()=>{
+   injectBannerAd({
+     key:'b43458b980a14fc9fc68555f58ae039f',
+     width:320,
+     height:50,
+     container:floatingAd320
+   });
+ },5000);
+});
 
-      const normalVideoId = v.videoid.replace('_safe', '');
-      const newPath = 'v/' + normalVideoId + '.html';
-      
-      try{
-        history.pushState({...v, videoid: normalVideoId}, v.title, newPath);
-      }catch(e){}
-      
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
+// POPUNDER SAFE VERSION
+(function(){
+ const POP_KEY='clipfy_pop_ts';
+ const now=Date.now();
+ const limit=12*60*60*1000;
+ const last=localStorage.getItem(POP_KEY);
 
-    window.onpopstate = ev => {
-      if(!ev.state || !ev.state.videoid) return;
-      const v = ev.state;
-      const src = player.querySelector('source');
+ if(last && (now-last)<limit)return;
 
-      src.src = v.videourl;
-      player.load();
-      player.play().catch(()=>{});
+ setTimeout(()=>{
+   localStorage.setItem(POP_KEY,now);
+   let s=document.createElement('script');
+   s.src='https://pl28118221.effectivegatecpm.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js';
+   s.async=true;
+   document.body.appendChild(s);
+ },15000);
 
-      VIDEOID = v.videoid;
-      mainTitleEl.innerText = v.title || '';
-      timeAgoEl.innerText = v.timeago || '';
-      creatorNameEl.innerText = v.creator || 'Clipfy Videos';
-      likesEl.innerText = v.likes ?? 0;
-      viewsEl.innerText = v.views ?? 0;
+})();
+</script>
 
-      safeUpdateMetaTags({
-        title: v.title,
-        document_title: v.title ? (v.title + ' | Clipfy Player') : 'Clipfy Player',
-        description: v.description,
-        image: v.thumburl || v.thumb,
-        playerpage: 'v/' + v.videoid + '.html',
-        stream: v.videourl
-      });
-      
-      window.scrollTo({top:0,behavior:'smooth'});
-    };
-
-    function safeUpdateMetaTags(o){
-      try{
-        setOrCreateMeta('twitter:title', o.title);
-        setOrCreateMeta('twitter:description', o.description);
-        setOrCreateMeta('twitter:image', o.image);
-        setOrCreateMeta('og:image', o.image);
-        setOrCreateMeta('twitter:player', o.playerpage);
-        setOrCreateMeta('twitter:player:stream', o.stream);
-        document.title = o.document_title;
-      }catch(e){}
-    }
-
-    function setOrCreateMeta(nameOrProp, value){
-      if(!value) return;
-      const isOg = nameOrProp.startsWith('og');
-      const sel = isOg ? `meta[property="${nameOrProp}"]` : `meta[name="${nameOrProp}"]`;
-      let el = document.querySelector(sel);
-      if(!el){
-        el = document.createElement('meta');
-        if(isOg) el.setAttribute('property', nameOrProp);
-        else el.setAttribute('name', nameOrProp);
-        document.head.appendChild(el);
-      }
-      el.setAttribute('content', value);
-    }
-
-    function escapeHtml(str){
-      return (str || "")
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#39;');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      creatorNameEl.innerText = 'Clipfy Videos';
-
-      setTimeout(() => {
-        injectBannerAd({
-          key:'b40d9ebf8b9bb68f80451819ab41596e',
-          width:728,
-          height:90,
-          container:topThinAdInner
-        });
-      }, 2000);
-
-      setTimeout(() => {
-        injectBannerAd({
-          key:'b43458b980a14fc9fc68555f58ae039f',
-          width:320,
-          height:50,
-          container:footerAdInner
-        });
-      }, 3500);
-
-      setTimeout(() => {
-        injectBannerAd({
-          key:'b43458b980a14fc9fc68555f58ae039f',
-          width:320,
-          height:50,
-          container:floatingAd320
-        });
-      }, 5000);
-
-      setTimeout(() => {
-        injectSocialBar(socialBarWrap);
-      }, 6500);
-
-      try{
-        history.replaceState({
-          videoid: VIDEOID,
-          title: INITIALDATA.title,
-          videourl: player.querySelector('source').src,
-          timeago: '{{TIME_AGO}}',
-          likes: likesEl.innerText,
-          views: viewsEl.innerText,
-          thumb: INITIALDATA.thumb
-        }, INITIALDATA.title, location.pathname);
-      }catch(e){}
-    });
-
-      // ⚡ 12-HOUR POP-UNDER SYSTEM (Adsterra Safe)
-  (function(){
-    const POP_KEY = 'clipfy_pop_ts';
-    const now = Date.now();
-    const limit = 12 * 60 * 60 * 1000; // 12 hours
-    const lastShown = localStorage.getItem(POP_KEY);
-    
-    // Agar 12 ghante nahi hue → pop skip
-    if(lastShown && (now - lastShown) < limit) {
-      console.log('⚡ Popunder skipped (12-hour rule)');
-      return;
-    }
-    
-    // 15 seconds delay after page load
-    setTimeout(() => {
-      console.log('🔥 Popunder triggered after 15 sec');
-      localStorage.setItem(POP_KEY, now);
-      
-      // Insert Adsterra pop script
-      let s = document.createElement('script');
-      s.src = 'https://pl28118221.effectivegatecpm.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js';
-      s.async = true;
-      document.body.appendChild(s);
-    }, 15000); // 15 seconds delay
-  })();
-  </script>
 </body>
 </html>
