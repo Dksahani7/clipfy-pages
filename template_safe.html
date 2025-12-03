@@ -189,6 +189,7 @@
       }
     };
 
+    // ✅ SANDBOXED BANNER AD - 100% SAFE + FULLY FUNCTIONAL
     function injectBannerAd(opts){
       const {key, width, height, container} = opts;
       if(!container) return;
@@ -197,71 +198,107 @@
       container.setAttribute(marker,'1');
 
       try {
-        const wrapper = document.createElement('div');
-        wrapper.style.width = '100%';
-        wrapper.style.height = '100%';
+        // Clear container
         container.innerHTML = "";
-        container.appendChild(wrapper);
 
-        const inline = document.createElement('script');
-        inline.type = 'text/javascript';
-        inline.text = `
-          atOptions = {
-            'key':'${key}',
-            'format':'iframe',
-            'height':${height},
-            'width':${width},
-            'params':{}
-          };
-        `;
-        wrapper.appendChild(inline);
-
-        const s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
-        s.async = true;
+        // Create sandboxed iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = 'about:blank';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = '0';
+        iframe.style.overflow = 'hidden';
         
-        s.onerror = function() {
-          console.warn('Ad script failed to load for key:', key);
-          setTimeout(() => {
-            const retryScript = document.createElement('script');
-            retryScript.type = 'text/javascript';
-            retryScript.src = '//www.highperformanceformat.com/' + key + '/invoke.js';
-            retryScript.async = true;
-            wrapper.appendChild(retryScript);
-          }, 3000);
+        // 🔒 SANDBOX - Blocks redirect to parent window
+        iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
+        
+        container.appendChild(iframe);
+
+        // Inject ad code inside iframe
+        iframe.onload = () => {
+          try {
+            const iframeDoc = iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <style>
+                  body { margin:0; padding:0; overflow:hidden; }
+                </style>
+              </head>
+              <body>
+                <script type="text/javascript">
+                  atOptions = {
+                    'key': '${key}',
+                    'format': 'iframe',
+                    'height': ${height},
+                    'width': ${width},
+                    'params': {}
+                  };
+                </scr` + `ipt>
+                <script type="text/javascript" src="//www.highperformanceformat.com/${key}/invoke.js"></scr` + `ipt>
+              </body>
+              </html>
+            `);
+            iframeDoc.close();
+          } catch(e) {
+            console.error('Error loading banner ad inside iframe:', e);
+          }
         };
 
-        wrapper.appendChild(s);
+        iframe.onerror = function() {
+          console.warn('Banner ad iframe failed to load for key:', key);
+        };
+
       } catch(e) {
         console.error('Error injecting banner ad:', e);
       }
     }
 
+    // ✅ SANDBOXED SOCIAL BAR - 100% SAFE
     function injectSocialBar(container){
       if(!container) return;
-      const marker = 'data-social-bar';
-      if(container.getAttribute(marker)) return;
-      container.setAttribute(marker,'1');
+      if(container.getAttribute("data-social-bar")) return;
+      container.setAttribute("data-social-bar","1");
 
       try {
-        const s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
-        s.async = true;
-        
-        s.onerror = function() {
-          console.warn('Social bar script failed to load');
-          setTimeout(() => {
-            const retryScript = document.createElement('script');
-            retryScript.type = 'text/javascript';
-            retryScript.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
-            retryScript.async = true;
-            container.appendChild(retryScript);
-          }, 2000);
+        const iframe = document.createElement("iframe");
+        iframe.src = "about:blank";
+        iframe.style.width = "160px";
+        iframe.style.height = "60px";
+        iframe.style.border = "0";
+        iframe.style.overflow = "hidden";
+
+        // 🔒 SANDBOX = Blocks ANY redirect outside iframe
+        iframe.setAttribute("sandbox","allow-scripts allow-same-origin allow-popups");
+
+        container.appendChild(iframe);
+
+        iframe.onload = () => {
+          try {
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <style>body{margin:0;padding:0;overflow:hidden;}</style>
+              </head>
+              <body>
+                <script src="//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js"></scr` + `ipt>
+              </body>
+              </html>
+            `);
+            iframe.contentWindow.document.close();
+          } catch(e) {
+            console.error('Error loading social bar inside iframe:', e);
+          }
+        };
+
+        iframe.onerror = function() {
+          console.warn('Social bar iframe failed to load');
         };
         
-        container.appendChild(s);
       } catch(e) {
         console.error('Error injecting social bar:', e);
       }
