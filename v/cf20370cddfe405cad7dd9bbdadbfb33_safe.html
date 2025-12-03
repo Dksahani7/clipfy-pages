@@ -239,34 +239,31 @@
     }
 
     function injectSocialBar(container){
-      if(!container) return;
-      const marker = 'data-social-bar';
-      if(container.getAttribute(marker)) return;
-      container.setAttribute(marker,'1');
+  if(!container) return;
+  if(container.getAttribute("data-social-bar")) return;
+  container.setAttribute("data-social-bar","1");
 
-      try {
-        const s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
-        s.async = true;
-        
-        s.onerror = function() {
-          console.warn('Social bar script failed to load');
-          setTimeout(() => {
-            const retryScript = document.createElement('script');
-            retryScript.type = 'text/javascript';
-            retryScript.src = '//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
-            retryScript.async = true;
-            container.appendChild(retryScript);
-          }, 2000);
-        };
-        
-        container.appendChild(s);
-      } catch(e) {
-        console.error('Error injecting social bar:', e);
-      }
-    }
+  const iframe = document.createElement("iframe");
+  iframe.src = "about:blank";
+  iframe.style.width = "160px";
+  iframe.style.height = "60px";
+  iframe.style.border = "0";
+  iframe.style.overflow = "hidden";
 
+  // Prevent redirect outside iframe
+  iframe.setAttribute("sandbox","allow-scripts allow-same-origin");
+
+  container.appendChild(iframe);
+
+  iframe.onload = () => {
+    iframe.contentWindow.document.open();
+    iframe.contentWindow.document.write(`
+      <script src="//pl28118636.effectivegatecpm.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js"></scr` + `ipt>
+    `);
+    iframe.contentWindow.document.close();
+  };
+}
+      
     function renderVideoSuggestions(videos){
       videoSuggestionsList.innerHTML = '';
       let shown = 0;
