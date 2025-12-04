@@ -74,7 +74,8 @@
     .suggested-ad-slot{ display:flex; justify-content:center; padding:12px 0; border-bottom:1px solid #222; min-height:250px; }
     .footer-ad-320x50{ position:fixed; bottom:0; left:0; width:100%; z-index:10001; background:#000; display:flex; justify-content:center; padding:4px 0; }
     .footer-ad-inner{ width:320px; max-width:95%; height:50px; }
-    /* Social bar (sandboxed iframe) - hidden initially */
+    
+    /* Social bar (sandboxed iframe) - FIX 2 & 5: Container and iframe made transparent */
     #socialBarContainer{
       position:fixed;
       top:6vh; /* appears a bit below top over video */
@@ -88,8 +89,16 @@
       align-items:center;
       justify-content:center;
       pointer-events:auto;
+      background:transparent; /* FIX 2/5 */
     }
-    #socialBarFrame{ width:100%; height:100%; border:0; border-radius:6px; overflow:hidden; background:transparent; }
+    #socialBarFrame{ 
+        width:100%; 
+        height:100%; 
+        border:0; 
+        border-radius:6px; 
+        overflow:hidden; 
+        background:transparent; /* FIX 2/5 */
+    }
     .hidden{display:none!important;}
 </style>
 </head>
@@ -164,31 +173,44 @@ const POPUNDER_SRC = '//stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf
 const SOCIAL_SRC = '//stinkymildred.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
 
 /* =========================
-   UTIL: delay, hash, createScriptWithRetry (COPIED FROM PREVIOUS)
+   UTIL: delay, hash, createScriptWithRetry (FIX 3: Retry mechanism improved)
    ========================= */
 function delay(ms){ return new Promise(res=>setTimeout(res,ms)); }
 function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){ h=((h<<5)-h)+s.charCodeAt(i); h|=0;} return Math.abs(h).toString(36); }
 
-async function createScriptWithRetry({src, inline, container=document.head, attempts=3, baseDelay=700}){
+async function createScriptWithRetry({src, inline, container=document.head, attempts=5, baseDelay=900}){ // FIX 3: attempts=5, baseDelay=900
   const marker = 'data-src-'+hashStr(src||inline||Math.random().toString());
-  if(container.querySelector && container.querySelector('script['+marker+']')) return;
+  // if(container.querySelector && container.querySelector('script['+marker+']')) return; // Removed this check as logic inside injectAd handles marking
   for(let i=1;i<=attempts;i++){
     try{
+      // FIX 3: Clean up previous script attempt if it failed
+      if (i > 1) {
+        const existingScript = container.querySelector(`script[src="${src}"]`) || container.querySelector(`script[data-attempt="${i - 1}"]`);
+        if(existingScript) existingScript.remove();
+      }
+
       const s = document.createElement('script');
+      s.setAttribute('data-attempt', i); // Add attempt marker
       if(inline){
         s.type='text/javascript';
         s.text = inline;
       } else {
         s.type='text/javascript'; s.async=true; s.src = src;
       }
-      try{s.setAttribute(marker,'1');}catch(e){}
+      try{s.setAttribute(marker,'1');}catch(e){} // Keep old marker logic
       container.appendChild(s);
-      // many ad scripts don't reliably fire onload, so resolve after short timeout
+      
       await new Promise(res=>{
         let done=false;
         s.onload = ()=>{ if(done) return; done=true; res(); };
-        s.onerror = ()=>{ if(done) return; done=true; res(); };
-        setTimeout(()=>{ if(done) return; done=true; res(); }, 3500);
+        s.onerror = ()=>{ 
+            if(done) return; 
+            done=true; 
+            s.remove(); // Remove failed script
+            res(new Error('script load error')); 
+        };
+        // FIX 3: Increased safety timeout to 6000ms
+        setTimeout(()=>{ if(done) return; done=true; res(); }, 6000); 
       });
       return;
     }catch(e){
@@ -200,9 +222,23 @@ async function createScriptWithRetry({src, inline, container=document.head, atte
 }
 
 /* =========================
-   Unified ad injector (modified from previous for async support)
+   Helper: clear ad markers & containers so ads can be re-injected (FIX 1: Required for reload)
    ========================= */
-async function injectAd({key, width, height, src, container, delayMs=0, attempts=3, asyncMode=false, containerId}){
+function clearAdContainer(container){
+  if(!container) return;
+  container.innerHTML = '';
+  try{
+    const attrs = Array.from(container.attributes || []);
+    attrs.forEach(a=>{
+      if(a.name && a.name.startsWith('data-ad-')) container.removeAttribute(a.name);
+    });
+  }catch(e){}
+}
+
+/* =========================
+   Unified ad injector (keeps single injection per container) (FIX 3: Improved)
+   ========================= */
+async function injectAd({key, width, height, src, container, delayMs=0, attempts=5, asyncMode=false, containerId}){ // FIX 3: attempts=5
   if(!container) return;
   const marker = 'data-ad-'+key+'-'+width+'x'+height;
   if(container.getAttribute(marker)) return;
@@ -229,10 +265,12 @@ async function injectAd({key, width, height, src, container, delayMs=0, attempts
 
   // normal iframe mode: write atOptions inline then load invoke.js inside a wrapper
   try{
-    container.innerHTML = '';
+    clearAdContainer(container); // Use reliable clear helper
+    
     const wrapper = document.createElement('div');
     wrapper.style.width='100%';
     wrapper.style.height='100%';
+    wrapper.className = 'clipfy-ad-wrapper'; // Add wrapper class for cleaner targeting
     container.appendChild(wrapper);
 
     const inline = `
@@ -244,75 +282,59 @@ async function injectAd({key, width, height, src, container, delayMs=0, attempts
         'params' : {}
       };
     `;
+    // FIX 3: Use higher attempts
     await createScriptWithRetry({ inline, container: wrapper, attempts });
     await createScriptWithRetry({ src, container: wrapper, attempts });
-  }catch(e){}
+  }catch(e){
+      // if fails, clear marker so future attempts can retry
+      try{
+          container.removeAttribute(marker);
+          clearAdContainer(container);
+      }catch(_){}
+  }
 }
 
 /* =========================
-   HELPER: Clear Ad Markers (COPIED FROM PREVIOUS)
-   ========================= */
-function clearAdContainer(container){
-  if(!container) return;
-  container.innerHTML = '';
-  try{
-    const attrs = Array.from(container.attributes || []);
-    attrs.forEach(a=>{
-      if(a.name && (a.name.startsWith('data-ad-') || a.name.startsWith('data-src-'))) container.removeAttribute(a.name);
-    });
-  }catch(e){}
-}
-
-/* =========================
-   AD REFRESH LOGIC (COPIED AND ADAPTED FROM PREVIOUS CODE) (Point 1)
+   Global Ad Refresh Logic (FIX 1: Ads Reloading on Video Change)
    ========================= */
 let lastAdRefreshTs = 0;
-const MIN_AD_REFRESH_INTERVAL = 700;
+const MIN_AD_REFRESH_INTERVAL = 700; 
+
+let intersectionObservers = new WeakMap(); // To manage suggested ad observation
 
 async function refreshAllAds({staggerBase=400} = {}){
   const now = Date.now();
   if(now - lastAdRefreshTs < MIN_AD_REFRESH_INTERVAL) return;
   lastAdRefreshTs = now;
 
-  // 1. Clear and re-inject top
+  // 1. Top Banner Ad (728x90) - Slim Banner
   try{
     clearAdContainer(topThinAdInner);
-    const topDelay = staggerBase + 600 + Math.floor(Math.random()*700);
-    injectAd({
-      key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner,
-      delayMs: topDelay, attempts: 4, asyncMode: false
-    });
+    const topDelay = staggerBase + 200 + Math.floor(Math.random()*300);
+    injectAd({ key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner, delayMs: topDelay, attempts: 5, asyncMode: false });
   }catch(e){}
 
-  // 2. Clear and re-inject footer
-  try{
-    clearAdContainer(footerAdInner);
-    const footerDelay = staggerBase + 1000 + Math.floor(Math.random()*1000);
-    injectAd({
-      key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner,
-      delayMs: footerDelay, attempts: 4, asyncMode: false
-    });
-  }catch(e){}
-
-  // 3. Clear and re-inject floating
+  // 2. Floating Ad (320x50)
   try{
     clearAdContainer(floatingAd320);
-    const floatDelay = staggerBase + 1400 + Math.floor(Math.random()*1400);
-    injectAd({
-      key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320,
-      delayMs: floatDelay, attempts: 4, asyncMode: false
-    });
+    const floatDelay = staggerBase + 500 + Math.floor(Math.random()*400);
+    injectAd({ key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320, delayMs: floatDelay, attempts: 5, asyncMode: false });
   }catch(e){}
 
-  // 4. Re-inject suggested ads slots
+  // 3. Footer Ad (320x50)
+  try{
+    clearAdContainer(footerAdInner);
+    const footerDelay = staggerBase + 800 + Math.floor(Math.random()*500);
+    injectAd({ key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner, delayMs: footerDelay, attempts: 5, asyncMode: false });
+  }catch(e){}
+
+  // 4. Suggested List Ads (Re-inject/Re-observe)
   try{
     const suggestedSlots = document.querySelectorAll('.suggested-ad-slot > div[id^="'+SUGGEST.containerPrefix+'"]');
-    let idx = 0;
-    suggestedSlots.forEach((inner)=>{
-      idx++;
+    suggestedSlots.forEach((inner, idx)=>{
       clearAdContainer(inner);
-      // Use observeAndInject to handle intersection-based injection again
-      observeAndInject(inner, idx);
+      // Re-observe: This will re-trigger ad injection if the slot is in the viewport
+      observeAndInject(inner, idx + 1);
     });
   }catch(e){}
 }
@@ -366,9 +388,7 @@ if(shareBtn) shareBtn.onclick = ()=>{
   else navigator.clipboard?.writeText(location.href).catch(()=>{});
 };
 
-/* Render suggestions with ad slots every 2 items.
-   Ads are injected lazy using IntersectionObserver and staggered.
-*/
+/* Render suggestions with ad slots every 2 items. */
 function renderVideoSuggestions(videos){
   videoSuggestionsList.innerHTML='';
   let shown=0;
@@ -414,24 +434,27 @@ function renderVideoSuggestions(videos){
 }
 
 function observeAndInject(container, idx){
+  if(intersectionObservers.has(container)) return; // Avoid re-observing
+
   const io = new IntersectionObserver((entries, obs)=>{
     for(const en of entries){
       if(en.isIntersecting){
-        // Increased base stagger
-        const stagger = 400 * (idx % 3) + Math.floor(Math.random()*400) + 200;
+        const stagger = 400 * (idx % 3) + Math.floor(Math.random()*400) + 200; // Increased base stagger
         injectAd({
           key: SUGGEST.key,
           width:300, height:250, src: SUGGEST.src,
-          container: container, delayMs: stagger, attempts:4, asyncMode:true, containerId: container.id
+          container: container, delayMs: stagger, attempts:5, asyncMode:true, containerId: container.id // FIX 3: attempts=5
         });
         obs.unobserve(container);
+        intersectionObservers.delete(container);
       }
     }
   }, {threshold:0.35});
   io.observe(container);
+  intersectionObservers.set(container, io); // Store observer
 }
 
-/* Play suggested video without full reload */
+/* Play suggested video without full reload (FIX 1: Ads Reloading) */
 function playSuggestedVideo(v){
   try{
     const srcEl = player.querySelector('source');
@@ -462,16 +485,17 @@ function playSuggestedVideo(v){
 
   history.pushState({...v}, v.title, 'v/'+v.videoid+'.html');
   window.scrollTo({top:0, behavior:'smooth'});
-
-  // Ad Refresh Logic (Point 1)
-  setTimeout(()=>{ refreshAllAds({staggerBase:500}); }, 600);
+  
+  // FIX 1: Trigger ad reload after video change
+  setTimeout(()=>{ refreshAllAds({staggerBase:1000}); }, 800);
 }
 
 window.onpopstate = e=>{
   if(!e.state) return;
   const v = e.state;
   playSuggestedVideo(v);
-  // Ad Refresh Logic (Point 1) is now inside playSuggestedVideo
+  // FIX 1: Trigger ad reload after back/forward button
+  setTimeout(()=>{ refreshAllAds({staggerBase:1000}); }, 800);
 };
 
 function safeUpdateMetaTags(o){
@@ -503,17 +527,17 @@ function setOrCreateMeta(name, value){
 function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* =========================
-   INITIAL AD INJECTIONS (top, footer, floating) with staggered delays (Point 3)
+   INITIAL AD INJECTIONS (top, footer, floating) with staggered delays
    ========================= */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // top banner delay 1000-1800ms (Increased delay)
-  injectAd({ key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner, delayMs: 1000 + Math.floor(Math.random()*800), attempts:4, asyncMode:false });
+  // top banner delay 800-1500ms
+  injectAd({ key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner, delayMs: 800 + Math.floor(Math.random()*700), attempts:5, asyncMode:false }); // FIX 3: attempts=5
 
-  // footer banner delay 1800-3000ms (Increased delay)
-  injectAd({ key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner, delayMs: 1800 + Math.floor(Math.random()*1200), attempts:4, asyncMode:false });
+  // footer banner delay 1200-2300ms
+  injectAd({ key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner, delayMs: 1200 + Math.floor(Math.random()*1100), attempts:5, asyncMode:false }); // FIX 3: attempts=5
 
-  // floating banner delay 2800-4400ms (Increased delay)
-  injectAd({ key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320, delayMs: 2800 + Math.floor(Math.random()*1600), attempts:4, asyncMode:false });
+  // floating banner delay 2000-3600ms
+  injectAd({ key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320, delayMs: 2000 + Math.floor(Math.random()*1600), attempts:5, asyncMode:false }); // FIX 3: attempts=5
 
   // schedule popunder after 15s (cooldown preserved)
   setTimeout(()=>{ try{ initPopunder(); }catch(e){} }, 15000 + Math.floor(Math.random()*3000));
@@ -530,29 +554,32 @@ function initPopunder(){
   if(last && (now - last) < LIMIT) return;
   try{
     localStorage.setItem(KEY, now);
-    createScriptWithRetry({ src: POPUNDER_SRC, container: document.body, attempts:2 }).catch(()=>{});
+    createScriptWithRetry({ src: POPUNDER_SRC, container: document.body, attempts:3 }).catch(()=>{});
   }catch(e){}
 }
 
 /* =========================
-   SOCIAL BAR (sandbox iframe): show after player plays once + delay
+   SOCIAL BAR (sandbox iframe) (FIX 5: Inner Content Transparency)
    ========================= */
 let socialShown = false;
 function showSocialBarAfterPlay(){
   if(socialShown) return;
   socialShown = true;
-  const delayAfterPlay = 5000 + Math.floor(Math.random()*2000);
+  const delayAfterPlay = 5000 + Math.floor(Math.random()*2000); // as requested: a bit after video starts
   setTimeout(async ()=>{
     try{
       socialBarContainer.style.display = 'flex';
       socialBarContainer.setAttribute('aria-hidden','false');
-
+      
       const iframeHTML = `
         <!doctype html>
         <html>
         <head>
           <meta name="viewport" content="width=device-width,initial-scale=1">
-          <style>html,body{margin:0;padding:0;background:transparent}</style>
+          <style>
+             /* FIX 5: Iframe internal content background transparent */
+            html,body{margin:0;padding:0;background:transparent!important;}
+          </style>
           <script>
             // push the social script into iframe context
             (function(){
