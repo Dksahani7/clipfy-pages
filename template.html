@@ -204,6 +204,17 @@
       background:transparent;
       min-height:250px;
     }
+    
+    /* NEW AD SLOT STYLE */
+    .inline-ad-slot{
+        display:flex;
+        justify-content:center;
+        padding:12px 0;
+        border-bottom:1px solid #222;
+        background:transparent;
+        min-height:250px;
+    }
+
 
     .footer-ad-320x50{
       position:fixed;
@@ -295,6 +306,11 @@
 
     <div class="blog-content">
       <h2 id="mainTitle">{{TITLE}}</h2>
+      
+      <div class="inline-ad-slot">
+        <div id="inlineAdInner" style="width:300px; height:250px; max-width:95%;"></div>
+      </div>
+      
     </div>
 
     <div class="suggestions-header">More Viral Videos 🔥</div>
@@ -331,6 +347,10 @@ const SUGGESTED_AD = {
 };
 const POPUNDER_SRC = '//stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js';
 const SOCIALBAR_SRC = '//stinkymildred.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
+
+// NEW: Inline Ad uses the same key as suggested ad but is loaded instantly.
+const INLINE_AD = { ...SUGGESTED_AD }; 
+
 
 /* ------------------------
    UTILS: delay, retry, createScriptWithRetry (FIX 3: Retry mechanism improved)
@@ -381,7 +401,8 @@ async function createScriptWithRetry({src, inlineText, container, maxAttempts=5,
         container.appendChild(s);
         
         // safety: resolve if no onload after certain time
-        setTimeout(()=>{ if(done) return; done=true; resolve(s); }, 6000); // Increased safety timeout
+        // FIX 3: Timeout reduced from 6000ms to 3000ms
+        setTimeout(()=>{ if(done) return; done=true; resolve(s); }, 3000); 
       });
     }catch(e){
       const wait = baseDelay * Math.pow(1.8, attempt-1);
@@ -433,8 +454,8 @@ async function injectBannerAd({key, width, height, src, container, delayMs=0, ma
 
   if(delayMs && delayMs>0) await delay(delayMs);
 
-  // If suggestions ad uses async atAsyncOptions pattern, push to atAsyncOptions
-  if(asyncMode && window){
+  // If asyncMode is true AND the ad is a Suggested Ad, use atAsyncOptions pattern
+  if(asyncMode && window && key === SUGGESTED_AD.key){ 
     try{
       if(typeof window.atAsyncOptions !== 'object') window.atAsyncOptions = [];
       window.atAsyncOptions.push({
@@ -445,6 +466,8 @@ async function injectBannerAd({key, width, height, src, container, delayMs=0, ma
         params: {}
       });
     }catch(e){}
+    // Note: Since we set asyncMode to FALSE for suggested ads in observeAndInjectAd, 
+    // this block will now only be hit if some other code calls it with asyncMode: true.
   }
 
   // Insert wrapper to keep DOM clean (FIX 3: Wrapper clean and reinject improved)
@@ -460,10 +483,12 @@ async function injectBannerAd({key, width, height, src, container, delayMs=0, ma
     container.appendChild(wrapper);
 
     // build atOptions inline
+    // Note: Suggested Ads (when asyncMode is FALSE) will use 'iframe' format here, which is the BEST FIX.
+    const adFormat = (asyncMode && key === SUGGESTED_AD.key) ? 'js' : 'iframe';
     const atOptions = `
       atOptions = {
        'key' : '${key}',
-       'format' : '${asyncMode ? 'js' : 'iframe'}',
+       'format' : '${adFormat}',
        'height' : ${height},
        'width' : ${width},
        'params' : {}
@@ -490,7 +515,7 @@ async function injectBannerAd({key, width, height, src, container, delayMs=0, ma
 let lastAdRefreshTs = 0;
 const MIN_AD_REFRESH_INTERVAL = 700; // ms - do not refresh more often than this
 
-// FIX 1: Refactored and improved refreshAllAds to ensure proper ad reloads
+// REFRESH ALL ADS (Updated StaggerBase Logic)
 async function refreshAllAds({staggerBase=400} = {}){
   const now = Date.now();
   if(now - lastAdRefreshTs < MIN_AD_REFRESH_INTERVAL) return;
@@ -498,10 +523,10 @@ async function refreshAllAds({staggerBase=400} = {}){
 
   console.log('Refreshing All Ads...');
 
-  // 1. Top Banner Ad (728x90)
+  // 1. Top Banner Ad (728x90) - Faster load
   try{
     clearAdContainer(topThinAdInner);
-    const topDelay = staggerBase + 200 + Math.floor(Math.random()*300); // Shorter initial stagger
+    const topDelay = staggerBase + 200 + Math.floor(Math.random()*200); 
     injectBannerAd({
       key: TOP_BANNER.key,
       width: TOP_BANNER.width,
@@ -509,15 +534,32 @@ async function refreshAllAds({staggerBase=400} = {}){
       src: TOP_BANNER.src,
       container: topThinAdInner,
       delayMs: topDelay,
-      maxAttempts: 5, // Increased attempts
+      maxAttempts: 5, 
       asyncMode: false
     });
   }catch(e){ console.error('Error refreshing top ad:', e); }
+  
+  // 1b. Inline Ad (300x250) - New Slot Refresh
+  try{
+    clearAdContainer(inlineAdInner);
+    const inlineDelay = staggerBase + 400 + Math.floor(Math.random()*200); 
+    injectBannerAd({
+      key: INLINE_AD.key,
+      width: 300,
+      height: 250,
+      src: INLINE_AD.src,
+      container: inlineAdInner,
+      delayMs: inlineDelay,
+      maxAttempts: 5,
+      asyncMode: false // Loading immediately, not via IntersectionObserver
+    });
+  }catch(e){ console.error('Error refreshing inline ad:', e); }
 
-  // 2. Floating Ad (320x50)
+
+  // 2. Floating Ad (320x50) - Faster load
   try{
     clearAdContainer(floatingAd320);
-    const floatDelay = staggerBase + 500 + Math.floor(Math.random()*400);
+    const floatDelay = staggerBase + 600 + Math.floor(Math.random()*300);
     injectBannerAd({
       key: FLOATING_BANNER.key,
       width: FLOATING_BANNER.width,
@@ -525,15 +567,15 @@ async function refreshAllAds({staggerBase=400} = {}){
       src: FLOATING_BANNER.src,
       container: floatingAd320,
       delayMs: floatDelay,
-      maxAttempts: 5, // Increased attempts
+      maxAttempts: 5, 
       asyncMode: false
     });
   }catch(e){ console.error('Error refreshing floating ad:', e); }
 
-  // 3. Footer Ad (320x50)
+  // 3. Footer Ad (320x50) - Faster load
   try{
     clearAdContainer(footerAdInner);
-    const footerDelay = staggerBase + 800 + Math.floor(Math.random()*500);
+    const footerDelay = staggerBase + 900 + Math.floor(Math.random()*400);
     injectBannerAd({
       key: FOOTER_BANNER.key,
       width: FOOTER_BANNER.width,
@@ -541,15 +583,15 @@ async function refreshAllAds({staggerBase=400} = {}){
       src: FOOTER_BANNER.src,
       container: footerAdInner,
       delayMs: footerDelay,
-      maxAttempts: 5, // Increased attempts
+      maxAttempts: 5, 
       asyncMode: false
     });
   }catch(e){ console.error('Error refreshing footer ad:', e); }
 
   // 4. Suggested List Ads (Re-inject/Re-observe)
   try{
-    // Find ALL suggestion ad slots currently in the DOM
-    const suggestedSlots = document.querySelectorAll('.suggested-ad-slot > div[id^="'+SUGGESTED_AD.containerIdPrefix+'"]');
+    // FIX 1: UPDATED SELECTOR - Added .video-suggestions-list to strictly target suggested slots
+    const suggestedSlots = document.querySelectorAll('.video-suggestions-list .suggested-ad-slot > div[id^="'+SUGGESTED_AD.containerIdPrefix+'"]');
     suggestedSlots.forEach((inner, idx)=>{
       // Clear the container markers to allow re-injection/re-observation
       clearAdContainer(inner);
@@ -587,6 +629,8 @@ const footerAdInner=document.getElementById('footerAdInner');
 const floatingAd320=document.getElementById('floatingAd320x50');
 const socialBarContainer=document.getElementById('socialBarContainer');
 const socialBarFrame=document.getElementById('socialBarFrame');
+const inlineAdInner=document.getElementById('inlineAdInner'); // NEW: Get the new ad slot
+
 
 let viewCounted=false;
 player.addEventListener('play',()=>{
@@ -613,7 +657,7 @@ shareBtn.onclick=()=>{
 };
 
 /* ------------------------
-   Render suggestions with ad slots
+   Render suggestions with ad slots (UPDATED: Ad in EVERY suggestion slot)
    ------------------------ */
 function renderVideoSuggestions(videos){
  videoSuggestionsList.innerHTML='';
@@ -623,8 +667,8 @@ function renderVideoSuggestions(videos){
    if(!v||v.videoid===VIDEOID) continue;
    if(v.videoid && v.videoid.includes('_safe')) continue;
 
-   // every 2 items place an ad slot BEFORE the item (as you requested)
-   if(shown>0 && shown%2===0){
+   // UPDATED: Place an ad slot AFTER every item (shown > 0)
+   if(shown > 0){ 
      adIndex++;
      const adSlot=document.createElement('div');
      adSlot.className='suggested-ad-slot';
@@ -678,8 +722,8 @@ function observeAndInjectAd(container, idx){
   const io = new IntersectionObserver((entries, obs)=>{
     for(const en of entries){
       if(en.isIntersecting){
-        // small stagger: base 300ms * idx
-        const staggerDelay = 400 * (idx % 3) + Math.floor(Math.random()*400) + 200;
+        // UPDATED: Intersection Observer Threshold set lower for faster ad loading
+        const staggerDelay = 200 * (idx % 3) + Math.floor(Math.random()*200) + 100;
         injectBannerAd({
           key: SUGGESTED_AD.key,
           width: 300,
@@ -687,15 +731,15 @@ function observeAndInjectAd(container, idx){
           src: SUGGESTED_AD.src,
           container: container,
           delayMs: staggerDelay,
-          maxAttempts: 5, // FIX 3: Increased attempts
-          asyncMode: true,
+          maxAttempts: 5, 
+          asyncMode: false, // FIX 2: CHANGED to FALSE for better fill rate (forces iframe load)
           containerHtmlId: container.id
         });
         obs.unobserve(container);
         intersectionObservers.delete(container); // Remove observer once injected
       }
     }
-  }, {threshold: 0.3});
+  }, {threshold: 0.1}); // CHANGED: Threshold to 0.1 for faster load
   
   io.observe(container);
   intersectionObservers.set(container, io); // Store the observer
@@ -735,7 +779,7 @@ function playSuggestedVideo(v){
  
  // FIX 1: REFRESH ADS: Ad refresh logic
  // Increased delay to ensure video change fully registered before starting ad loads
- setTimeout(()=>{ refreshAllAds({staggerBase:1000}); }, 800);
+ setTimeout(()=>{ refreshAllAds({staggerBase:500}); }, 500); // CHANGED: Decreased timeout to 500ms
 }
 
 /* ------------------------
@@ -769,7 +813,7 @@ window.onpopstate = ev => {
  
  // FIX 1: REFRESH ADS: Ad refresh logic
  // Increased delay to ensure video change fully registered before starting ad loads
- setTimeout(()=>{ refreshAllAds({staggerBase:1000}); }, 800);
+ setTimeout(()=>{ refreshAllAds({staggerBase:500}); }, 500); // CHANGED: Decreased timeout to 500ms
 };
 
 /* ------------------------
@@ -806,11 +850,24 @@ function escapeHtml(str){
 }
 
 /* ------------------------
-   INITIAL AD INJECTIONS (top, footer, floating) - FIX 3: Increased Attempts
+   INITIAL AD INJECTIONS (top, footer, floating) - UPDATED Delays and Added Inline Ad
    ------------------------ */
 document.addEventListener('DOMContentLoaded',()=>{
-  // top banner: 800-1400ms random delay
-  const topDelay = 800 + Math.floor(Math.random()*700);
+  // NEW: Inline Ad (300x250) - Load early (500-1000ms delay)
+  const inlineDelay = 500 + Math.floor(Math.random()*500);
+  injectBannerAd({
+    key: INLINE_AD.key,
+    width: 300,
+    height: 250,
+    src: INLINE_AD.src,
+    container: inlineAdInner,
+    delayMs: inlineDelay,
+    maxAttempts: 5,
+    asyncMode: false
+  });
+  
+  // top banner: Faster load (400-800ms random delay)
+  const topDelay = 400 + Math.floor(Math.random()*400); // CHANGED: Faster
   injectBannerAd({
     key: TOP_BANNER.key,
     width: TOP_BANNER.width,
@@ -818,12 +875,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     src: TOP_BANNER.src,
     container: topThinAdInner,
     delayMs: topDelay,
-    maxAttempts: 5, // FIX 3: Increased maxAttempts
+    maxAttempts: 5, 
     asyncMode: false
   });
 
-  // footer banner: 1200-2200ms delay
-  const footerDelay = 1200 + Math.floor(Math.random()*1000);
+  // footer banner: Faster load (800-1400ms delay)
+  const footerDelay = 800 + Math.floor(Math.random()*600); // CHANGED: Faster
   injectBannerAd({
     key: FOOTER_BANNER.key,
     width: FOOTER_BANNER.width,
@@ -831,12 +888,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     src: FOOTER_BANNER.src,
     container: footerAdInner,
     delayMs: footerDelay,
-    maxAttempts: 5, // FIX 3: Increased maxAttempts
+    maxAttempts: 5, 
     asyncMode: false
   });
 
-  // floating banner: 2000-3500ms delay
-  const floatDelay = 2000 + Math.floor(Math.random()*1500);
+  // floating banner: Faster load (1500-2500ms delay)
+  const floatDelay = 1500 + Math.floor(Math.random()*1000); // CHANGED: Faster
   injectBannerAd({
     key: FLOATING_BANNER.key,
     width: FLOATING_BANNER.width,
@@ -844,21 +901,42 @@ document.addEventListener('DOMContentLoaded',()=>{
     src: FLOATING_BANNER.src,
     container: floatingAd320,
     delayMs: floatDelay,
-    maxAttempts: 5, // FIX 3: Increased maxAttempts
+    maxAttempts: 5, 
     asyncMode: false
   });
-
-  // schedule popunder loader with safe cooldown (we still inject script after small delay)
-  setTimeout(()=>{ try{initPopunder();}catch(e){} }, 15000 + Math.floor(Math.random()*5000));
+  
+  // SCHEDULE AUTO-REFRESH FOR FLOATING AD (Sticky Ads benefit most from refresh)
+  setInterval(()=>{
+      // Check if player is playing AND if the window is focused before refreshing fixed ads
+      if(!player.paused && document.hasFocus()){
+        try{
+          console.log('Auto-refreshing floating ad...');
+          clearAdContainer(floatingAd320);
+          injectBannerAd({
+            key: FLOATING_BANNER.key,
+            width: FLOATING_BANNER.width,
+            height: FLOATING_BANNER.height,
+            src: FLOATING_BANNER.src,
+            container: floatingAd320,
+            delayMs: 200, // Minimal delay on auto-refresh
+            maxAttempts: 5, 
+            asyncMode: false
+          });
+        }catch(e){}
+      }
+  }, 30000); // Refresh every 30 seconds
+  
+  // schedule popunder loader with reduced cooldown (6 hours)
+  setTimeout(()=>{ try{initPopunder();}catch(e){} }, 10000 + Math.floor(Math.random()*5000));
 });
 
 /* ------------------------
-   POPUNDER logic (12 hours cooldown preserved)
+   POPUNDER logic (UPDATED: 6 hours cooldown)
    ------------------------ */
 function initPopunder(){
   const POP_KEY = 'clipfy_pop_ts';
   const now = Date.now();
-  const limit = 12*60*60*1000; // 12 hours
+  const limit = 6*60*60*1000; // CHANGED: 6 hours cooldown (was 12 hours)
   const last = parseInt(localStorage.getItem(POP_KEY) || '0', 10);
   if(last && (now - last) < limit) return;
   try{
@@ -933,7 +1011,7 @@ setTimeout(()=>{ /* nothing */ }, 1000);
         const last = window._clipfy_last_user_event_target || null;
         if(last){
           // allow if target is within known ad containers
-          const allowedParents = [document.getElementById('socialBarContainer'), document.getElementById('topThinAdInner'), document.getElementById('footerAdInner'), document.getElementById('floatingAd320x50')];
+          const allowedParents = [document.getElementById('socialBarContainer'), document.getElementById('topThinAdInner'), document.getElementById('footerAdInner'), document.getElementById('floatingAd320x50'), document.getElementById('inlineAdInner')];
           for(const p of allowedParents){
             if(!p) continue;
             if(p.contains(last)) return origOpen.apply(window, args);
