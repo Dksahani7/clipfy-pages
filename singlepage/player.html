@@ -1,1 +1,126 @@
 
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Clipfy Player</title>
+
+<!-- Default metas (JS will replace dynamically) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="">
+
+<meta property="og:image" content="">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+
+<meta name="twitter:player" content="">
+<meta name="twitter:player:width" content="720">
+<meta name="twitter:player:height" content="405">
+<meta name="twitter:player:stream" content="">
+<meta name="twitter:player:stream:content_type" content="video/mp4">
+
+<style>
+/* YOUR FULL UI COPY–PASTED WITHOUT CHANGES */
+BODY{
+  background:#0f141a; color:#fff; font-family:Arial; margin:0;
+}
+.video-box{
+  width:100%; height:40vh; position:fixed; top:0; left:0;
+  background:#000; z-index:9999; display:flex; justify-content:center;
+}
+.video-box video{ width:100%; height:100%; object-fit:contain; }
+
+.floating-ad-320x50{
+  position:fixed; top:4px; left:50%; transform:translateX(-50%);
+  width:320px; height:50px; z-index:10000;
+}
+
+.content-wrapper{ padding-top:40vh; }
+
+.top-thin-ad{ background:#1a2430; padding:6px 0; border-bottom:1px solid #222; text-align:center; }
+.top-thin-ad-inner{ width:728px; height:90px; max-width:95%; margin:0 auto; }
+
+.post{ padding:10px 16px; display:flex; gap:10px; border-bottom:1px solid #222; }
+.dp{ width:42px; height:42px; border-radius:50%; background:#555; }
+
+.stats{ display:flex; gap:14px; padding:8px 16px; border-bottom:1px solid #222; }
+.stat-item{ display:flex; align-items:center; gap:4px; color:#d0d0d0; }
+
+.blog-content{ padding:14px 16px; font-size:15px; line-height:1.5; }
+#mainTitle{ font-size:18px; font-weight:600; }
+
+.inline-ad-slot{ display:flex; justify-content:center; padding:12px 0; min-height:250px; }
+
+.suggestions-header{ padding:10px 16px; font-size:16px; font-weight:700; border-top:1px solid #222; }
+
+.video-suggestions-list{}
+.suggestion-item{ padding:10px 16px; border-bottom:1px solid #1a2430; cursor:pointer; }
+.suggestion-thumbnail{ width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:6px; }
+.suggestion-thumbnail img{ width:100%; height:100%; object-fit:cover; }
+
+.footer-ad-320x50{
+  position:fixed; bottom:0; width:100%; background:#000; display:flex;
+  justify-content:center; padding:4px 0; z-index:10001;
+}
+.footer-ad-inner{ width:320px; height:50px; }
+
+.hidden{ display:none!important; }
+</style>
+</head>
+
+<body>
+
+<div class="floating-ad-320x50" id="floatingAd"></div>
+
+<div class="video-box">
+  <video id="player" playsinline controls autoplay muted>
+    <source id="videoSource" src="">
+  </video>
+</div>
+
+<div class="content-wrapper">
+
+  <div class="top-thin-ad"><div class="top-thin-ad-inner" id="topAd"></div></div>
+
+  <div class="post">
+    <div class="dp" id="creatorDp"></div>
+    <div>
+      <div id="creatorName">Clipfy Videos</div>
+      <div id="timeAgo"></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-item">
+      <span id="views">0</span>
+    </div>
+    <div class="stat-item">
+      <span id="likes">0</span>
+    </div>
+    <div class="stats-right" id="shareBtn">Share</div>
+  </div>
+
+  <div class="blog-content">
+    <h2 id="mainTitle"></h2>
+
+    <div class="inline-ad-slot">
+      <div id="inlineAd" style="width:300px;height:250px;"></div>
+    </div>
+
+  </div>
+
+  <div class="suggestions-header">More Viral Videos 🔥</div>
+  <div id="suggestions" class="video-suggestions-list"></div>
+
+</div>
+
+<div class="footer-ad-320x50">
+  <div class="footer-ad-inner" id="footerAd"></div>
+</div>
+
+<script src="player.js"></script>
+
+</body>
+</html>
