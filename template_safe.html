@@ -13,93 +13,93 @@
 <meta name="twitter:card" content="summary_large_image">
 
 <style>
-    body{
-      background:#0f141a;
-      color:#fff;
-      font-family:Arial, sans-serif;
-      margin:0;
-      padding:0;
-      overflow-x:hidden;
-    }
-    .video-box{
-      width:100%;
-      height:40vh;
-      position:fixed;
-      top:0;
-      left:0;
-      background:#000;
-      overflow:hidden;
-      z-index:99999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .video-box video{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-    }
-    .floating-ad-320x50{
-      position:fixed;
-      top:4px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:10000;
-      width:320px;
-      max-width:95%;
-      height:50px;
-    }
-    .content-wrapper{ padding-top:40vh; min-height:200vh; }
-    .top-thin-ad{ background:#1a2430; padding:6px 0; margin:0; text-align:center; border-bottom:1px solid #222; }
-    .top-thin-ad-inner{ width:728px; max-width:95%; height:90px; margin:0 auto; }
-    .post{ padding:10px 16px; display:flex; gap:10px; align-items:center; border-bottom:1px solid #222; }
-    .dp{ width:42px; height:42px; border-radius:50%; background:#555; }
-    #creatorName{ font-weight:600; font-size:15px; }
-    #timeAgo{ font-size:12px; color:#aaa; margin-top:2px; }
-    .stats{ display:flex; gap:14px; padding:8px 16px; border-bottom:1px solid #222; font-size:13px; align-items:center; }
-    .stat-item{ display:flex; align-items:center; gap:4px; color:#d0d0d0; }
-    .stat-icon{ width:14px; height:14px; stroke:#d0d0d0; fill:none; }
-    .stats-right{ margin-left:auto; cursor:pointer; font-size:13px; }
-    .blog-content{ padding:14px 16px; font-size:15px; line-height:1.5; }
-    #mainTitle{ margin:0 0 6px 0; font-size:18px; font-weight:600; }
-    .suggestions-header{ padding:10px 16px; font-size:16px; font-weight:700; border-top:1px solid #222; }
-    .video-suggestions-list{ background:transparent; }
-    .suggestion-item{ display:block; width:100%; padding:10px 16px 14px; cursor:pointer; border-bottom:1px solid #1a2430; transition:background .12s; }
-    .suggestion-item:hover{ background:#0b1216; }
-    .suggestion-thumbnail{ width:100%; aspect-ratio:16/9; background:#333; border-radius:6px; overflow:hidden; margin-bottom:8px; }
-    .suggestion-thumbnail img{ width:100%; height:100%; object-fit:cover; display:block; }
-    .suggestion-details{ display:flex; flex-direction:column; justify-content:center; }
-    .suggestion-title{ font-weight:600; font-size:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-    .suggestion-creator{ font-size:12px; color:#aaa; margin-top:3px; }
-    .suggested-ad-slot{ display:flex; justify-content:center; padding:12px 0; border-bottom:1px solid #222; min-height:250px; }
-    .footer-ad-320x50{ position:fixed; bottom:0; left:0; width:100%; z-index:10001; background:#000; display:flex; justify-content:center; padding:4px 0; }
-    .footer-ad-inner{ width:320px; max-width:95%; height:50px; }
-    
-    /* Social bar (sandboxed iframe) - FIX 2 & 5: Container and iframe made transparent */
-    #socialBarContainer{
-      position:fixed;
-      top:6vh; /* appears a bit below top over video */
-      left:50%;
-      transform:translateX(-50%);
-      z-index:10002;
-      width:320px;
-      max-width:95%;
-      height:56px;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      pointer-events:auto;
-      background:transparent; /* FIX 2/5 */
-    }
-    #socialBarFrame{ 
-        width:100%; 
-        height:100%; 
-        border:0; 
-        border-radius:6px; 
-        overflow:hidden; 
-        background:transparent; /* FIX 2/5 */
-    }
-    .hidden{display:none!important;}
+    body{
+      background:#0f141a;
+      color:#fff;
+      font-family:Arial, sans-serif;
+      margin:0;
+      padding:0;
+      overflow-x:hidden;
+    }
+    .video-box{
+      width:100%;
+      height:40vh;
+      position:fixed;
+      top:0;
+      left:0;
+      background:#000;
+      overflow:hidden;
+      z-index:99999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .video-box video{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+    .floating-ad-320x50{
+      position:fixed;
+      top:4px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:10000;
+      width:320px;
+      max-width:95%;
+      height:50px;
+    }
+    .content-wrapper{ padding-top:40vh; min-height:200vh; }
+    .top-thin-ad{ background:#1a2430; padding:6px 0; margin:0; text-align:center; border-bottom:1px solid #222; }
+    .top-thin-ad-inner{ width:728px; max-width:95%; height:90px; margin:0 auto; }
+    .post{ padding:10px 16px; display:flex; gap:10px; align-items:center; border-bottom:1px solid #222; }
+    .dp{ width:42px; height:42px; border-radius:50%; background:#555; }
+    #creatorName{ font-weight:600; font-size:15px; }
+    #timeAgo{ font-size:12px; color:#aaa; margin-top:2px; }
+    .stats{ display:flex; gap:14px; padding:8px 16px; border-bottom:1px solid #222; font-size:13px; align-items:center; }
+    .stat-item{ display:flex; align-items:center; gap:4px; color:#d0d0d0; }
+    .stat-icon{ width:14px; height:14px; stroke:#d0d0d0; fill:none; }
+    .stats-right{ margin-left:auto; cursor:pointer; font-size:13px; }
+    .blog-content{ padding:14px 16px; font-size:15px; line-height:1.5; }
+    #mainTitle{ margin:0 0 6px 0; font-size:18px; font-weight:600; }
+    .suggestions-header{ padding:10px 16px; font-size:16px; font-weight:700; border-top:1px solid #222; }
+    .video-suggestions-list{ background:transparent; }
+    .suggestion-item{ display:block; width:100%; padding:10px 16px 14px; cursor:pointer; border-bottom:1px solid #1a2430; transition:background .12s; }
+    .suggestion-item:hover{ background:#0b1216; }
+    .suggestion-thumbnail{ width:100%; aspect-ratio:16/9; background:#333; border-radius:6px; overflow:hidden; margin-bottom:8px; }
+    .suggestion-thumbnail img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .suggestion-details{ display:flex; flex-direction:column; justify-content:center; }
+    .suggestion-title{ font-weight:600; font-size:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .suggestion-creator{ font-size:12px; color:#aaa; margin-top:3px; }
+    .suggested-ad-slot{ display:flex; justify-content:center; padding:12px 0; border-bottom:1px solid #222; min-height:250px; }
+    .footer-ad-320x50{ position:fixed; bottom:0; left:0; width:100%; z-index:10001; background:#000; display:flex; justify-content:center; padding:4px 0; }
+    .footer-ad-inner{ width:320px; max-width:95%; height:50px; }
+    
+    /* Social bar (sandboxed iframe) - FIX 2 & 5: Container and iframe made transparent */
+    #socialBarContainer{
+      position:fixed;
+      top:6vh; /* appears a bit below top over video */
+      left:50%;
+      transform:translateX(-50%);
+      z-index:10002;
+      width:320px;
+      max-width:95%;
+      height:56px;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      pointer-events:auto;
+      background:transparent; /* FIX 2/5 */
+    }
+    #socialBarFrame{ 
+        width:100%; 
+        height:100%; 
+        border:0; 
+        border-radius:6px; 
+        overflow:hidden; 
+        background:transparent; /* FIX 2/5 */
+    }
+    .hidden{display:none!important;}
 </style>
 </head>
 <body>
@@ -107,64 +107,64 @@
 <div class="floating-ad-320x50" id="floatingAd320x50"></div>
 
 <div class="video-box">
-  <video id="player" playsinline controls autoplay muted>
-    <source src="{{VIDEO_URL}}" type="video/mp4">
-  </video>
+  <video id="player" playsinline controls autoplay muted>
+    <source src="{{VIDEO_URL}}" type="video/mp4">
+  </video>
 </div>
 
 <div class="content-wrapper">
 
-  <div class="top-thin-ad">
-    <div class="top-thin-ad-inner" id="topThinAdInner"></div>
-  </div>
+  <div class="top-thin-ad">
+    <div class="top-thin-ad-inner" id="topThinAdInner"></div>
+  </div>
 
-  <div class="post">
-    <div class="dp" id="creatorDp"></div>
-    <div>
-      <div id="creatorName">Clipfy Videos</div>
-      <div id="timeAgo">{{TIME_AGO}}</div>
-    </div>
-  </div>
+  <div class="post">
+    <div class="dp" id="creatorDp"></div>
+    <div>
+      <div id="creatorName">Clipfy Videos</div>
+      <div id="timeAgo">{{TIME_AGO}}</div>
+    </div>
+  </div>
 
-  <div class="stats">
-    <div class="stat-item">
-      <svg class="stat-icon" viewBox="0 0 24 24">
-        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
-      <span id="views">{{VIEWS}}</span>
-    </div>
+  <div class="stats">
+    <div class="stat-item">
+      <svg class="stat-icon" viewBox="0 0 24 24">
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+      <span id="views">{{VIEWS}}</span>
+    </div>
 
-    <div class="stat-item">
-      <svg class="stat-icon" viewBox="0 0 24 24">
-        <path d="M12 21s-5-3.3-8-6.7C2 12.5 2 9.5 4 7.5 5.1 6.4 6.6 6 8 6c1.6 0 3.1.8 4 2 0.9-1.2 2.4-2 4-2 1.4 0 2.9.4 4 1.5 2 2 2 5 0 6.8C17 17.7 12 21 12 21z"/>
-      </svg>
-      <span id="likes">{{LIKES}}</span>
-    </div>
+    <div class="stat-item">
+      <svg class="stat-icon" viewBox="0 0 24 24">
+        <path d="M12 21s-5-3.3-8-6.7C2 12.5 2 9.5 4 7.5 5.1 6.4 6.6 6 8 6c1.6 0 3.1.8 4 2 0.9-1.2 2.4-2 4-2 1.4 0 2.9.4 4 1.5 2 2 2 5 0 6.8C17 17.7 12 21 12 21z"/>
+      </svg>
+      <span id="likes">{{LIKES}}</span>
+    </div>
 
-    <div class="stats-right" id="shareBtn">Share</div>
-  </div>
+    <div class="stats-right" id="shareBtn">Share</div>
+  </div>
 
-  <div class="blog-content">
-    <h2 id="mainTitle">{{TITLE}}</h2>
-  </div>
+  <div class="blog-content">
+    <h2 id="mainTitle">{{TITLE}}</h2>
+  </div>
 
-  <div class="suggestions-header">More Viral Videos 🔥</div>
-  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
+  <div class="suggestions-header">More Viral Videos 🔥</div>
+  <div class="video-suggestions-list" id="videoSuggestionsList"></div>
 </div>
 
 <div id="socialBarContainer" aria-hidden="true">
-  <iframe id="socialBarFrame" sandbox="allow-scripts allow-same-origin"></iframe>
+  <iframe id="socialBarFrame" sandbox="allow-scripts allow-same-origin"></iframe>
 </div>
 
 <div class="footer-ad-320x50">
-  <div class="footer-ad-inner" id="footerAdInner"></div>
+  <div class="footer-ad-inner" id="footerAdInner"></div>
 </div>
 
 <script>
 /* =========================
-   CONFIG (ad keys & srcs)
-   ========================= */
+   CONFIG (ad keys & srcs)
+   ========================= */
 const TOP = { key:'b40d9ebf8b9bb68f80451819ab41596e', src:'//stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js', w:728, h:90 };
 const FOOTER = { key:'b43458b980a14fc9fc68555f58ae039f', src:'//stinkymildred.com/b43458b980a14fc9fc68555f58ae039f/invoke.js', w:320, h:50 };
 const FLOATING = { ...FOOTER };
@@ -173,176 +173,176 @@ const POPUNDER_SRC = '//stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf
 const SOCIAL_SRC = '//stinkymildred.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js';
 
 /* =========================
-   UTIL: delay, hash, createScriptWithRetry (FIX 3: Retry mechanism improved)
-   ========================= */
+   UTIL: delay, hash, createScriptWithRetry (FIX 3: Retry mechanism improved)
+   ========================= */
 function delay(ms){ return new Promise(res=>setTimeout(res,ms)); }
 function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){ h=((h<<5)-h)+s.charCodeAt(i); h|=0;} return Math.abs(h).toString(36); }
 
-async function createScriptWithRetry({src, inline, container=document.head, attempts=5, baseDelay=900}){ // FIX 3: attempts=5, baseDelay=900
-  const marker = 'data-src-'+hashStr(src||inline||Math.random().toString());
-  // if(container.querySelector && container.querySelector('script['+marker+']')) return; // Removed this check as logic inside injectAd handles marking
-  for(let i=1;i<=attempts;i++){
-    try{
-      // FIX 3: Clean up previous script attempt if it failed
-      if (i > 1) {
-        const existingScript = container.querySelector(`script[src="${src}"]`) || container.querySelector(`script[data-attempt="${i - 1}"]`);
-        if(existingScript) existingScript.remove();
-      }
+async function createScriptWithRetry({src, inline, container=document.head, attempts=5, baseDelay=900}){
+  const marker = 'data-src-'+hashStr(src||inline||Math.random().toString());
+  for(let i=1;i<=attempts;i++){
+    try{
+      // Clean up previous script attempt if it failed
+      if (i > 1) {
+        const existingScript = container.querySelector(`script[src="${src}"]`) || container.querySelector(`script[data-attempt="${i - 1}"]`);
+        if(existingScript) existingScript.remove();
+      }
 
-      const s = document.createElement('script');
-      s.setAttribute('data-attempt', i); // Add attempt marker
-      if(inline){
-        s.type='text/javascript';
-        s.text = inline;
-      } else {
-        s.type='text/javascript'; s.async=true; s.src = src;
-      }
-      try{s.setAttribute(marker,'1');}catch(e){} // Keep old marker logic
-      container.appendChild(s);
-      
-      await new Promise(res=>{
-        let done=false;
-        s.onload = ()=>{ if(done) return; done=true; res(); };
-        s.onerror = ()=>{ 
-            if(done) return; 
-            done=true; 
-            s.remove(); // Remove failed script
-            res(new Error('script load error')); 
-        };
-        // FIX 3: Increased safety timeout to 6000ms
-        setTimeout(()=>{ if(done) return; done=true; res(); }, 6000); 
-      });
-      return;
-    }catch(e){
-      const wait = baseDelay * Math.pow(1.8, i-1);
-      await delay(wait);
-      continue;
-    }
-  }
+      const s = document.createElement('script');
+      s.setAttribute('data-attempt', i); // Add attempt marker
+      if(inline){
+        s.type='text/javascript';
+        s.text = inline;
+      } else {
+        s.type='text/javascript'; s.async=true; s.src = src;
+      }
+      try{s.setAttribute(marker,'1');}catch(e){} 
+      container.appendChild(s);
+      
+      await new Promise(res=>{
+        let done=false;
+        s.onload = ()=>{ if(done) return; done=true; res(); };
+        s.onerror = ()=>{ 
+            if(done) return; 
+            done=true; 
+            s.remove(); 
+            res(new Error('script load error')); 
+        };
+        // FIX 3: Timeout reduced from 6000ms to 3000ms
+        setTimeout(()=>{ if(done) return; done=true; res(); }, 3000); 
+      });
+      return;
+    }catch(e){
+      const wait = baseDelay * Math.pow(1.8, i-1);
+      await delay(wait);
+      continue;
+    }
+  }
 }
 
 /* =========================
-   Helper: clear ad markers & containers so ads can be re-injected (FIX 1: Required for reload)
-   ========================= */
+   Helper: clear ad markers & containers so ads can be re-injected (FIX 1: Required for reload)
+   ========================= */
 function clearAdContainer(container){
-  if(!container) return;
-  container.innerHTML = '';
-  try{
-    const attrs = Array.from(container.attributes || []);
-    attrs.forEach(a=>{
-      if(a.name && a.name.startsWith('data-ad-')) container.removeAttribute(a.name);
-    });
-  }catch(e){}
+  if(!container) return;
+  container.innerHTML = '';
+  try{
+    const attrs = Array.from(container.attributes || []);
+    attrs.forEach(a=>{
+      if(a.name && a.name.startsWith('data-ad-')) container.removeAttribute(a.name);
+    });
+  }catch(e){}
 }
 
 /* =========================
-   Unified ad injector (keeps single injection per container) (FIX 3: Improved)
-   ========================= */
-async function injectAd({key, width, height, src, container, delayMs=0, attempts=5, asyncMode=false, containerId}){ // FIX 3: attempts=5
-  if(!container) return;
-  const marker = 'data-ad-'+key+'-'+width+'x'+height;
-  if(container.getAttribute(marker)) return;
-  container.setAttribute(marker,'1');
+   Unified ad injector (keeps single injection per container)
+   ========================= */
+async function injectAd({key, width, height, src, container, delayMs=0, attempts=5, asyncMode=false, containerId}){ 
+  if(!container) return;
+  const marker = 'data-ad-'+key+'-'+width+'x'+height;
+  if(container.getAttribute(marker)) return;
+  container.setAttribute(marker,'1');
 
-  if(delayMs>0) await delay(delayMs);
+  if(delayMs>0) await delay(delayMs);
 
-  // for asyncMode (suggested ads) push into atAsyncOptions
-  if(asyncMode){
-    try{
-      if(typeof window.atAsyncOptions!=='object') window.atAsyncOptions=[];
-      window.atAsyncOptions.push({
-        key: key,
-        format: 'js',
-        async: true,
-        container: containerId || container.id || '',
-        params: {}
-      });
-    }catch(e){}
-    // load invoke script in head
-    await createScriptWithRetry({ src: src, container: document.head, attempts });
-    return;
-  }
+  // Use asyncMode ONLY if explicitly requested AND not for the more reliable iframe format.
+  if(asyncMode){
+    try{
+      if(typeof window.atAsyncOptions!=='object') window.atAsyncOptions=[];
+      window.atAsyncOptions.push({
+        key: key,
+        format: 'js',
+        async: true,
+        container: containerId || container.id || '',
+        params: {}
+      });
+    }catch(e){}
+    // load invoke script in head
+    await createScriptWithRetry({ src: src, container: document.head, attempts });
+    return;
+  }
 
-  // normal iframe mode: write atOptions inline then load invoke.js inside a wrapper
-  try{
-    clearAdContainer(container); // Use reliable clear helper
-    
-    const wrapper = document.createElement('div');
-    wrapper.style.width='100%';
-    wrapper.style.height='100%';
-    wrapper.className = 'clipfy-ad-wrapper'; // Add wrapper class for cleaner targeting
-    container.appendChild(wrapper);
+  // normal iframe mode (more reliable): write atOptions inline then load invoke.js inside a wrapper
+  try{
+    clearAdContainer(container); 
+    
+    const wrapper = document.createElement('div');
+    wrapper.style.width='100%';
+    wrapper.style.height='100%';
+    wrapper.className = 'clipfy-ad-wrapper'; 
+    container.appendChild(wrapper);
 
-    const inline = `
-      atOptions = {
-        'key' : '${key}',
-        'format' : 'iframe',
-        'height' : ${height},
-        'width' : ${width},
-        'params' : {}
-      };
-    `;
-    // FIX 3: Use higher attempts
-    await createScriptWithRetry({ inline, container: wrapper, attempts });
-    await createScriptWithRetry({ src, container: wrapper, attempts });
-  }catch(e){
-      // if fails, clear marker so future attempts can retry
-      try{
-          container.removeAttribute(marker);
-          clearAdContainer(container);
-      }catch(_){}
-  }
+    const inline = `
+      atOptions = {
+        'key' : '${key}',
+        'format' : 'iframe',
+        'height' : ${height},
+        'width' : ${width},
+        'params' : {}
+      };
+    `;
+    
+    await createScriptWithRetry({ inline, container: wrapper, attempts });
+    await createScriptWithRetry({ src, container: wrapper, attempts });
+  }catch(e){
+      // if fails, clear marker so future attempts can retry
+      try{
+          container.removeAttribute(marker);
+          clearAdContainer(container);
+      }catch(_){}
+  }
 }
 
 /* =========================
-   Global Ad Refresh Logic (FIX 1: Ads Reloading on Video Change)
-   ========================= */
+   Global Ad Refresh Logic (FIX 1: Ads Reloading on Video Change)
+   ========================= */
 let lastAdRefreshTs = 0;
-const MIN_AD_REFRESH_INTERVAL = 700; 
+const MIN_AD_REFRESH_INTERVAL = 700; 
 
 let intersectionObservers = new WeakMap(); // To manage suggested ad observation
 
 async function refreshAllAds({staggerBase=400} = {}){
-  const now = Date.now();
-  if(now - lastAdRefreshTs < MIN_AD_REFRESH_INTERVAL) return;
-  lastAdRefreshTs = now;
+  const now = Date.now();
+  if(now - lastAdRefreshTs < MIN_AD_REFRESH_INTERVAL) return;
+  lastAdRefreshTs = now;
 
-  // 1. Top Banner Ad (728x90) - Slim Banner
-  try{
-    clearAdContainer(topThinAdInner);
-    const topDelay = staggerBase + 200 + Math.floor(Math.random()*300);
-    injectAd({ key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner, delayMs: topDelay, attempts: 5, asyncMode: false });
-  }catch(e){}
+  // 1. Top Banner Ad (728x90)
+  try{
+    clearAdContainer(topThinAdInner);
+    const topDelay = staggerBase + 200 + Math.floor(Math.random()*200);
+    injectAd({ key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner, delayMs: topDelay, attempts: 5, asyncMode: false });
+  }catch(e){}
 
-  // 2. Floating Ad (320x50)
-  try{
-    clearAdContainer(floatingAd320);
-    const floatDelay = staggerBase + 500 + Math.floor(Math.random()*400);
-    injectAd({ key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320, delayMs: floatDelay, attempts: 5, asyncMode: false });
-  }catch(e){}
+  // 2. Floating Ad (320x50)
+  try{
+    clearAdContainer(floatingAd320);
+    const floatDelay = staggerBase + 500 + Math.floor(Math.random()*300);
+    injectAd({ key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320, delayMs: floatDelay, attempts: 5, asyncMode: false });
+  }catch(e){}
 
-  // 3. Footer Ad (320x50)
-  try{
-    clearAdContainer(footerAdInner);
-    const footerDelay = staggerBase + 800 + Math.floor(Math.random()*500);
-    injectAd({ key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner, delayMs: footerDelay, attempts: 5, asyncMode: false });
-  }catch(e){}
+  // 3. Footer Ad (320x50)
+  try{
+    clearAdContainer(footerAdInner);
+    const footerDelay = staggerBase + 800 + Math.floor(Math.random()*400);
+    injectAd({ key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner, delayMs: footerDelay, attempts: 5, asyncMode: false });
+  }catch(e){}
 
-  // 4. Suggested List Ads (Re-inject/Re-observe)
-  try{
-    const suggestedSlots = document.querySelectorAll('.suggested-ad-slot > div[id^="'+SUGGEST.containerPrefix+'"]');
-    suggestedSlots.forEach((inner, idx)=>{
-      clearAdContainer(inner);
-      // Re-observe: This will re-trigger ad injection if the slot is in the viewport
-      observeAndInject(inner, idx + 1);
-    });
-  }catch(e){}
+  // 4. Suggested List Ads (Re-inject/Re-observe)
+  try{
+    // FIX 1: Updated selector to strictly target suggested slots inside videoSuggestionsList
+    const suggestedSlots = document.querySelectorAll('.video-suggestions-list .suggested-ad-slot > div[id^="'+SUGGEST.containerPrefix+'"]');
+    suggestedSlots.forEach((inner, idx)=>{
+      clearAdContainer(inner);
+      // Re-observe: This will re-trigger ad injection if the slot is in the viewport
+      observeAndInject(inner, idx + 1);
+    });
+  }catch(e){}
 }
 
 
 /* =========================
-   Fetch videos & render suggestions (lazy ad injection)
-   ========================= */
+   Fetch videos & render suggestions (lazy ad injection)
+   ========================= */
 let VIDEOID='{{VIDEO_ID}}';
 const APIBASE='{{API_BASE}}';
 let ALLVIDEOS=[];
@@ -350,8 +350,8 @@ let ALLVIDEOS=[];
 fetch('https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/metadata/index.json')
 .then(r=>r.json())
 .then(d=>{
-  ALLVIDEOS = d.sort(()=>Math.random()-0.5);
-  renderVideoSuggestions(ALLVIDEOS);
+  ALLVIDEOS = d.sort(()=>Math.random()-0.5);
+  renderVideoSuggestions(ALLVIDEOS);
 }).catch(()=>{});
 
 const player = document.getElementById('player');
@@ -368,273 +368,291 @@ const socialBarContainer = document.getElementById('socialBarContainer');
 const socialBarFrame = document.getElementById('socialBarFrame');
 
 player.addEventListener('play', ()=>{
-  // fire view hit (non-blocking)
-  try{
-    fetch(APIBASE+'hit', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({videoid: VIDEOID, type:'view'})
-    }).catch(()=>{});
-  }catch(e){}
-  // show social bar after small delay (only once)
-  showSocialBarAfterPlay();
+  // fire view hit (non-blocking)
+  try{
+    fetch(APIBASE+'hit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({videoid: VIDEOID, type:'view'})
+    }).catch(()=>{});
+  }catch(e){}
+  // show social bar after small delay (only once)
+  showSocialBarAfterPlay();
 });
 
 /* Share button */
 const shareBtn = document.getElementById('shareBtn');
 if(shareBtn) shareBtn.onclick = ()=>{
-  const mt = document.querySelector('meta[name="twitter:title"]');
-  const shareTitle = (mt && mt.getAttribute('content')) || document.title;
-  if(navigator.share) navigator.share({title:shareTitle, url:location.href}).catch(()=>{});
-  else navigator.clipboard?.writeText(location.href).catch(()=>{});
+  const mt = document.querySelector('meta[name="twitter:title"]');
+  const shareTitle = (mt && mt.getAttribute('content')) || document.title;
+  if(navigator.share) navigator.share({title:shareTitle, url:location.href}).catch(()=>{});
+  else navigator.clipboard?.writeText(location.href).catch(()=>{});
 };
 
-/* Render suggestions with ad slots every 2 items. */
+/* Render suggestions with ad slots every 2 items. (Keeping original logic for placement) */
 function renderVideoSuggestions(videos){
-  videoSuggestionsList.innerHTML='';
-  let shown=0;
-  let adCount=0;
-  for(const v of videos){
-    if(!v || v.videoid===VIDEOID) continue;
-    if(v.videoid && v.videoid.includes('_safe')) continue;
+  videoSuggestionsList.innerHTML='';
+  let shown=0;
+  let adCount=0;
+  for(const v of videos){
+    if(!v || v.videoid===VIDEOID) continue;
+    if(v.videoid && v.videoid.includes('_safe')) continue;
 
-    // insert ad slot every 2 items (before the item)
-    if(shown>0 && shown%2===0){
-      adCount++;
-      const slot = document.createElement('div');
-      slot.className='suggested-ad-slot';
-      const inner = document.createElement('div');
-      const containerId = SUGGEST.containerPrefix + '-' + adCount;
-      inner.id = containerId;
-      inner.style.width='300px';
-      inner.style.height='250px';
-      inner.style.maxWidth='95%';
-      slot.appendChild(inner);
-      videoSuggestionsList.appendChild(slot);
+    // insert ad slot every 2 items (before the item)
+    if(shown>0 && shown%2===0){
+      adCount++;
+      const slot = document.createElement('div');
+      slot.className='suggested-ad-slot';
+      const inner = document.createElement('div');
+      const containerId = SUGGEST.containerPrefix + '-' + adCount;
+      inner.id = containerId;
+      inner.style.width='300px';
+      inner.style.height='250px';
+      inner.style.maxWidth='95%';
+      slot.appendChild(inner);
+      videoSuggestionsList.appendChild(slot);
 
-      // lazy observe and inject with small stagger based on adCount
-      observeAndInject(inner, adCount);
-    }
+      // lazy observe and inject with small stagger based on adCount
+      observeAndInject(inner, adCount);
+    }
 
-    const item = document.createElement('div');
-    item.className='suggestion-item';
-    item.dataset.videoId = v.videoid;
-    item.innerHTML = `
-      <div class="suggestion-thumbnail">
-        <img src="${escapeHtml(v.thumburl)}" loading="lazy" alt="thumb">
-      </div>
-      <div class="suggestion-details">
-        <div class="suggestion-title">${escapeHtml(v.title)}</div>
-        <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
-      </div>
-    `;
-    item.onclick = ()=> playSuggestedVideo(v);
-    videoSuggestionsList.appendChild(item);
-    shown++;
-  }
+    const item = document.createElement('div');
+    item.className='suggestion-item';
+    item.dataset.videoId = v.videoid;
+    item.innerHTML = `
+      <div class="suggestion-thumbnail">
+        <img src="${escapeHtml(v.thumburl)}" loading="lazy" alt="thumb">
+      </div>
+      <div class="suggestion-details">
+        <div class="suggestion-title">${escapeHtml(v.title)}</div>
+        <div class="suggestion-creator">${escapeHtml(v.creator)}</div>
+      </div>
+    `;
+    item.onclick = ()=> playSuggestedVideo(v);
+    videoSuggestionsList.appendChild(item);
+    shown++;
+  }
 }
 
 function observeAndInject(container, idx){
-  if(intersectionObservers.has(container)) return; // Avoid re-observing
+  if(intersectionObservers.has(container)) return; // Avoid re-observing
 
-  const io = new IntersectionObserver((entries, obs)=>{
-    for(const en of entries){
-      if(en.isIntersecting){
-        const stagger = 400 * (idx % 3) + Math.floor(Math.random()*400) + 200; // Increased base stagger
-        injectAd({
-          key: SUGGEST.key,
-          width:300, height:250, src: SUGGEST.src,
-          container: container, delayMs: stagger, attempts:5, asyncMode:true, containerId: container.id // FIX 3: attempts=5
-        });
-        obs.unobserve(container);
-        intersectionObservers.delete(container);
-      }
-    }
-  }, {threshold:0.35});
-  io.observe(container);
-  intersectionObservers.set(container, io); // Store observer
+  const io = new IntersectionObserver((entries, obs)=>{
+    for(const en of entries){
+      if(en.isIntersecting){
+        const stagger = 400 * (idx % 3) + Math.floor(Math.random()*400) + 200; 
+        injectAd({
+          key: SUGGEST.key,
+          width:300, height:250, src: SUGGEST.src,
+          container: container, delayMs: stagger, attempts:5, asyncMode:false, containerId: container.id // FIX 2: asyncMode set to FALSE for reliability
+        });
+        obs.unobserve(container);
+        intersectionObservers.delete(container);
+      }
+    }
+  }, {threshold:0.35});
+  io.observe(container);
+  intersectionObservers.set(container, io); // Store observer
 }
 
 /* Play suggested video without full reload (FIX 1: Ads Reloading) */
 function playSuggestedVideo(v){
-  try{
-    const srcEl = player.querySelector('source');
-    if(srcEl){
-      srcEl.src = v.videourl;
-      player.load();
-      player.play().catch(()=>{});
-    } else {
-      player.src = v.videourl;
-      player.play().catch(()=>{});
-    }
-  }catch(e){}
-  VIDEOID = v.videoid;
-  mainTitleEl.innerText = v.title || '';
-  timeAgoEl.innerText = v.timeago || '';
-  creatorNameEl.innerText = v.creator || 'Clipfy Videos';
-  if(likesEl) likesEl.innerText = v.likes ?? 0;
-  if(viewsEl) viewsEl.innerText = v.views ?? 0;
+  try{
+    const srcEl = player.querySelector('source');
+    if(srcEl){
+      srcEl.src = v.videourl;
+      player.load();
+      player.play().catch(()=>{});
+    } else {
+      player.src = v.videourl;
+      player.play().catch(()=>{});
+    }
+  }catch(e){}
+  VIDEOID = v.videoid;
+  mainTitleEl.innerText = v.title || '';
+  timeAgoEl.innerText = v.timeago || '';
+  creatorNameEl.innerText = v.creator || 'Clipfy Videos';
+  if(likesEl) likesEl.innerText = v.likes ?? 0;
+  if(viewsEl) viewsEl.innerText = v.views ?? 0;
 
-  safeUpdateMetaTags({
-    title: v.title,
-    document_title: (v.title||'') + ' | Clipfy Player',
-    description: v.description,
-    image: v.thumburl,
-    playerpage: 'v/'+v.videoid+'.html',
-    stream: v.videourl
-  });
+  safeUpdateMetaTags({
+    title: v.title,
+    document_title: (v.title||'') + ' | Clipfy Player',
+    description: v.description,
+    image: v.thumburl,
+    playerpage: 'v/'+v.videoid+'.html',
+    stream: v.videourl
+  });
 
-  history.pushState({...v}, v.title, 'v/'+v.videoid+'.html');
-  window.scrollTo({top:0, behavior:'smooth'});
-  
-  // FIX 1: Trigger ad reload after video change
-  setTimeout(()=>{ refreshAllAds({staggerBase:1000}); }, 800);
+  history.pushState({...v}, v.title, 'v/'+v.videoid+'.html');
+  window.scrollTo({top:0, behavior:'smooth'});
+  
+  // FIX 1: Trigger ad reload after video change (Faster refresh)
+  setTimeout(()=>{ refreshAllAds({staggerBase:500}); }, 500); // Faster stagger base
 }
 
 window.onpopstate = e=>{
-  if(!e.state) return;
-  const v = e.state;
-  playSuggestedVideo(v);
-  // FIX 1: Trigger ad reload after back/forward button
-  setTimeout(()=>{ refreshAllAds({staggerBase:1000}); }, 800);
+  if(!e.state) return;
+  const v = e.state;
+  playSuggestedVideo(v);
+  // FIX 1: Trigger ad reload after back/forward button (Faster refresh)
+  setTimeout(()=>{ refreshAllAds({staggerBase:500}); }, 500); // Faster stagger base
 };
 
 function safeUpdateMetaTags(o){
-  try{
-    setOrCreateMeta('twitter:title', o.title);
-    setOrCreateMeta('twitter:image', o.image);
-    setOrCreateMeta('twitter:description', o.description);
-    setOrCreateMeta('og:image', o.image);
-    setOrCreateMeta('twitter:player', o.playerpage);
-    setOrCreateMeta('twitter:player:stream', o.stream);
-    document.title = o.document_title || document.title;
-  }catch(e){}
+  try{
+    setOrCreateMeta('twitter:title', o.title);
+    setOrCreateMeta('twitter:image', o.image);
+    setOrCreateMeta('twitter:description', o.description);
+    setOrCreateMeta('og:image', o.image);
+    setOrCreateMeta('twitter:player', o.playerpage);
+    setOrCreateMeta('twitter:player:stream', o.stream);
+    document.title = o.document_title || document.title;
+  }catch(e){}
 }
 
 function setOrCreateMeta(name, value){
-  if(!value) return;
-  const isOg = name.startsWith('og');
-  const sel = isOg ? `meta[property="${name}"]` : `meta[name="${name}"]`;
-  let el = document.querySelector(sel);
-  if(!el){
-    el = document.createElement('meta');
-    if(isOg) el.setAttribute('property', name);
-    else el.setAttribute('name', name);
-    document.head.appendChild(el);
-  }
-  el.setAttribute('content', value);
+  if(!value) return;
+  const isOg = name.startsWith('og');
+  const sel = isOg ? `meta[property="${name}"]` : `meta[name="${name}"]`;
+  let el = document.querySelector(sel);
+  if(!el){
+    el = document.createElement('meta');
+    if(isOg) el.setAttribute('property', name);
+    else el.setAttribute('name', name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', value);
 }
 
 function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* =========================
-   INITIAL AD INJECTIONS (top, footer, floating) with staggered delays
-   ========================= */
+   INITIAL AD INJECTIONS (top, footer, floating) with OPTIMIZED delays
+   ========================= */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // top banner delay 800-1500ms
-  injectAd({ key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner, delayMs: 800 + Math.floor(Math.random()*700), attempts:5, asyncMode:false }); // FIX 3: attempts=5
+  // top banner delay: 400-800ms
+  injectAd({ key: TOP.key, width: TOP.w, height: TOP.h, src: TOP.src, container: topThinAdInner, delayMs: 400 + Math.floor(Math.random()*400), attempts:5, asyncMode:false }); 
 
-  // footer banner delay 1200-2300ms
-  injectAd({ key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner, delayMs: 1200 + Math.floor(Math.random()*1100), attempts:5, asyncMode:false }); // FIX 3: attempts=5
+  // footer banner delay: 800-1400ms
+  injectAd({ key: FOOTER.key, width: FOOTER.w, height: FOOTER.h, src: FOOTER.src, container: footerAdInner, delayMs: 800 + Math.floor(Math.random()*600), attempts:5, asyncMode:false }); 
 
-  // floating banner delay 2000-3600ms
-  injectAd({ key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320, delayMs: 2000 + Math.floor(Math.random()*1600), attempts:5, asyncMode:false }); // FIX 3: attempts=5
+  // floating banner delay: 1500-2500ms
+  injectAd({ key: FLOATING.key, width: FLOATING.w, height: FLOATING.h, src: FLOATING.src, container: floatingAd320, delayMs: 1500 + Math.floor(Math.random()*1000), attempts:5, asyncMode:false }); 
 
-  // schedule popunder after 15s (cooldown preserved)
-  setTimeout(()=>{ try{ initPopunder(); }catch(e){} }, 15000 + Math.floor(Math.random()*3000));
+  // SCHEDULE AUTO-REFRESH FOR FLOATING AD (Sticky Ads benefit most from refresh)
+  setInterval(()=>{
+      // Check if player is playing AND if the window is focused before refreshing fixed ads
+      if(!player.paused && document.hasFocus()){
+        try{
+          clearAdContainer(floatingAd320);
+          injectAd({
+            key: FLOATING.key,
+            width: FLOATING.w, height: FLOATING.h, src: FLOATING.src,
+            container: floatingAd320,
+            delayMs: 200, // Minimal delay on auto-refresh
+            attempts: 5, 
+            asyncMode: false
+          });
+        }catch(e){}
+      }
+  }, 30000); // Refresh every 30 seconds
+
+  // schedule popunder after 15s (cooldown preserved)
+  setTimeout(()=>{ try{ initPopunder(); }catch(e){} }, 15000 + Math.floor(Math.random()*3000));
 });
 
 /* =========================
-   POPUNDER logic (12h cooldown)
-   ========================= */
+   POPUNDER logic (12h cooldown preserved)
+   ========================= */
 function initPopunder(){
-  const KEY = 'clipfy_pop_ts';
-  const now = Date.now();
-  const last = parseInt(localStorage.getItem(KEY) || '0', 10);
-  const LIMIT = 12*60*60*1000;
-  if(last && (now - last) < LIMIT) return;
-  try{
-    localStorage.setItem(KEY, now);
-    createScriptWithRetry({ src: POPUNDER_SRC, container: document.body, attempts:3 }).catch(()=>{});
-  }catch(e){}
+  const KEY = 'clipfy_pop_ts';
+  const now = Date.now();
+  const last = parseInt(localStorage.getItem(KEY) || '0', 10);
+  const LIMIT = 12*60*60*1000;
+  if(last && (now - last) < LIMIT) return;
+  try{
+    localStorage.setItem(KEY, now);
+    createScriptWithRetry({ src: POPUNDER_SRC, container: document.body, attempts:3 }).catch(()=>{});
+  }catch(e){}
 }
 
 /* =========================
-   SOCIAL BAR (sandbox iframe) (FIX 5: Inner Content Transparency)
-   ========================= */
+   SOCIAL BAR (sandbox iframe) (FIX 5: Inner Content Transparency)
+   ========================= */
 let socialShown = false;
 function showSocialBarAfterPlay(){
-  if(socialShown) return;
-  socialShown = true;
-  const delayAfterPlay = 5000 + Math.floor(Math.random()*2000); // as requested: a bit after video starts
-  setTimeout(async ()=>{
-    try{
-      socialBarContainer.style.display = 'flex';
-      socialBarContainer.setAttribute('aria-hidden','false');
-      
-      const iframeHTML = `
-        <!doctype html>
-        <html>
-        <head>
-          <meta name="viewport" content="width=device-width,initial-scale=1">
-          <style>
-             /* FIX 5: Iframe internal content background transparent */
-            html,body{margin:0;padding:0;background:transparent!important;}
-          </style>
-          <script>
-            // push the social script into iframe context
-            (function(){
-              var s = document.createElement('script');
-              s.type = 'text/javascript';
-              s.src = '${SOCIAL_SRC}';
-              s.async = true;
-              document.head.appendChild(s);
-            })();
-          <\/script>
-        </head>
-        <body></body>
-        </html>
-      `;
-      socialBarFrame.srcdoc = iframeHTML;
-    }catch(e){}
-  }, delayAfterPlay);
+  if(socialShown) return;
+  socialShown = true;
+  const delayAfterPlay = 5000 + Math.floor(Math.random()*2000); // as requested: a bit after video starts
+  setTimeout(async ()=>{
+    try{
+      socialBarContainer.style.display = 'flex';
+      socialBarContainer.setAttribute('aria-hidden','false');
+      
+      const iframeHTML = `
+        <!doctype html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <style>
+             /* FIX 5: Iframe internal content background transparent */
+            html,body{margin:0;padding:0;background:transparent!important;}
+          </style>
+          <script>
+            // push the social script into iframe context
+            (function(){
+              var s = document.createElement('script');
+              s.type = 'text/javascript';
+              s.src = '${SOCIAL_SRC}';
+              s.async = true;
+              document.head.appendChild(s);
+            })();
+          <\/script>
+        </head>
+        <body></body>
+        </html>
+      `;
+      socialBarFrame.srcdoc = iframeHTML;
+    }catch(e){}
+  }, delayAfterPlay);
 }
 
 /* =========================
-   Prevent page-wide accidental redirects:
-   ========================= */
+   Prevent page-wide accidental redirects:
+   ========================= */
 (function protectGlobalOpen(){
-  try{
-    const origOpen = window.open.bind(window);
-    window._clipfy_last_target = null;
-    document.addEventListener('click', function(ev){
-      window._clipfy_last_target = ev.target;
-      setTimeout(()=>{ window._clipfy_last_target = null; }, 220);
-    }, true);
+  try{
+    const origOpen = window.open.bind(window);
+    window._clipfy_last_target = null;
+    document.addEventListener('click', function(ev){
+      window._clipfy_last_target = ev.target;
+      setTimeout(()=>{ window._clipfy_last_target = null; }, 220);
+    }, true);
 
-    window.open = function(...args){
-      try{
-        const last = window._clipfy_last_target;
-        if(last){
-          const allowed = [
-            document.getElementById('socialBarContainer'),
-            document.getElementById('topThinAdInner'),
-            document.getElementById('footerAdInner'),
-            document.getElementById('floatingAd320x50')
-          ];
-          for(const p of allowed){
-            if(!p) continue;
-            if(p.contains(last)) return origOpen(...args);
-          }
-        }
-      }catch(e){}
-      return null;
-    };
-  }catch(e){}
+    window.open = function(...args){
+      try{
+        const last = window._clipfy_last_target;
+        if(last){
+          const allowed = [
+            document.getElementById('socialBarContainer'),
+            document.getElementById('topThinAdInner'),
+            document.getElementById('footerAdInner'),
+            document.getElementById('floatingAd320x50')
+          ];
+          for(const p of allowed){
+            if(!p) continue;
+            if(p.contains(last)) return origOpen(...args);
+          }
+        }
+      }catch(e){}
+      return null;
+    };
+  }catch(e){}
 })();
 
 /* =========================
-   End of script
-   ========================= */
+   End of script
+   ========================= */
 </script>
 
 </body>
