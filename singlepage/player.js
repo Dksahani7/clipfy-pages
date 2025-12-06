@@ -1,7 +1,7 @@
 
 /* CONFIG */
 // R2 JSON
-const DATA_URL = "https://your-r2-url/videos.json";  // <-- APNA URL DAAL
+const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/singlepage/index.json";  // <-- APNA URL DAAL
 
 // URL params
 const params = new URLSearchParams(location.search);
