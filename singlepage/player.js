@@ -6,7 +6,7 @@ let VIDEOID = params.get("v");
 const twitterMode = params.get("t") === "1";
 const safeMode = params.get("safe") === "1";
 
-let videos = {}; // FINAL normalized object
+let videos = {}; // normalized object
 
 /* DOM */
 const player = document.getElementById("player");
@@ -23,23 +23,21 @@ async function loadData() {
     const r = await fetch(DATA_URL, { cache: "no-store" });
     const raw = await r.json();
 
-    // FIX: convert ARRAY → OBJECT with proper fields
+    // FIX: MATCH EXACT KEYS FROM YOUR index.json
     raw.forEach(v => {
-        videos[v.video_id] = {
-            id: v.video_id,
+        videos[v.videoid] = {
+            id: v.videoid,
             title: v.title,
             description: v.description || "",
-            creator: v.creator || "Clipfy Videos",
-            timeago: v.timeago || "",
-            views: v.views || 0,
-            likes: v.likes || 0,
+            creator: v.creator,
+            timeago: v.timeago,
+            views: v.views,
+            likes: v.likes,
             videourl: v.videourl,
-            thumb: v.thumburl,
-            safe_thumb: v.thumburl_blur || v.thumburl
+            thumb: v.thumb,
+            safe_thumb: v.safe_thumb || v.thumb
         };
     });
-
-    console.log("FINAL videos:", videos);
 
     if (!VIDEOID || !videos[VIDEOID]) {
         VIDEOID = Object.keys(videos)[0];
@@ -56,25 +54,26 @@ function loadVideo(id, pushState = true) {
 
     VIDEOID = id;
 
-    // FIX: guaranteed correct videourl
+    // CORRECT SOURCE
     videoSource.src = v.videourl;
     player.load();
-    player.play().catch(()=>{});
+    player.play().catch(() => {});
 
+    // UI
     mainTitle.textContent = v.title;
     creatorName.textContent = v.creator;
     timeAgo.textContent = v.timeago;
     viewsEl.textContent = v.views;
     likesEl.textContent = v.likes;
 
+    // CORRECT THUMB
     const image = safeMode ? v.safe_thumb : v.thumb;
 
+    // META TAGS
     setMeta("twitter:title", v.title);
     setMeta("twitter:description", v.description);
     setMeta("twitter:image", image);
     setMeta("og:image", image);
-
-    setMeta("twitter:player", location.href);
     setMeta("twitter:player:stream", v.videourl);
 
     document.title = v.title + " | Clipfy Player";
@@ -84,10 +83,6 @@ function loadVideo(id, pushState = true) {
             (twitterMode ? "&t=1" : "") +
             (safeMode ? "&safe=1" : "");
         history.pushState({ id }, "", newURL);
-    }
-
-    if (typeof window.refreshAllAds === "function") {
-        setTimeout(() => refreshAllAds({ staggerBase: 500 }), 300);
     }
 }
 
@@ -101,12 +96,14 @@ function renderSuggestions() {
 
         const item = document.createElement("div");
         item.className = "suggestion-item";
+
         item.innerHTML = `
             <div class="suggestion-thumbnail">
                 <img src="${safeMode ? v.safe_thumb : v.thumb}">
             </div>
             <div class="suggestion-title">${v.title}</div>
         `;
+
         item.onclick = () => {
             loadVideo(id, true);
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -116,11 +113,9 @@ function renderSuggestions() {
     });
 }
 
-/* META */
 function setMeta(name, value) {
-    let el =
-        document.querySelector(`meta[name="${name}"]`) ||
-        document.querySelector(`meta[property="${name}"]`);
+    let el = document.querySelector(`meta[name="${name}"]`) ||
+             document.querySelector(`meta[property="${name}"]`);
     if (!el) {
         el = document.createElement("meta");
         if (name.startsWith("og")) el.setAttribute("property", name);
@@ -135,5 +130,5 @@ window.onpopstate = (e) => {
     if (e.state?.id) loadVideo(e.state.id, false);
 };
 
-/* start */
+/* START */
 loadData();
