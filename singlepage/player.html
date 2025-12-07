@@ -9,8 +9,10 @@
 <meta name="twitter:description" content="">
 <meta name="twitter:image" content="">
 <meta property="og:image" content="">
+
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="720">
+
 <meta name="twitter:player" content="">
 <meta name="twitter:player:width" content="720">
 <meta name="twitter:player:height" content="405">
@@ -20,9 +22,9 @@
 <style>
 body{
 	background:#0f141a;color:#fff;margin:0;font-family:Arial;
+	overflow-x:hidden;
 }
 
-/* VIDEO */
 .video-box{
 	width:100%;height:40vh;position:fixed;top:0;left:0;
 	background:#000;z-index:9999;display:flex;justify-content:center;
@@ -31,72 +33,96 @@ body{
 	width:100%;height:100%;object-fit:contain;
 }
 
-/* CONTENT */
-.content-wrapper{ padding-top:40vh; }
-
-/* TOP AD */
-.top-thin-ad{
-	background:#1a2430;padding:3px 0;border-bottom:1px solid #222;text-align:center;
+.content-wrapper{
+	padding-top:40vh;
+	max-width:100vw;
+	overflow-x:hidden;
 }
-.top-thin-ad-inner{ width:728px;max-width:95%;margin:0 auto; }
 
-/* POST */
+.top-thin-ad{
+	background:#1a2430;
+	padding:3px 0;
+	border-bottom:1px solid #222;
+	text-align:center;
+	min-height:90px;
+	overflow:hidden;
+}
+.top-thin-ad-inner{
+	width:728px;
+	max-width:95%;
+	margin:0 auto;
+}
+
 .post{
 	padding:8px 14px;display:flex;gap:10px;border-bottom:1px solid #222;
 }
 .dp{
-	width:42px;height:42px;border-radius:50%;background:#555;background-size:cover;background-position:center;
+	width:42px;height:42px;border-radius:50%;background:#555;
+	background-size:cover;
+	background-position:center;
 }
 
-/* STATS */
 .stats{
 	display:flex;gap:14px;padding:8px 14px;border-bottom:1px solid #222;
 	font-size:14px;color:#ccc;
 }
-.stat-item{ display:flex;align-items:center;gap:6px; }
+.stat-item{
+	display:flex;align-items:center;gap:6px;
+}
 
-/* TITLE */
-.blog-content{ padding:12px 14px;font-size:15px;line-height:1.4; }
-#mainTitle{ font-size:18px;font-weight:600;margin-bottom:10px; }
+.blog-content{
+	padding:12px 14px;font-size:15px;line-height:1.4;
+}
+#mainTitle{
+	font-size:18px;font-weight:600;margin-bottom:10px;
+}
 
-/* SUGGESTIONS */
+.inline-ad-wrapper{
+	display:flex;
+	justify-content:center;
+	padding:12px 0;
+	min-height:250px;
+	background:#0a0e13;
+	overflow:hidden;
+	width:100%;
+}
+
 .suggestions-header{
 	padding:10px 14px;font-size:16px;font-weight:700;border-top:1px solid #222;
 }
+
 .suggestion-item{
-	padding:10px 14px;border-bottom:1px solid #1a2430;cursor:pointer;display:flex;gap:10px;align-items:center;
+	padding:10px 14px;border-bottom:1px solid #1a2430;cursor:pointer;
+	overflow:hidden;
 }
 .suggestion-thumbnail{
-	width:40%;aspect-ratio:16/9;overflow:hidden;border-radius:6px;flex:0 0 40%;
+	width:100%;
+	aspect-ratio:16/9;
+	overflow:hidden;
+	border-radius:6px;
+	max-width:100%;
 }
 .suggestion-thumbnail img{
 	width:100%;height:100%;object-fit:cover;
 }
-.suggestion-title{ flex:1;font-size:14px; }
-
-/* INLINE AD */
-.inline-ad{
-	width:100%;
-	display:flex;
-	justify-content:center;
-	margin:12px 0;
+.suggestion-title{
+	padding-top:8px;
+	font-size:14px;
 }
 
-/* FOOTER AD */
 .footer-ad-320x50{
-	position:fixed;
-	bottom:0;
-	width:100%;
-	background:#000;
+	position:fixed;bottom:0;width:100%;background:#000;
 	display:flex;
 	justify-content:center;
+	padding:5px 0;
 	z-index:10000;
+	min-height:50px;
+	overflow:hidden;
 }
 .footer-ad-inner{
 	width:320px;
-	min-height:0px;
+	max-width:100%;
 }
-.hidden{ display:none !important; }
 
 @media (min-width: 768px) {
     .video-box { height: 500px; }
@@ -107,96 +133,68 @@ body{
 
 <body>
 
-<!-- VIDEO -->
 <div class="video-box">
-	<video id="player" playsinline controls controlsList="nodownload nofullscreen" autoplay muted>
+	<video id="player" playsinline controls controlsList="nodownload nofullscreen" autoplay muted> 
 		<source id="videoSource" src="">
 	</video>
 </div>
 
 <div class="content-wrapper">
 
-	<!-- TOP AD (Adsterra 728x90) -->
 	<div class="top-thin-ad">
-		<div class="top-thin-ad-inner" id="topAd">
-			<!-- Adsterra TOP (728x90) -->
-<script type="text/javascript">
-  atOptions = {
-  	'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
-  	'format' : 'iframe',
-  	'height' : 90,
-  	'width' : 728,
-  	'params' : {}
-  };
-</script>
-<script type="text/javascript" src="//stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
-		</div>
+		<div class="top-thin-ad-inner" id="topAd"></div>
 	</div>
 
-	<!-- POST / CREATOR -->
 	<div class="post">
 		<div class="dp" id="creatorDp"></div>
-		<div style="flex:1">
-			<div id="creatorName" style="font-weight:600"></div>
-			<div id="timeAgo" style="font-size:13px;color:#aaa"></div>
+		<div>
+			<div id="creatorName"></div> 
+			<div id="timeAgo"></div>
 		</div>
 	</div>
 
-	<!-- STATS -->
 	<div class="stats">
 		<div class="stat-item"><span id="views">0</span></div>
 		<div class="stat-item"><span id="likes">0</span></div>
 	</div>
 
-	<!-- TITLE -->
 	<div class="blog-content">
 		<h2 id="mainTitle"></h2>
 	</div>
 
-	<!-- SUGGESTIONS HEADER -->
 	<div class="suggestions-header">More Viral Videos 🔥</div>
 	<div id="suggestions"></div>
 
 </div>
 
-<!-- FOOTER AD (320x50) - auto-hide if not loaded -->
-<div class="footer-ad-320x50 hidden" id="footerBox">
-	<div class="footer-ad-inner" id="footerAd">
-		<!-- Adsterra FOOTER 320x50 -->
-<script type="text/javascript">
-  atOptions = {
-  	'key' : 'b43458b980a14fc9fc68555f58ae039f',
-  	'format' : 'iframe',
-  	'height' : 50,
-  	'width' : 320,
-  	'params' : {}
-  };
-</script>
-<script type="text/javascript" src="//stinkymildred.com/b43458b980a14fc9fc68555f58ae039f/invoke.js"></script>
-	</div>
+<div class="footer-ad-320x50">
+	<div class="footer-ad-inner" id="footerAd"></div>
 </div>
 
 <script>
-// footer auto-show when iframe present
-setTimeout(() => {
-	let iframe = document.querySelector('#footerAd iframe');
-	if (iframe && iframe.src) {
-		document.getElementById("footerBox").classList.remove("hidden");
-	} else {
-		// Some ad scripts append later — listen for DOM changes briefly
-		const obs = new MutationObserver((m) => {
-			if (document.querySelector('#footerAd iframe')) {
-				document.getElementById("footerBox").classList.remove("hidden");
-				obs.disconnect();
-			}
-		});
-		obs.observe(document.getElementById('footerAd'), { childList: true, subtree: true });
-	}
-}, 1500);
-</script>
+const AD_CODE_CONFIG = {
+    TOP_AD_CODE: `
+        <script type="text/javascript">
+          atOptions = { 'key' : 'b40d9ebf8b9bb68f80451819ab41596e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+        <\/script>
+        <script type="text/javascript" src="//stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"><\/script>
+    `, 
 
-<script>
-/* ========== DATA + PLAYER + SUGGESTIONS ========== */
+    FOOTER_AD_CODE: `
+        <script type="text/javascript">
+          atOptions = {
+          	'key' : 'b43458b980a14fc9fc68555f58ae039f',
+          	'format' : 'iframe',
+          	'height' : 50,
+          	'width' : 320,
+          	'params' : {}
+          };
+        <\/script>
+        <script type="text/javascript" src="//stinkymildred.com/b43458b980a14fc9fc68555f58ae039f/invoke.js"><\/script>
+    `,
+};
+
+const FOOTER_AD_DELAY_MS = 20000;
 const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/singlepage/index.json";
 
 const player = document.getElementById("player");
@@ -208,9 +206,38 @@ const viewsEl = document.getElementById("views");
 const likesEl = document.getElementById("likes");
 const creatorDp = document.getElementById("creatorDp");
 const suggestions = document.getElementById("suggestions");
+const topAdContainer = document.getElementById("topAd");
+const footerAdContainer = document.getElementById("footerAd");
 
-let VIDEOID = null;
-let videos = {}; // map videoid => video object
+let VIDEOID = null; 
+let videos = {};
+let footerAdTimer = null;
+
+function injectAdCode(elementId, code) {
+    const el = document.getElementById(elementId);
+    if (!el || !code) return;
+    
+    requestAnimationFrame(() => {
+        el.innerHTML = code;
+        
+        const scripts = el.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            newScript.async = true;
+            
+            if (oldScript.src) {
+                newScript.src = oldScript.src;
+            } else {
+                newScript.textContent = oldScript.textContent;
+            }
+            
+            setTimeout(() => {
+                document.body.appendChild(newScript);
+                document.body.removeChild(newScript);
+            }, 0);
+        });
+    });
+}
 
 function getUrlParams() {
     const params = new URLSearchParams(location.search);
@@ -233,168 +260,213 @@ function setMeta(name, value) {
 	m.setAttribute("content", value);
 }
 
+// ✅ Footer ad reload function - har video pe naya
+function setupDelayedFooterAd() {
+    // Clear existing timer
+    if (footerAdTimer) {
+        clearTimeout(footerAdTimer);
+        footerAdTimer = null;
+    }
+    
+    // Clear footer ad container
+    footerAdContainer.innerHTML = '';
+    
+    // Set new timer for footer ad
+    footerAdTimer = setTimeout(() => {
+        injectAdCode('footerAd', AD_CODE_CONFIG.FOOTER_AD_CODE);
+        footerAdTimer = null;
+    }, FOOTER_AD_DELAY_MS);
+}
+
+// ✅ Top ad reload function - har video pe naya
+function reloadTopAd() {
+    topAdContainer.innerHTML = '';
+    setTimeout(() => {
+        injectAdCode('topAd', AD_CODE_CONFIG.TOP_AD_CODE);
+    }, 300);
+}
+
+// ✅ Initial ads setup - sirf pehli baar
+function setupInitialAds() {
+    setTimeout(() => {
+        injectAdCode('topAd', AD_CODE_CONFIG.TOP_AD_CODE);
+        setupDelayedFooterAd();
+    }, 500);
+}
+
 async function loadData() {
+	const { v: currentVideoIdFromUrl } = getUrlParams();
+
 	try {
 		const r = await fetch(DATA_URL, { cache: "no-store" });
-		if (!r.ok) throw new Error("network");
+		if (!r.ok) throw new Error("Network response was not ok");
 		const raw = await r.json();
 
 		raw.forEach(v => {
-			// normalize
 			videos[v.videoid] = {
-				videoid: v.videoid,
+				id: v.videoid,
 				title: v.title || "Untitled Video",
-				creator: v.creator || "Clipfy",
+				creator: v.creator || "Clipfy Videos",
 				creator_dp: v.creator_dp || "",
 				timeago: v.timeago || "Just now",
 				views: v.views || "0 Views",
 				likes: v.likes || "0 Likes",
 				videourl: v.videourl,
 				thumb: v.thumb,
-				safe_thumb: v.safe_thumb || v.thumb
+				safe_thumb: v.safe_thumb || v.thumb,
 			};
 		});
 
-		const { v: vidParam, safeMode } = getUrlParams();
-		let idToLoad = vidParam && videos[vidParam] ? vidParam : Object.keys(videos)[0];
-		if (!idToLoad) {
-			mainTitle.textContent = "No videos available";
-			return;
+		let idToLoad = currentVideoIdFromUrl;
+		let pushState = false;
+
+		if (!idToLoad || !videos[idToLoad]) {
+			idToLoad = Object.keys(videos)[0];
+			pushState = true;
 		}
 
-		loadVideo(idToLoad, true);
-		renderSuggestions();
+		if (idToLoad) {
+		    loadVideo(idToLoad, pushState, true); // true = first load
+		    renderSuggestions();
+		} else {
+		    mainTitle.textContent = "No videos available";
+		    creatorNameEl.textContent = "Clipfy";
+		}
 
-	} catch (err) {
-		console.error("loadData error", err);
+	} catch (error) {
 		mainTitle.textContent = "Error loading video.";
 		creatorNameEl.textContent = "Clipfy";
 	}
 }
 
-function loadVideo(id, push = true) {
+function loadVideo(id, push = true, isFirstLoad = false) {
 	const v = videos[id];
 	if (!v) return;
 
 	VIDEOID = id;
-	const { safeMode, twitterMode } = getUrlParams();
+    const { safeMode, twitterMode } = getUrlParams();
 
-	// set video source
 	videoSource.src = v.videourl;
 	player.load();
-	player.play().catch(e => {
-		// autoplay blocked — that's fine
-	});
+	player.play().catch(()=>{});
 
-	// UI
 	mainTitle.textContent = v.title;
 	creatorNameEl.textContent = v.creator;
 	timeAgoEl.textContent = v.timeago;
 	viewsEl.textContent = v.views;
 	likesEl.textContent = v.likes;
 
-	// creator dp
 	if (v.creator_dp) {
 		creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
 	} else {
-		creatorDp.style.backgroundImage = '';
+		creatorDp.style.backgroundImage = 'none';
 	}
 
-	// meta tags (safe mode uses safe_thumb)
 	const img = safeMode ? v.safe_thumb : v.thumb;
 	setMeta("twitter:title", v.title);
-	setMeta("twitter:description", v.title);
 	setMeta("twitter:image", img);
 	setMeta("og:image", img);
 	setMeta("twitter:player:stream", v.videourl);
-
 	document.title = v.title + " | Clipfy";
 
-	// pushState
 	if (push) {
 		const params = new URLSearchParams();
 		params.set("v", id);
-		if (twitterMode) params.set("t", 1);
-		if (safeMode) params.set("safe", 1);
 		history.pushState({}, "", `player.html?${params.toString()}`);
+	}
+
+	// ✅ Ads reload logic - har video change pe
+	if (isFirstLoad) {
+		// Pehli baar sirf initial ads load karo
+		setupInitialAds();
+	} else {
+		// Baaki har video change pe dono ads reload karo
+		reloadTopAd();
+		setupDelayedFooterAd();
 	}
 }
 
-/* render suggestions with inline ad every 2 videos */
 function renderSuggestions() {
 	suggestions.innerHTML = "";
-	let count = 0;
+    let index = 0;
+    let inlineAdCounter = 0;
 
 	Object.keys(videos).forEach(id => {
 		if (id === VIDEOID) return;
 		const v = videos[id];
-		count++;
 
-		// suggestion item
 		const d = document.createElement("div");
 		d.className = "suggestion-item";
-		d.innerHTML = `
-			<div class="suggestion-thumbnail"><img src="${v.thumb}" alt=""></div>
-			<div class="suggestion-title"><div class="suggestion-title-text">${escapeHtml(v.title)}</div></div>
-		`;
-		d.onclick = () => { loadVideo(id, true); window.scrollTo({ top: 0, behavior: "smooth" }); };
+
+		const thumbDiv = document.createElement("div");
+		thumbDiv.className = "suggestion-thumbnail";
+		const img = document.createElement("img");
+		img.src = v.thumb;
+		thumbDiv.appendChild(img);
+
+		const title = document.createElement("div");
+		title.className = "suggestion-title";
+		title.textContent = v.title;
+
+		d.appendChild(thumbDiv);
+		d.appendChild(title);
+
+		d.onclick = () => {
+			loadVideo(id, true, false); // false = not first load, reload ads
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		};
+
 		suggestions.appendChild(d);
+        index++;
 
-		// insert inline ad after every 2 videos
-		if (count % 2 === 0) {
-			const adWrapper = document.createElement("div");
-			adWrapper.className = "inline-ad";
+		// ✅ Inline ads - suggestions ke beech mein
+        if (index % 3 === 0 && inlineAdCounter < 2) {
+            inlineAdCounter++;
+            const uid = "inlineAd_" + inlineAdCounter + "_" + Date.now();
 
-			// Inline Adsterra code (user-provided)
-			adWrapper.innerHTML = `
-<div id="atContainer-e8550078b37b6bf29c9b54eed61806f7"></div>
-<script type="text/javascript">
-  if (typeof atAsyncOptions !== 'object') var atAsyncOptions = [];
-  atAsyncOptions.push({
-    key: 'e8550078b37b6bf29c9b54eed61806f7',
-    format: 'js',
-    async: true,
-    container: 'atContainer-e8550078b37b6bf29c9b54eed61806f7',
-    params: {},
-  });
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.async = true;
-  script.src =
-    'http' +
-    (location.protocol === 'https:' ? 's' : '') +
-    '://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js';
-  document.getElementsByTagName('head')[0].appendChild(script);
-</script>
-			`;
-			suggestions.appendChild(adWrapper);
-		}
-	});
-}
+            const adBlock = document.createElement("div");
+            adBlock.className = "inline-ad-wrapper";
+            adBlock.innerHTML = `<div id="${uid}" style="width:300px; height:250px; max-width:100%;"></div>`;
+            suggestions.appendChild(adBlock);
 
-/* simple helper to prevent basic HTML injection via titles */
-function escapeHtml(str) {
-	if(!str) return '';
-	return str.replace(/[&<>"'\/]/g, function (s) {
-	  const entityMap = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;', '/':'&#x2F;'};
-	  return entityMap[s];
+            setTimeout(() => {
+                const adScript = `
+                    if (typeof atAsyncOptions !== 'object') var atAsyncOptions = [];
+                    atAsyncOptions.push({
+                        key: 'e8550078b37b6bf29c9b54eed61806f7',
+                        format: 'js',
+                        async: true,
+                        container: '${uid}',
+                        params: {},
+                    });
+                    (function() {
+                        var sc = document.createElement('script');
+                        sc.type = 'text/javascript';
+                        sc.async = true;
+                        sc.src = 'https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js';
+                        document.head.appendChild(sc);
+                    })();
+                `;
+                
+                const s = document.createElement("script");
+                s.innerHTML = adScript;
+                adBlock.appendChild(s);
+            }, 1000 * inlineAdCounter);
+        }
 	});
 }
 
 window.onpopstate = () => {
-	const { v: newVideoId } = getUrlParams();
-	if (newVideoId && videos[newVideoId]) {
-		loadVideo(newVideoId, false);
+    const { v: newVideoId } = getUrlParams();
+    if (newVideoId && videos[newVideoId]) {
+		loadVideo(newVideoId, false, false); // Browser back/forward pe bhi ads reload
 	}
 };
 
 loadData();
 </script>
 
-<!-- SOCIAL BAR (user provided) -->
-<script type="text/javascript" src="//stinkymildred.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js"></script>
-
-<!-- ALL-IN-ONE AD (keeps existing behavior) -->
+<script type="text/javascript" src="//stinkymildred.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js" async></script>
 <script src="https://quge5.com/88/tag.min.js" data-zone="191105" async data-cfasync="false"></script>
 
 </body>
