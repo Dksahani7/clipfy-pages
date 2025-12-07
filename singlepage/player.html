@@ -194,7 +194,7 @@ const AD_CODE_CONFIG = {
     `,
 };
 
-const FOOTER_AD_DELAY_MS = 20000;
+const FOOTER_AD_DELAY_MS = 5000; // ✅ 20 seconds se 5 seconds kiya
 const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/singlepage/index.json";
 
 const player = document.getElementById("player");
@@ -260,38 +260,42 @@ function setMeta(name, value) {
 	m.setAttribute("content", value);
 }
 
-// ✅ Footer ad reload function - har video pe naya
 function setupDelayedFooterAd() {
-    // Clear existing timer
     if (footerAdTimer) {
         clearTimeout(footerAdTimer);
         footerAdTimer = null;
     }
     
-    // Clear footer ad container
     footerAdContainer.innerHTML = '';
     
-    // Set new timer for footer ad
     footerAdTimer = setTimeout(() => {
         injectAdCode('footerAd', AD_CODE_CONFIG.FOOTER_AD_CODE);
         footerAdTimer = null;
     }, FOOTER_AD_DELAY_MS);
 }
 
-// ✅ Top ad reload function - har video pe naya
 function reloadTopAd() {
     topAdContainer.innerHTML = '';
     setTimeout(() => {
         injectAdCode('topAd', AD_CODE_CONFIG.TOP_AD_CODE);
-    }, 300);
+    }, 100); // ✅ 300ms se 100ms kiya - faster load
 }
 
-// ✅ Initial ads setup - sirf pehli baar
 function setupInitialAds() {
     setTimeout(() => {
         injectAdCode('topAd', AD_CODE_CONFIG.TOP_AD_CODE);
         setupDelayedFooterAd();
-    }, 500);
+    }, 200); // ✅ 500ms se 200ms kiya - faster initial load
+}
+
+// ✅ Shuffle function - videos ko random order mein karne ke liye
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
 }
 
 async function loadData() {
@@ -326,8 +330,8 @@ async function loadData() {
 		}
 
 		if (idToLoad) {
-		    loadVideo(idToLoad, pushState, true); // true = first load
-		    renderSuggestions();
+		    loadVideo(idToLoad, pushState, true);
+		    renderSuggestions(); // ✅ Har baar random order mein
 		} else {
 		    mainTitle.textContent = "No videos available";
 		    creatorNameEl.textContent = "Clipfy";
@@ -375,14 +379,12 @@ function loadVideo(id, push = true, isFirstLoad = false) {
 		history.pushState({}, "", `player.html?${params.toString()}`);
 	}
 
-	// ✅ Ads reload logic - har video change pe
 	if (isFirstLoad) {
-		// Pehli baar sirf initial ads load karo
 		setupInitialAds();
 	} else {
-		// Baaki har video change pe dono ads reload karo
 		reloadTopAd();
 		setupDelayedFooterAd();
+		renderSuggestions(); // ✅ Har video change pe suggestions shuffle honge
 	}
 }
 
@@ -391,8 +393,11 @@ function renderSuggestions() {
     let index = 0;
     let inlineAdCounter = 0;
 
-	Object.keys(videos).forEach(id => {
-		if (id === VIDEOID) return;
+	// ✅ Videos ko shuffle karo - random order
+	const videoIds = Object.keys(videos).filter(id => id !== VIDEOID);
+	const shuffledIds = shuffleArray(videoIds);
+
+	shuffledIds.forEach(id => {
 		const v = videos[id];
 
 		const d = document.createElement("div");
@@ -412,15 +417,15 @@ function renderSuggestions() {
 		d.appendChild(title);
 
 		d.onclick = () => {
-			loadVideo(id, true, false); // false = not first load, reload ads
+			loadVideo(id, true, false);
 			window.scrollTo({ top: 0, behavior: "smooth" });
 		};
 
 		suggestions.appendChild(d);
         index++;
 
-		// ✅ Inline ads - suggestions ke beech mein
-        if (index % 3 === 0 && inlineAdCounter < 2) {
+		// ✅ Har 2 videos ke baad ad - koi limit nahi
+        if (index % 2 === 0) {
             inlineAdCounter++;
             const uid = "inlineAd_" + inlineAdCounter + "_" + Date.now();
 
@@ -429,6 +434,7 @@ function renderSuggestions() {
             adBlock.innerHTML = `<div id="${uid}" style="width:300px; height:250px; max-width:100%;"></div>`;
             suggestions.appendChild(adBlock);
 
+			// ✅ Delay kam kiya - 500ms se start, har ad 300ms delay
             setTimeout(() => {
                 const adScript = `
                     if (typeof atAsyncOptions !== 'object') var atAsyncOptions = [];
@@ -451,7 +457,7 @@ function renderSuggestions() {
                 const s = document.createElement("script");
                 s.innerHTML = adScript;
                 adBlock.appendChild(s);
-            }, 1000 * inlineAdCounter);
+            }, 500 + (300 * (inlineAdCounter - 1))); // First ad 500ms, next 800ms, then 1100ms...
         }
 	});
 }
@@ -459,7 +465,7 @@ function renderSuggestions() {
 window.onpopstate = () => {
     const { v: newVideoId } = getUrlParams();
     if (newVideoId && videos[newVideoId]) {
-		loadVideo(newVideoId, false, false); // Browser back/forward pe bhi ads reload
+		loadVideo(newVideoId, false, false);
 	}
 };
 
