@@ -1,1 +1,67 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Clipfy Stats</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
+<style>
+body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+.card { background:white; padding:15px; border-radius:10px; margin-bottom:10px; box-shadow:0 0 5px #ddd; }
+h2 { margin:0 0 10px 0; }
+.table { width:100%; border-collapse:collapse; margin-top:10px; }
+.table th, .table td { border:1px solid #ddd; padding:8px; text-align:left; }
+</style>
+</head>
+
+<body>
+
+<h1>📊 Clipfy Analytics Dashboard</h1>
+
+<div id="stats"></div>
+
+<script>
+async function loadJSON(url){
+    const res = await fetch(url);
+    return await res.json().catch(()=>({}));
+}
+
+async function loadStats(){
+    const views = await loadJSON("views.json");
+    const watch = await loadJSON("watchtime.json");
+    const ads = await loadJSON("ad_events.json");
+    const traffic = await loadJSON("traffic.json");
+
+    document.getElementById("stats").innerHTML = `
+        <div class='card'>
+            <h2>Views</h2>
+            Total: ${views.total || 0} <br>
+            Today: ${views.today || 0}
+        </div>
+
+        <div class='card'>
+            <h2>Watch Time</h2>
+            Total Minutes: ${watch.total_minutes || 0}
+        </div>
+
+        <div class='card'>
+            <h2>Ad Events</h2>
+            Loaded: ${ads.loaded || 0} <br>
+            Started: ${ads.started || 0} <br>
+            Completed: ${ads.completed || 0}
+        </div>
+
+        <div class='card'>
+            <h2>Traffic Sources</h2>
+            Insta: ${traffic.insta || 0} <br>
+            Telegram: ${traffic.telegram || 0} <br>
+            X: ${traffic.x || 0}
+        </div>
+    `;
+}
+
+loadStats();
+</script>
+
+</body>
+</html>
