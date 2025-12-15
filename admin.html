@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Clipfy Admin Panel</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+
+<style>
+:root{
+  --bg:#0f141a;
+  --card:#12182e;
+  --text:#fff;
+  --muted:#8b93b0;
+  --accent:#ff2f5b;
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --hover:#1a2139;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Arial,sans-serif;line-height:1.6}
+
+/* Auth */
+.auth-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,20,26,.98);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;z-index:10000}
+.auth-box{background:var(--card);padding:40px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1);width:100%;max-width:400px;text-align:center}
+.auth-box h2{margin-bottom:24px;font-size:28px;background:linear-gradient(135deg,var(--accent),#ff6b9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-input{width:100%;padding:14px 16px;margin-bottom:16px;background:var(--hover);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:var(--text);font-size:16px}
+.auth-btn{width:100%;padding:14px;background:var(--accent);border:none;border-radius:12px;color:white;font-size:16px;font-weight:600;cursor:pointer;transition:.3s}
+.auth-btn:hover{background:#e0254f}
+
+/* Header */
+header{position:sticky;top:0;z-index:100;background:rgba(15,20,26,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05)}
+.header-content{max-width:1400px;margin:auto;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:900;font-size:24px;display:flex;align-items:center;gap:8px}
+.logo span{color:var(--accent)}
+.logout-btn{padding:8px 16px;background:var(--danger);border:none;border-radius:12px;color:white;font-size:14px;cursor:pointer}
+
+/* Dashboard Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:30px 20px;max-width:1400px;margin:auto}
+.stat-card{background:var(--card);padding:24px;border-radius:16px;border:1px solid rgba(255,255,255,.05);text-align:center;transition:.3s;cursor:pointer}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(255,47,91,.2)}
+.stat-icon{font-size:40px;margin-bottom:12px}
+.stat-number{font-size:32px;font-weight:900;display:block}
+.stat-label{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* Main Container */
+.container{max-width:1400px;margin:auto;padding:30px 20px}
+.section{margin-bottom:40px}
+.section-title{display:flex;align-items:center;gap:12px;font-size:26px;margin-bottom:24px;font-weight:700}
+.section-title::before{content:"🔧";font-size:28px}
+
+/* Video Management */
+.table-container{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
+.table-header{display:flex;align-items:center;gap:16px;padding:20px 24px;background:linear-gradient(135deg,var(--hover),var(--card));border-bottom:1px solid rgba(255,255,255,.05)}
+.search-input{flex:1;padding:12px 16px;background:var(--hover);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:var(--text)}
+.btn{padding:10px 20px;border:none;border-radius:12px;font-weight:600;cursor:pointer;transition:.3s;font-size:14px}
+.btn-primary{background:var(--accent);color:white}
+.btn-success{background:var(--success);color:white}
+.btn-warning{background:var(--warning);color:white}
+.btn-danger{background:var(--danger);color:white}
+.btn:hover{opacity:.9;transform:translateY(-1px)}
+.table{overflow-x:auto;width:100%}
+.table table{width:100%;border-collapse:collapse}
+.table th{padding:16px 12px;text-align:left;font-weight:600;color:var(--text);background:var(--hover);border-bottom:1px solid rgba(255,255,255,.1)}
+.table td{padding:16px 12px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+.table tr:hover{background:var(--hover)}
+.status-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.status-live{background:var(--success);color:white}
+.status-offline{background:var(--danger);color:white}
+
+/* Modal */
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal-content{background:var(--card);padding:32px;border-radius:20px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;border:1px solid rgba(255,255,255,.1)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.modal-close{font-size:28px;cursor:pointer;color:var(--muted)}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;margin-bottom:8px;font-weight:600}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;background:var(--hover);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:var(--text);font-size:14px}
+.form-group textarea{height:100px;resize:vertical}
+
+/* Responsive */
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:16px;padding:20px 16px}
+  .container{padding:20px 16px}
+  .table th,.table td{padding:12px 8px;font-size:14px}
+  .table-header{flex-direction:column;gap:12px}
+  .section-title{font-size:22px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Auth Overlay -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <h2>🔒 Admin Panel</h2>
+    <input type="password" class="auth-input" id="adminPass" placeholder="Enter Admin Password" maxlength="20">
+    <button class="auth-btn" onclick="login()">Login</button>
+    <p style="color:var(--muted);font-size:12px;margin-top:16px">Default: admin2024</p>
+  </div>
+</div>
+
+<header id="header" style="display:none">
+  <div class="header-content">
+    <div class="logo">🔧 <span>Clipfy Admin</span></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<main class="container" id="mainContent" style="display:none">
+  
+  <!-- Stats Dashboard -->
+  <section class="section">
+    <h2 class="section-title">📊 Dashboard</h2>
+    <div class="stats-grid">
+      <div class="stat-card" onclick="showSection('videos')">
+        <div class="stat-icon">🎥</div>
+        <div class="stat-number" id="totalVideos">0</div>
+        <div class="stat-label">Total Videos</div>
+      </div>
+      <div class="stat-card" onclick="showSection('videos')">
+        <div class="stat-icon">✅</div>
+        <div class="stat-number" id="liveVideos">0</div>
+        <div class="stat-label">Live Videos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-number" id="totalViews">0</div>
+        <div class="stat-label">Total Views</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚙️</div>
+        <div class="stat-number">1</div>
+        <div class="stat-label">Sites Active</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Management -->
+  <section class="section" id="videosSection">
+    <h2 class="section-title">🎬 Video Management</h2>
+    <div class="table-container">
+      <div class="table-header">
+        <input type="text" class="search-input" id="videoSearch" placeholder="🔍 Search videos by title..." oninput="filterVideos()">
+        <button class="btn btn-success" onclick="openAddModal()">➕ Add Video</button>
+        <button class="btn btn-primary" onclick="refreshVideos()">🔄 Refresh</button>
+      </div>
+      <div class="table" id="videoTable">
+        <table>
+          <thead>
+            <tr>
+              <th>Thumbnail</th>
+              <th>Title</th>
+              <th>Video ID</th>
+              <th>Views</th>
+              <th>Duration</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="videoTableBody">
+            <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">Loading videos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Add/Edit Video Modal -->
+<div class="modal" id="videoModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add New Video</h3>
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+    </div>
+    <form id="videoForm">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="videoTitle" required>
+      </div>
+      <div class="form-group">
+        <label>Video ID</label>
+        <input type="text" id="videoId" required>
+      </div>
+      <div class="form-group">
+        <label>Thumbnail URL</label>
+        <input type="url" id="videoThumb">
+      </div>
+      <div class="form-group">
+        <label>Duration (seconds)</label>
+        <input type="number" id="videoDuration" min="0">
+      </div>
+      <div class="form-group">
+        <label>Views</label>
+        <input type="number" id="videoViews" min="0" value="1000">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="videoStatus">
+          <option value="live">Live</option>
+          <option value="offline">Offline</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:12px">
+        <button type="submit" class="btn btn-success" style="flex:1">💾 Save Video</button>
+        <button type="button" class="btn btn-danger" onclick="closeModal()" style="flex:1">❌ Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/streamtape/index.json";
+const ADMIN_PASSWORD = "admin2024"; // Change this password
+
+let allVideos = [];
+let filteredVideos = [];
+let editingVideoId = null;
+let isAuthenticated = false;
+
+// Auth Functions
+function login() {
+  const password = document.getElementById('adminPass').value;
+  if (password === ADMIN_PASSWORD) {
+    isAuthenticated = true;
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('header').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'block';
+    loadVideos();
+  } else {
+    alert('❌ Wrong Password!');
+    document.getElementById('adminPass').value = '';
+  }
+}
+
+function logout() {
+  isAuthenticated = false;
+  document.getElementById('authOverlay').style.display = 'flex';
+  document.getElementById('header').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'none';
+}
+
+// Video Management
+async function loadVideos() {
+  try {
+    const response = await fetch(DATA_URL + '?t=' + Date.now());
+    allVideos = await response.json();
+    filteredVideos = [...allVideos];
+    updateStats();
+    renderVideoTable();
+  } catch (error) {
+    console.error('Error loading videos:', error);
+    document.getElementById('videoTableBody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:40px">Failed to load videos</td></tr>';
+  }
+}
+
+function updateStats() {
+  document.getElementById('totalVideos').textContent = allVideos.length;
+  document.getElementById('liveVideos').textContent = allVideos.filter(v => !v.offline).length;
+  document.getElementById('totalViews').textContent = allVideos.reduce((sum, v) => sum + (v.views || 0), 0).toLocaleString();
+}
+
+function renderVideoTable() {
+  const tbody = document.getElementById('videoTableBody');
+  if (filteredVideos.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No videos found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filteredVideos.map(video => `
+    <tr>
+      <td><img src="${video.thumb || 'https://via.placeholder.com/80x45/12182e/8b93b0?text=No+Thumb'}" style="width:80px;height:45px;object-fit:cover;border-radius:8px"></td>
+      <td style="max-width:250px">${(video.title || 'Untitled').substring(0, 50)}${(video.title || '').length > 50 ? '...' : ''}</td>
+      <td><code>${video.videoid || '-'}</code></td>
+      <td>${formatNumber(video.views || 0)}</td>
+      <td>${formatDuration(video.duration)}</td>
+      <td><span class="status-badge status-${video.offline ? 'offline' : 'live'}">${video.offline ? 'Offline' : 'Live'}</span></td>
+      <td>
+        <button class="btn btn-warning" onclick="editVideo('${video.videoid}')" style="padding:6px 12px;font-size:12px">✏️ Edit</button>
+        <button class="btn btn-danger" onclick="deleteVideo('${video.videoid}')" style="padding:6px 12px;font-size:12px">🗑️ Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterVideos() {
+  const searchTerm = document.getElementById('videoSearch').value.toLowerCase();
+  filteredVideos = allVideos.filter(video =>
+    (video.title || '').toLowerCase().includes(searchTerm) ||
+    (video.videoid || '').toLowerCase().includes(searchTerm)
+  );
+  renderVideoTable();
+}
+
+function refreshVideos() {
+  loadVideos();
+}
+
+// Modal Functions
+function openAddModal() {
+  editingVideoId = null;
+  document.getElementById('modalTitle').textContent = 'Add New Video';
+  document.getElementById('videoForm').reset();
+  document.getElementById('videoTitle').focus();
+  document.getElementById('videoModal').style.display = 'flex';
+}
+
+function editVideo(videoId) {
+  const video = allVideos.find(v => v.videoid === videoId);
+  if (video) {
+    editingVideoId = videoId;
+    document.getElementById('modalTitle').textContent = 'Edit Video';
+    document.getElementById('videoTitle').value = video.title || '';
+    document.getElementById('videoId').value = video.videoid || '';
+    document.getElementById('videoThumb').value = video.thumb || '';
+    document.getElementById('videoDuration').value = video.duration || '';
+    document.getElementById('videoViews').value = video.views || 0;
+    document.getElementById('videoStatus').value = video.offline ? 'offline' : 'live';
+    document.getElementById('videoModal').style.display = 'flex';
+    document.getElementById('videoTitle').focus();
+  }
+}
+
+function closeModal() {
+  document.getElementById('videoModal').style.display = 'none';
+  editingVideoId = null;
+}
+
+// Form Submission (Demo - In production, save to your R2 bucket)
+document.getElementById('videoForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = {
+    title: document.getElementById('videoTitle').value,
+    videoid: document.getElementById('videoId').value,
+    thumb: document.getElementById('videoThumb').value,
+    duration: parseInt(document.getElementById('videoDuration').value) || 0,
+    views: parseInt(document.getElementById('videoViews').value) || 0,
+    offline: document.getElementById('videoStatus').value === 'offline'
+  };
+
+  if (editingVideoId) {
+    // Update existing video (demo)
+    const index = allVideos.findIndex(v => v.videoid === editingVideoId);
+    if (index !== -1) {
+      allVideos[index] = { ...allVideos[index], ...formData };
+      alert('✅ Video updated successfully!');
+    }
+  } else {
+    // Add new video (demo)
+    allVideos.unshift(formData);
+    alert('✅ Video added successfully!');
+  }
+
+  closeModal();
+  updateStats();
+  renderVideoTable();
+});
+
+async function deleteVideo(videoId) {
+  if (confirm('🗑️ Are you sure you want to delete this video?')) {
+    // Remove from local array (demo)
+    allVideos = allVideos.filter(v => v.videoid !== videoId);
+    filteredVideos = filteredVideos.filter(v => v.videoid !== videoId);
+    updateStats();
+    renderVideoTable();
+    alert('✅ Video deleted successfully!');
+  }
+}
+
+// Utility Functions
+function formatNumber(num) {
+  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toString();
+}
+
+function formatDuration(seconds) {
+  if (!seconds) return 'HD';
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Close modal on outside click
+document.getElementById('videoModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Enter key for login
+document.getElementById('adminPass').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') login();
+});
+
+// Show section (for future tabs)
+function showSection(section) {
+  console.log('Navigate to:', section);
+}
+
+// Auto-focus password on load
+document.getElementById('adminPass').focus();
+</script>
+
+</body>
+  </html>
+  
