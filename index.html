@@ -340,12 +340,63 @@
             text-align: center;
         }
 
+        /* ✅ FIX 1: MOBILE TOP 320x50 STICKY */
+        .ad-mobile-top {
+            display: none;
+        }
+
         @media(max-width:768px){
             .ad-728 { display:none; }
             .hero h1 { font-size: 32px; }
             .search-bar { display: none; }
             .stats { gap: 20px; flex-wrap: wrap; }
             .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+            .ad-mobile-top {
+                display: block;
+                position: sticky;
+                top: 0;
+                z-index: 90;
+                width: 100%;
+                background: #000;
+                text-align: center;
+            }
+        }
+
+        /* Footer basic reset so it doesn’t break layout */
+        footer {
+            border-top: 1px solid rgba(255,255,255,.08);
+            padding: 20px;
+            background: #070b10;
+            color: var(--muted);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        .footer-section h4 {
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .footer-section ul {
+            list-style: none;
+            font-size: 13px;
+        }
+        .footer-section a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+        .footer-bottom {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
         }
     </style>
 </head>
@@ -360,12 +411,26 @@
         </nav>
     </header>
 
+<!-- ✅ FIX 1: COMPULSORY MOBILE TOP BANNER (320x50) -->
+<div class="ad-mobile-top">
+    <script type="text/javascript">
+        atOptions = {
+            'key' : 'b43458b980a14fc9fc68555f58ae039f',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="https://stinkymildred.com/b43458b980a14fc9fc68555f58ae039f/invoke.js"></script>
+</div>
+
     <section class="hero">
         <h1>Watch Trending Videos</h1>
         <p>Discover and enjoy the best video content from around the web</p>
     </section>
 
-    <!-- 🔹 TOP 728 WITH ID -->
+    <!-- 🔹 DESKTOP TOP 728 WITH ID -->
     <div class="ad-728" id="topBanner">
         <script type="text/javascript">
             atOptions = {
@@ -462,8 +527,11 @@
         
         let allVideos = [];
         let currentFilter = 'all';
-        let homePopFired = false; // 1 pop per session
-        
+
+        // ✅ FIX 3: pop + 1-in-3 direct-link control
+        let homePopFired = false;   // 1 pop per session
+        let directClickCount = 0;   // for 1-in-3 direct
+
         function fireHomePopunder(){
             if(homePopFired) return;
             homePopFired = true;
@@ -488,11 +556,10 @@
         
         function renderVideos(videos) {
             grid.innerHTML = '';
-            let bannerInserted = false; // max 1 mid-banner
             
             videos.forEach((v, index) => {
-                // har 6 videos ke baad 1 banner (safe)
-                if (index > 0 && index % 6 === 5 && !bannerInserted) {
+                // ✅ FIX 2: banner every 4th card (index 3,7,11...)
+                if (index > 0 && index % 4 === 3) {
                     const adDiv = document.createElement('div');
                     adDiv.className = 'ad-300';
                     adDiv.innerHTML = `
@@ -508,7 +575,6 @@
                         <script src="https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"><\/script>
                     `;
                     grid.appendChild(adDiv);
-                    bannerInserted = true;
                 }
 
                 const card = document.createElement('div');
@@ -527,17 +593,35 @@
                         </div>
                     </div>
                 `;
-                // homepage pop: first click only
+
+                // ✅ FIX 3 + FIX 4: click flow
+                // 1) fire popunder once
+                // 2) 1 in 3 clicks direct-link
+                // 3) go.html bridge (extra ad) before player
                 card.onclick = () => {
+                    // POPUNDER: only first click per session
                     fireHomePopunder();
-                    location.href = `./streamtape/player.html?v=${v.videoid}`;
+
+                    // Direct-link lottery (optional)
+                    directClickCount++;
+                    const isDirectClick = (directClickCount % 3 === 0); // approx 1 in 3
+
+                    if (isDirectClick) {
+                        // yaha apna direct-link / offer URL daal
+                        window.open("https://your-direct-link-here.com", "_blank");
+                    }
+
+                    // ✅ FIX 4: /go.html bridge
+                    // Homepage -> /go.html?v=ID (waha 1 ad + 1s delay) -> player.html
+                    location.href = `/go.html?v=${encodeURIComponent(v.videoid)}`;
                 };
+
                 grid.appendChild(card);
             });
             
             videoCount.textContent = videos.length;
         }
-        
+
         function filterVideos() {
             let filtered = [...allVideos];
             const searchTerm = searchInput.value.toLowerCase();
@@ -570,7 +654,6 @@
         });
     </script>
     
-    <!-- ❌ old popunder script hataya -->
     <!-- ✅ visibility-based ads refresh (NO pop change) -->
     <script>
     let homeAdsReloaded = false;
