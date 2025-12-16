@@ -532,7 +532,7 @@
             renderVideos(filtered);
         }
         
-        fetch(DATA_URL, { cache: 'no-store' })
+fetch(DATA_URL)        
             .then(r => r.json())
             .then(list => {
                 allVideos = list;
@@ -558,5 +558,5 @@
         
     
 </body>
-                    </html>
-                    
+    </html>
+    
