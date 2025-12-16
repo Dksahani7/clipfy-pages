@@ -3,66 +3,98 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Redirecting...</title>
+<title>Preparing video...</title>
+
 <style>
-    body {
-        background: #0f141a;
-        color: #fff;
-        font-family: system-ui, Arial, sans-serif;
-        text-align: center;
-        padding-top: 80px;
-    }
-    .btn {
-        padding: 12px 24px;
-        background: #ff2f5b;
-        color: #fff;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 18px;
-        display: inline-block;
-        margin-top: 30px;
-    }
+body{
+    background:#0f141a;
+    color:#fff;
+    font-family:system-ui,Arial,sans-serif;
+    text-align:center;
+    padding:60px 15px 30px;
+}
+.loader{
+    width:48px;
+    height:48px;
+    border:4px solid rgba(255,255,255,.15);
+    border-top-color:#ff2f5b;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:20px auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{
+    font-size:18px;
+    font-weight:600;
+    margin-top:10px;
+}
+.sub{
+    font-size:14px;
+    color:#8b93b0;
+    margin-top:6px;
+}
+.btn{
+    padding:12px 26px;
+    background:#ff2f5b;
+    color:#fff;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:17px;
+    display:inline-block;
+    margin-top:30px;
+}
+.ad-wrap{
+    margin:25px auto;
+    max-width:728px;
+    text-align:center;
+}
 </style>
 </head>
+
 <body>
 
-<h1>Preparing your video...</h1>
-<p>Please wait a moment, ads are loading.</p>
+<div class="loader"></div>
+<div class="msg">Your video is getting ready…</div>
+<div class="sub">Please wait a moment, this helps keep videos free.</div>
 
-<!-- INTERSTITIAL / BANNER AD -->
-<div id="adContainer" style="margin:20px auto; max-width:728px; text-align:center;">
-    <script type="text/javascript">
-        atOptions = {
-            'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-        };
-    </script>
-    <script type="text/javascript" src="https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
+<!-- ✅ TOP BANNER AD -->
+<div class="ad-wrap">
+<script type="text/javascript">
+atOptions = {
+    'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+};
+</script>
+<script src="https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
 </div>
 
-<p>If nothing happens automatically, click below:</p>
-<a id="continueBtn" class="btn">Continue to Video</a>
+<!-- ✅ NATIVE / SOCIAL BAR -->
+<div class="ad-wrap">
+<script async data-cfasync="false" src="https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js"></script>
+<div id="container-2095e01c6ff1562d16722ad413d6a9ba"></div>
+</div>
+
+<a id="continueBtn" class="btn">Continue to Video ▶</a>
 
 <script>
-    const params = new URLSearchParams(location.search);
-    const v = params.get("v") || "";
+const p = new URLSearchParams(location.search);
+const v = p.get("v");
 
-    const redirectToPlayer = () => {
-        if(v) {
-            location.href = `/streamtape/player.html?v=${encodeURIComponent(v)}`;
-        } else {
-            location.href = "/"; // fallback
-        }
-    };
+function go(){
+    if(v){
+        location.href = "/streamtape/player.html?v=" + encodeURIComponent(v);
+    }else{
+        location.href = "/";
+    }
+}
 
-    // Button click fallback
-    document.getElementById("continueBtn").onclick = redirectToPlayer;
+document.getElementById("continueBtn").onclick = go;
 
-    // Auto redirect after 3 seconds
-    setTimeout(redirectToPlayer, 3000);
+// ✅ 3 second smooth redirect
+setTimeout(go, 3000);
 </script>
 
 </body>
