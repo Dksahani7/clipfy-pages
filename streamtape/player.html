@@ -80,7 +80,7 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 <header>
   <nav class="nav">
-    <a href="./" class="logo">▶ <span>clipfy.store</span></a>
+    <a href="/" class="logo">▶ <span>clipfy.store</span></a>
   </nav>
 </header>
 
@@ -175,7 +175,7 @@ async function loadData(){
     } catch(e) { console.error("Load failed", e); }
 }
 
-function loadVideo(id,push){
+function loadVideo(id, push = false){
     const v = videos[id];
     if(!v) return;
 
@@ -186,12 +186,24 @@ function loadVideo(id,push){
     viewsEl.textContent = (v.views || Math.floor(Math.random() * 100000)).toLocaleString();
     likesEl.textContent = (v.likes || Math.floor(Math.random() * 1000)).toLocaleString();
 
-    if(v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
+    if(v.creator_dp){
+        creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
+    } else {
+        creatorDp.style.backgroundImage = "";
+    }
 
-    document.title = (v.title||"Video")+" | Clipfy";
-    if(push) history.pushState({}, "", `./player.html?v=${id}`);
+    document.title = (v.title || "Video") + " | Clipfy";
+
+    // ✅ URL clean (NO stacking)
+    history.replaceState(null, "", `/streamtape/player.html?v=${id}`);
+
+    if(push){
+        history.pushState({ v:id }, "", `/streamtape/player.html?v=${id}`);
+    }
+
     renderSuggestions(id);
 }
+  
 
 function renderSuggestions(current){
     suggestions.innerHTML="";
