@@ -327,17 +327,14 @@
             grid-column: span 1;
             margin: 10px auto;
             text-align: center;
+            justify-self: center;
         }
 
         .ad-native-container {
-            margin: 30px auto;
+            margin: 40px auto;
             text-align: center;
             width: 100%;
-        }
-
-        .social-bar-container {
-            margin: 20px auto;
-            text-align: center;
+            max-width: 1200px;
         }
 
         @media(max-width:768px){
@@ -346,6 +343,7 @@
             .search-bar { display: none; }
             .stats { gap: 20px; flex-wrap: wrap; }
             .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+            .ad-300 { grid-column: span 2; width: 100%; max-width: 300px; }
         }
     </style>
 </head>
@@ -365,7 +363,8 @@
         <p>Discover and enjoy the best video content from around the web</p>
     </section>
 
-    <div class="ad-728">
+    <!-- Top banner: page-load only -->
+    <div class="ad-728" id="topBanner">
         <script type="text/javascript">
             atOptions = {
                 'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
@@ -401,16 +400,12 @@
         
         <div class="grid" id="grid"></div>
 
-        <div class="ad-native-container">
+        <!-- Single native ad near footer -->
+        <div class="ad-native-container" id="nativeAd">
             <script async data-cfasync="false" src="https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js"></script>
             <div id="container-2095e01c6ff1562d16722ad413d6a9ba"></div>
         </div>
-
-        <div class="social-bar-container">
-            <script src="https://stinkymildred.com/15/a6/05/15a60534651f783c4ee900a1a7101385.js"></script>
-        </div>
     </main>
-
 
     <footer>
         <div class="footer-content">
@@ -460,6 +455,15 @@
         
         let allVideos = [];
         let currentFilter = 'all';
+        let homePopFired = false;  // homepage: 1 pop per session
+        
+        function fireHomePopunder(){
+            if(homePopFired) return;
+            homePopFired = true;
+            const s = document.createElement("script");
+            s.src = "https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js";
+            document.body.appendChild(s);
+        }
         
         function formatDuration(seconds) {
             if (!seconds) return 'HD';
@@ -475,28 +479,33 @@
             return views.toString();
         }
         
+        function renderBanner300() {
+            const adDiv = document.createElement('div');
+            adDiv.className = 'ad-300';
+            adDiv.innerHTML = `
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'e8550078b37b6bf29c9b54eed61806f7',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                    };
+                <\/script>
+                <script src="https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"><\/script>
+            `;
+            return adDiv;
+        }
+        
         function renderVideos(videos) {
             grid.innerHTML = '';
+            let bannerInserted = false; // 1 banner per render
             
             videos.forEach((v, index) => {
-                // ✅ 2️⃣ Banner 300×250 (Inject every 7 cards)
-                
-                if (index > 0 && index % 7 === 0 && !grid.querySelector('.ad-300')) {            
-                    const adDiv = document.createElement('div');
-                    adDiv.className = 'ad-300';
-                    adDiv.innerHTML = `
-                        <script type="text/javascript">
-                            atOptions = {
-                                'key' : 'e8550078b37b6bf29c9b54eed61806f7',
-                                'format' : 'iframe',
-                                'height' : 250,
-                                'width' : 300,
-                                'params' : {}
-                            };
-                        <\/script>
-                        <script src="https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"><\/script>
-                    `;
-                    grid.appendChild(adDiv);
+                // har 6 videos ke baad 1 banner (index 5,11,17...) – max 1
+                if (index > 0 && index % 6 === 5 && !bannerInserted) {
+                    grid.appendChild(renderBanner300());
+                    bannerInserted = true;
                 }
 
                 const card = document.createElement('div');
@@ -515,7 +524,13 @@
                         </div>
                     </div>
                 `;
-                card.onclick = () => location.href = `./streamtape/player.html?v=${v.videoid}`;                
+                
+                // homepage popunder: first video click only
+                card.onclick = () => {
+                    fireHomePopunder();
+                    location.href = `./streamtape/player.html?v=${v.videoid}`;
+                };
+                
                 grid.appendChild(card);
             });
             
@@ -532,7 +547,7 @@
             renderVideos(filtered);
         }
         
-fetch(DATA_URL)        
+        fetch(DATA_URL)
             .then(r => r.json())
             .then(list => {
                 allVideos = list;
@@ -553,10 +568,47 @@ fetch(DATA_URL)
             });
         });
     </script>
-    
-        <script src="https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js"></script>
-        
-    
+
+    <!-- Visibility-based 1-time ads refresh (NO pop) -->
+    <script>
+    let homeAdsReloaded = false;
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && !homeAdsReloaded) {
+        homeAdsReloaded = true;
+
+        // 728 banner reload
+        const top = document.getElementById("topBanner");
+        if (top) {
+          top.innerHTML = "";
+          const s1 = document.createElement("script");
+          s1.type = "text/javascript";
+          s1.innerHTML = `
+            atOptions = {
+              'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
+              'format' : 'iframe',
+              'height' : 90,
+              'width' : 728,
+              'params' : {}
+            };
+          `;
+          const s2 = document.createElement("script");
+          s2.type = "text/javascript";
+          s2.src = "https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js";
+          top.appendChild(s1);
+          top.appendChild(s2);
+        }
+
+        // Native reload (simple reparse)
+        const n = document.getElementById("nativeAd");
+        if (n) {
+          const html = n.innerHTML;
+          n.innerHTML = "";
+          n.innerHTML = html;
+        }
+      }
+    });
+    </script>
 </body>
     </html>
     
