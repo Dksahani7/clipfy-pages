@@ -17,18 +17,16 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Arial,sans-serif;line-height:1.6;overflow-x:hidden}
 
-
-
 /* Header */
 header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05);box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .nav{max-width:1200px;margin:auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-weight:900;font-size:22px;display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit}
 .logo span{color:var(--accent)}
 
-/* ✅ Fixed Video Box Logic */
+/* Video Box */
 .video-container {
     position: sticky;
-    top: 60px; /* Header ke just niche fix rahega */
+    top: 60px;
     z-index: 900;
     background: #000;
     width: 100%;
@@ -41,14 +39,12 @@ header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop
 }
 .video-box iframe{width:100%;height:100%;border:0}
 
-/* Content adjustment for sticky video */
+/* Content */
 .content-wrapper{max-width:1200px;margin:auto;padding:0 20px; position: relative; z-index: 100;}
-
-
 
 /* AD Containers */
 .ad-728-player{margin:20px auto;text-align:center;max-width:728px;min-height:90px}
-.ad-300-player{grid-column:1/-1;margin:20px auto;text-align:center;width:100%}
+.ad-300-player{margin:20px auto;text-align:center;width:300px;height:250px;justify-self:center;display:grid;place-items:center}
 .ad-native-player{margin:30px auto;width:100%;max-width:1200px}
 
 .post{padding:14px 0;display:flex;gap:10px;border-bottom:1px solid rgba(255,255,255,.05)}
@@ -71,7 +67,8 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 @media(max-width:768px){
     .ad-728-player{display:none}
-    .video-container { top: 55px; } /* Mobile header height adjustment */
+    .video-container { top: 55px; }
+    .ad-300-player{width:100%;max-width:300px}
 }
 </style>
 </head>
@@ -90,18 +87,8 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
     </div>
 </div>
 
-<div class="ad-728-player">
-    <script type="text/javascript">
-        atOptions = {
-            'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-        };
-    </script>
-    <script src="https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
-</div>
+<!-- Top banner -->
+<div class="ad-728-player" id="topAdSlot"></div>
 
 <div class="content-wrapper">
     <div class="blog-content">
@@ -124,10 +111,8 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
     <div class="suggestions-header">More Videos 🔥</div>
     <div id="suggestions"></div>
 
-    <div class="ad-native-player">
-        <script async data-cfasync="false" src="https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js"></script>
-        <div id="container-2095e01c6ff1562d16722ad413d6a9ba"></div>
-    </div>
+    <!-- Native ad -->
+    <div class="ad-native-player" id="nativeAdSlot"></div>
 </div>
 
 <footer>
@@ -148,9 +133,14 @@ const viewsEl = document.getElementById("views");
 const likesEl = document.getElementById("likes");
 const creatorDp = document.getElementById("creatorDp");
 const suggestions = document.getElementById("suggestions");
+const topAdSlot = document.getElementById("topAdSlot");
+const nativeAdSlot = document.getElementById("nativeAdSlot");
 
 let videos = {};
+let popunderReady = false;
+let popFired = false;
 
+/* --------- Helpers ---------- */
 function params(){
     const p=new URLSearchParams(location.search);
     return { v:p.get("v") };
@@ -164,10 +154,71 @@ function shuffleArray(arr){
     return arr;
 }
 
+/* --------- Ads ---------- */
+function renderTopBannerAd(){
+    topAdSlot.innerHTML = "";
+    const s1 = document.createElement("script");
+    s1.type = "text/javascript";
+    s1.innerHTML = `atOptions = {'key' : 'b40d9ebf8b9bb68f80451819ab41596e','format' : 'iframe','height' : 90,'width' : 728,'params' : {}};`;
+    const s2 = document.createElement("script");
+    s2.src = "https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js";
+    topAdSlot.appendChild(s1);
+    topAdSlot.appendChild(s2);
+}
+
+function renderNativeAd(){
+    nativeAdSlot.innerHTML = "";
+    const s = document.createElement("script");
+    s.async = true;
+    s.setAttribute("data-cfasync","false");
+    s.src = "https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
+    const container = document.createElement("div");
+    container.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
+    nativeAdSlot.appendChild(s);
+    nativeAdSlot.appendChild(container);
+}
+
+function renderBanner300(){
+    const s1 = document.createElement("script");
+    s1.type = "text/javascript";
+    s1.innerHTML = `atOptions = {'key' : 'e8550078b37b6bf29c9b54eed61806f7','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};`;
+    const s2 = document.createElement("script");
+    s2.src = "https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js";
+    return [s1, s2];
+}
+
+/* --------- Popunder (PERFECT SAFE) ---------- */
+const VIDEO_PLAY_COUNT_KEY = "clipfy_video_play_count";
+
+function getVideoPlayCount(){
+    try{ return parseInt(sessionStorage.getItem(VIDEO_PLAY_COUNT_KEY) || "0", 10); }catch(e){ return 0; }
+}
+
+function setVideoPlayCount(val){
+    try{ sessionStorage.setItem(VIDEO_PLAY_COUNT_KEY, String(val)); }catch(e){}
+}
+
+function onVideoPlayed(){
+    let count = getVideoPlayCount();
+    count += 1;
+    setVideoPlayCount(count);
+    
+    // 🔥 FIXED: Har 3rd video pe BOTH flags reset
+    if(count % 3 === 0){
+        popunderReady = true;
+        popFired = false;  // 👈 CRITICAL RESET
+    }
+}
+
+/* --------- Data ---------- */
 async function loadData(){
     try {
         const r = await fetch(DATA_URL,{cache:"no-store"});
         const raw = await r.json();
+        if(!Array.isArray(raw) || !raw.length){
+            mainTitle.textContent = "No videos available right now.";
+            return;
+        }
         raw.forEach(v=>videos[v.videoid]=v);
         const { v } = params();
         const id = v && videos[v] ? v : Object.keys(videos)[0];
@@ -175,6 +226,7 @@ async function loadData(){
     } catch(e) { console.error("Load failed", e); }
 }
 
+/* --------- Load Video ---------- */
 function loadVideo(id, push = false){
     const v = videos[id];
     if(!v) return;
@@ -186,70 +238,66 @@ function loadVideo(id, push = false){
     viewsEl.textContent = (v.views || Math.floor(Math.random() * 100000)).toLocaleString();
     likesEl.textContent = (v.likes || Math.floor(Math.random() * 1000)).toLocaleString();
 
-    if(v.creator_dp){
-        creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
-    } else {
-        creatorDp.style.backgroundImage = "";
-    }
+    if(v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
+    else creatorDp.style.backgroundImage = "";
 
     document.title = (v.title || "Video") + " | Clipfy";
-
-    // ✅ URL clean (NO stacking)
     history.replaceState(null, "", `/streamtape/player.html?v=${id}`);
 
-    if(push){
-        history.pushState({ v:id }, "", `/streamtape/player.html?v=${id}`);
-    }
-
+    renderTopBannerAd();
+    renderNativeAd();
+    onVideoPlayed();
     renderSuggestions(id);
 }
-  
 
+/* --------- Suggestions + SINGLE BANNER ---------- */
 function renderSuggestions(current){
-    suggestions.innerHTML="";
+    suggestions.innerHTML = "";
     let ids = Object.keys(videos).filter(i=>i!==current);
     ids = shuffleArray(ids);
 
-    ids.forEach((id, index)=>{
-        // ✅ 2️⃣ Banner 300×250 (Injected inside grid after 4th item)
-        if (index === 4 && !suggestions.querySelector('.ad-300-player')) {
+    ids.forEach((id, index) => {
+        // 🔥 Sirf 4th position pe 1 banner
+        if (index === 3 && !suggestions.querySelector('.ad-300-player')) {
             const adDiv = document.createElement("div");
             adDiv.className = "ad-300-player";
-            adDiv.innerHTML = `
-                <script type="text/javascript">
-                    atOptions = {
-                        'key' : 'e8550078b37b6bf29c9b54eed61806f7',
-                        'format' : 'iframe',
-                        'height' : 250,
-                        'width' : 300,
-                        'params' : {}
-                    };
-                <\/script>
-                <script src="https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"><\/script>
-            `;
+            const [s1, s2] = renderBanner300();
+            adDiv.appendChild(s1);
+            adDiv.appendChild(s2);
             suggestions.appendChild(adDiv);
         }
 
-        const v=videos[id];
-        const d=document.createElement("div");
-        d.className="suggestion-item";
-        d.innerHTML=`
+        // Video suggestion
+        const v = videos[id];
+        const d = document.createElement("div");
+        d.className = "suggestion-item";
+        d.innerHTML = `
             <div class="suggestion-thumbnail">
                 <img loading="lazy" src="${v.thumb || ''}" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
             </div>
             <div class="suggestion-title">${v.title || "Untitled Video"}</div>
         `;
-        d.onclick=()=>{
-            loadVideo(id,true);
+        
+        // 🔥 PERFECT POPUNDER LOGIC
+        d.onclick = () => {
+            if(popunderReady && !popFired){
+                popFired = true;
+                const popScript = document.createElement("script");
+                popScript.src = "https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js";
+                document.body.appendChild(popScript);
+            }
+            loadVideo(id, true);
             window.scrollTo({top: 0, behavior: 'smooth'});
         };
+        
         suggestions.appendChild(d);
     });
 }
 
-window.onpopstate=()=>{
-    const { v }=params();
-    if(v && videos[v]) loadVideo(v,false);
+/* --------- Back Button ---------- */
+window.onpopstate = () => {
+    const { v } = params();
+    if(v && videos[v]) loadVideo(v, false);
 };
 
 loadData();
