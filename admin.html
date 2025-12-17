@@ -3,174 +3,660 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Clipfy Admin Panel</title>
+<title>Clipfy Admin Panel - Complete</title>
 
 <style>
 :root{
   --bg:#0f141a;--card:#12182e;--text:#fff;--muted:#8b93b0;
   --accent:#ff2f5b;--success:#10b981;--warning:#f59e0b;
-  --danger:#ef4444;--hover:#1a2139;
+  --danger:#ef4444;--hover:#1a2139;--border:#2a3449;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:Arial}
+body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;font-size:14px}
 
-header{background:#0f141a;padding:16px;border-bottom:1px solid #222}
-.logo{font-size:22px;font-weight:900;color:var(--accent)}
+header{background:var(--card);padding:16px;border-bottom:2px solid var(--accent);position:sticky;top:0;z-index:100}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.logo{font-size:24px;font-weight:900;color:var(--accent)}
+.user-info{font-size:12px;color:var(--muted)}
+.header-bottom{display:flex;gap:10px;flex-wrap:wrap}
 
-.container{padding:20px;max-width:1400px;margin:auto}
+.container{padding:20px;max-width:1600px;margin:auto}
 
-.btn{padding:8px 14px;border:none;border-radius:8px;cursor:pointer}
+.btn{padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:500;transition:all .2s}
+.btn-small{padding:4px 12px;font-size:12px}
 .btn-success{background:var(--success);color:#fff}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-warning{background:var(--warning);color:#000}
+.btn-accent{background:var(--accent);color:#fff}
+.btn:hover{opacity:.9;transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-table{width:100%;border-collapse:collapse;margin-top:20px}
-th,td{padding:12px;border-bottom:1px solid #222;text-align:left}
+table{width:100%;border-collapse:collapse;margin:20px 0}
+th,td{padding:12px;border-bottom:1px solid var(--border);text-align:left}
+th{background:var(--hover);font-weight:600}
 tr:hover{background:var(--hover)}
 
-.status-live{color:#0f0}
-.status-offline{color:#f00}
+.status-live{color:var(--success);font-weight:500}
+.status-offline{color:var(--warning);font-weight:500}
+.status-deleted{color:var(--danger);font-weight:500}
 
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);
-align-items:center;justify-content:center}
-.modal-box{background:#12182e;padding:20px;border-radius:12px;width:400px}
-.modal-box input,select{width:100%;padding:10px;margin:8px 0}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:var(--card);padding:24px;border-radius:12px;width:min(90vw,500px);max-height:90vh;overflow-y:auto;border:1px solid var(--accent)}
+.modal-box h3{margin-bottom:16px;color:var(--accent)}
+.modal-box input,select{width:100%;padding:12px;margin:8px 0;border:1px solid var(--border);border-radius:6px;background:var(--hover);color:var(--text)}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-row input{grid-column:span 1}
+
+.search-filter{display:flex;gap:12px;margin:20px 0;flex-wrap:wrap;align-items:center}
+.search-box{padding:10px;width:300px}
+.filter-select{padding:10px;min-width:150px}
+
+.pagination{display:flex;gap:8px;justify-content:center;margin:20px 0}
+.page-btn{padding:8px 12px}
+
+.bulk-actions{display:flex;gap:8px;align-items:center;margin:12px 0;flex-wrap:wrap}
+.bulk-checkbox{width:20px;height:20px}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0}
+.stat-card{background:var(--hover);padding:20px;border-radius:8px;text-align:center;border:1px solid var(--border)}
+.stat-number{font-size:28px;font-weight:900;color:var(--accent)}
+.stat-label{color:var(--muted);font-size:12px}
+
+.thumb-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.thumb-preview{width:60px;height:45px;object-fit:cover;border-radius:4px;cursor:pointer}
+
+.drag-handle{cursor:move;color:var(--muted);font-size:18px;margin-right:8px}
+.drag-over{opacity:.7}
+.dragging{background:var(--accent)!important;opacity:.8}
+
+.kill-switch{position:fixed;top:20px;right:20px;z-index:300}
+.kill-toggle{width:60px;height:60px;border-radius:50%;border:none;font-size:24px;cursor:pointer;transition:all .3s}
+
+.hidden{display:none!important}
 </style>
 </head>
 
 <body>
+<!-- EMERGENCY KILL SWITCH -->
+<div class="kill-switch" id="killSwitch" title="Emergency Maintenance">
+  <button class="btn btn-danger" onclick="toggleKillSwitch()" id="killBtn">🚨</button>
+</div>
 
 <header>
-  <div class="logo">🔧 Clipfy Admin Panel</div>
+  <div class="header-top">
+    <div class="logo">🔧 Clipfy Admin Panel</div>
+    <div class="user-info">
+      Logged as: <span id="currentUser">Admin</span> | 
+      <button class="btn btn-small btn-accent" onclick="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="header-bottom">
+    <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
+    <button class="btn btn-accent" onclick="openModal('add')">➕ Add Video</button>
+    <button class="btn btn-warning" onclick="openBulkActions()">⚡ Bulk Actions</button>
+    <button class="btn btn-success" onclick="openModal('upload')">📤 Upload</button>
+    <div class="stats-grid" id="stats"></div>
+  </div>
 </header>
 
 <div class="container">
-  <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
+  <!-- Search & Filter -->
+  <div class="search-filter">
+    <input class="search-box" id="searchInput" placeholder="🔍 Search title or ID..." oninput="filterVideos()">
+    <select class="filter-select" id="statusFilter" onchange="filterVideos()">
+      <option value="all">All Status</option>
+      <option value="live">Live Only</option>
+      <option value="offline">Offline Only</option>
+    </select>
+    <select class="filter-select" id="sortFilter" onchange="sortVideos()">
+      <option value="recent">Recent First</option>
+      <option value="title">Title A-Z</option>
+      <option value="views">Most Views</option>
+    </select>
+  </div>
 
+  <!-- Bulk Actions -->
+  <div class="bulk-actions" id="bulkActions" style="display:none">
+    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()"> Select All
+    <button class="btn btn-warning" onclick="bulkOffline()">Bulk Offline</button>
+    <button class="btn btn-danger" onclick="bulkDelete()">Bulk Delete</button>
+    <span id="selectedCount" style="color:var(--muted)">0 selected</span>
+  </div>
+
+  <!-- Videos Table -->
   <table>
     <thead>
       <tr>
+        <th><input type="checkbox" id="selectAllHeader" onchange="toggleSelectAllHeader()"></th>
+        <th>Order 📌</th>
         <th>Thumb</th>
         <th>Title</th>
         <th>ID</th>
         <th>Views</th>
         <th>Status</th>
-        <th>Action</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody id="tbody">
-      <tr><td colspan="6">Loading...</td></tr>
+      <tr><td colspan="8">Loading...</td></tr>
     </tbody>
   </table>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
 </div>
 
-<!-- EDIT MODAL -->
-<div class="modal" id="modal">
+<!-- ADD/EDIT MODAL -->
+<div class="modal" id="videoModal">
   <div class="modal-box">
-    <h3>Edit Video</h3>
-    <input id="m_title" placeholder="Title">
-    <input id="m_views" type="number" placeholder="Views">
-    <select id="m_status">
+    <h3 id="modalTitle">Add/Edit Video</h3>
+    <input id="v_videoid" placeholder="Video ID (unique)">
+    <input id="v_title" placeholder="Title">
+    <input id="v_thumb" placeholder="Thumbnail URL">
+    <input id="v_streamid" placeholder="Streamtape ID">
+    <input id="v_views" type="number" placeholder="Views" value="0">
+    <select id="v_status">
       <option value="live">Live</option>
       <option value="offline">Offline</option>
     </select>
-    <button class="btn btn-success" onclick="save()">Save</button>
+    <div style="margin-top:16px">
+      <button class="btn btn-success" onclick="saveVideo()" style="margin-right:8px">Save</button>
+      <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal" id="uploadModal">
+  <div class="modal-box">
+    <h3>📤 Remote Upload</h3>
+    <input id="u_url" placeholder="Streamtape/MP4 direct link">
+    <button class="btn btn-success" onclick="startUpload()">Start Upload</button>
+    <div id="uploadStatus" style="margin-top:16px;color:var(--success)"></div>
     <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- BULK CONFIRM MODAL -->
+<div class="modal" id="confirmModal">
+  <div class="modal-box">
+    <h3 id="confirmTitle">Confirm Action</h3>
+    <p id="confirmText"></p>
+    <button class="btn btn-danger" id="confirmBtn" onclick="executeBulk()">Confirm</button>
+    <button class="btn btn-success" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- THUMBNAIL MODAL -->
+<div class="modal" id="thumbModal">
+  <div class="modal-box">
+    <h3>Thumbnail Control</h3>
+    <img id="thumbPreview" class="thumb-preview" style="width:100%;margin-bottom:12px">
+    <input id="new_thumb" placeholder="New Thumbnail URL">
+    <div class="btn-group" style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-warning" onclick="regenThumb()">🔄 Regenerate Blur</button>
+      <button class="btn btn-success" onclick="saveThumb()">💾 Update Thumb</button>
+      <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+    </div>
   </div>
 </div>
 
 <script>
 /* ================= CONFIG ================= */
 const API = "https://clipfy.store/api";
-const ADMIN_TOKEN = "sk_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6";
+let ADMIN_TOKEN = localStorage.getItem('clipfy_admin_token') || '';
+let currentUser = localStorage.getItem('clipfy_admin_user') || 'Admin';
 
 /* ================= STATE ================= */
 let videos = [];
+let filteredVideos = [];
 let currentId = null;
+let selectedVideos = new Set();
+let currentPage = 1;
+const VIDEOS_PER_PAGE = 50;
+let killSwitch = localStorage.getItem('clipfy_killswitch') === 'true';
+
+/* ================= AUTH ================= */
+async function login() {
+  const user = prompt('Username:');
+  const pass = prompt('Password:');
+  if (!user || !pass) return false;
+  
+  const res = await fetch(API + '/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({username: user, password: pass})
+  });
+  
+  const data = await res.json();
+  if (data.token) {
+    ADMIN_TOKEN = data.token;
+    currentUser = user;
+    localStorage.setItem('clipfy_admin_token', ADMIN_TOKEN);
+    localStorage.setItem('clipfy_admin_user', user);
+    document.getElementById('currentUser').textContent = user;
+    load();
+    return true;
+  }
+  alert('Invalid credentials');
+  return false;
+}
+
+function logout() {
+  localStorage.removeItem('clipfy_admin_token');
+  localStorage.removeItem('clipfy_admin_user');
+  ADMIN_TOKEN = '';
+  location.reload();
+}
+
+/* ================= KILL SWITCH ================= */
+function toggleKillSwitch() {
+  killSwitch = !killSwitch;
+  localStorage.setItem('clipfy_killswitch', killSwitch);
+  document.getElementById('killBtn').textContent = killSwitch ? '✅' : '🚨';
+  document.getElementById('killBtn').className = killSwitch ? 'btn btn-success' : 'btn btn-danger';
+  if (killSwitch) {
+    document.querySelector('.container').innerHTML = '<div style="text-align:center;padding:60px"><h2>🔧 SITE MAINTENANCE</h2><p>All videos hidden. Toggle off to restore.</p></div>';
+  } else {
+    load();
+  }
+}
 
 /* ================= LOAD ================= */
 async function load() {
-  const r = await fetch(API + "/videos", {
-    headers: { Authorization: ADMIN_TOKEN }
+  if (!ADMIN_TOKEN && !await login()) return;
+  
+  try {
+    const res = await fetch(API + "/videos", {
+      headers: { Authorization: ADMIN_TOKEN }
+    });
+    videos = await res.json();
+    
+    // Load kill switch state
+    document.getElementById('killBtn').textContent = killSwitch ? '✅' : '🚨';
+    document.getElementById('killBtn').className = killSwitch ? 'btn btn-success' : 'btn btn-danger';
+    
+    if (killSwitch) {
+      document.querySelector('.container').innerHTML = '<div style="text-align:center;padding:60px"><h2>🔧 SITE MAINTENANCE</h2><p>All videos hidden. Toggle off to restore.</p></div>';
+      return;
+    }
+    
+    filteredVideos = [...videos];
+    updateStats();
+    filterVideos();
+    sortVideos();
+  } catch(e) {
+    console.error('Load failed:', e);
+    alert('API error. Check console.');
+  }
+}
+
+/* ================= RENDER ================= */
+function render() {
+  if (killSwitch) return;
+  
+  const start = (currentPage - 1) * VIDEOS_PER_PAGE;
+  const end = start + VIDEOS_PER_PAGE;
+  const pageVideos = filteredVideos.slice(start, end);
+  
+  const tb = document.getElementById("tbody");
+  tb.innerHTML = pageVideos.map((v, idx) => `
+    <tr draggable="true" ondragstart="dragStart(event, '${v.videoid}')" 
+        ondragover="dragOver(event)" ondrop="drop(event, '${v.videoid}')"
+        ondblclick="edit('${v.videoid}')">
+      <td><input type="checkbox" value="${v.videoid}" onchange="toggleSelect('${v.videoid}')"></td>
+      <td><span class="drag-handle">☰</span>${start+idx+1}</td>
+      <td>
+        <img src="${v.thumb}" width="80" class="thumb-preview" onclick="openThumbModal('${v.videoid}')">
+      </td>
+      <td>${v.title}</td>
+      <td>${v.videoid}</td>
+      <td>${v.views||0}</td>
+      <td class="${v.offline?'status-offline':'status-live'}">
+        ${v.offline?'Offline':'Live'}
+      </td>
+      <td>
+        <button class="btn btn-small btn-warning" onclick="edit('${v.videoid}')">✏️</button>
+        <button class="btn btn-small btn-danger" onclick="del('${v.videoid}')">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+  
+  renderPagination();
+  updateSelectedCount();
+}
+
+function renderPagination() {
+  const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
+  let html = '';
+  
+  // Prev
+  if (currentPage > 1) {
+    html += `<button class="page-btn btn" onclick="changePage(${currentPage-1})">← Prev</button>`;
+  }
+  
+  // Pages
+  const startPage = Math.max(1, currentPage - 2);
+  const endPage = Math.min(totalPages, currentPage + 2);
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<button class="page-btn btn ${i===currentPage?'btn-accent':''}" onclick="changePage(${i})">${i}</button>`;
+  }
+  
+  // Next
+  if (currentPage < totalPages) {
+    html += `<button class="page-btn btn" onclick="changePage(${currentPage+1})">Next →</button>`;
+  }
+  
+  document.getElementById('pagination').innerHTML = html || '<span>No videos</span>';
+}
+
+function updateStats() {
+  const live = videos.filter(v => !v.offline).length;
+  const offline = videos.length - live;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-number">${videos.length}</div>
+      <div class="stat-label">Total Videos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--success)">${live}</div>
+      <div class="stat-label">Live</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--warning)">${offline}</div>
+      <div class="stat-label">Offline</div>
+    </div>
+  `;
+}
+
+/* ================= FILTER & SORT ================= */
+function filterVideos() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  
+  filteredVideos = videos.filter(v => {
+    const matchesSearch = !search || v.title.toLowerCase().includes(search) || v.videoid.includes(search);
+    const matchesStatus = status === 'all' || (status === 'live' && !v.offline) || (status === 'offline' && v.offline);
+    return matchesSearch && matchesStatus;
   });
-  videos = await r.json();
+  
+  currentPage = 1;
+  sortVideos();
+}
+
+function sortVideos() {
+  const sort = document.getElementById('sortFilter').value;
+  
+  filteredVideos.sort((a, b) => {
+    switch(sort) {
+      case 'recent': return new Date(b.created || 0) - new Date(a.created || 0);
+      case 'title': return a.title.localeCompare(b.title);
+      case 'views': return (b.views||0) - (a.views||0);
+      default: return 0;
+    }
+  });
+  
   render();
 }
 
-function render() {
-  const tb = document.getElementById("tbody");
-  tb.innerHTML = "";
-  videos.forEach(v => {
-    tb.innerHTML += `
-      <tr>
-        <td><img src="${v.thumb}" width="80"></td>
-        <td>${v.title}</td>
-        <td>${v.videoid}</td>
-        <td>${v.views||0}</td>
-        <td class="${v.offline?'status-offline':'status-live'}">
-          ${v.offline?'Offline':'Live'}
-        </td>
-        <td>
-          <button class="btn btn-warning" onclick="edit('${v.videoid}')">Edit</button>
-          <button class="btn btn-danger" onclick="del('${v.videoid}')">Delete</button>
-        </td>
-      </tr>
-    `;
+/* ================= DRAG & DROP ================= */
+function dragStart(e, id) {
+  e.dataTransfer.setData('text/plain', id);
+  e.target.classList.add('dragging');
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function drop(e, targetId) {
+  e.preventDefault();
+  const draggedId = e.dataTransfer.getData('text/plain');
+  document.querySelectorAll('tr').forEach(tr => {
+    tr.classList.remove('dragging', 'drag-over');
+  });
+  
+  // Reorder videos
+  const draggedIdx = videos.findIndex(v => v.videoid === draggedId);
+  const targetIdx = videos.findIndex(v => v.videoid === targetId);
+  const [draggedVideo] = videos.splice(draggedIdx, 1);
+  videos.splice(targetIdx, 0, draggedVideo);
+  
+  // Save order
+  saveOrder();
+  render();
+}
+
+/* ================= CRUD OPERATIONS ================= */
+async function saveVideo() {
+  const data = {
+    videoid: document.getElementById('v_videoid').value,
+    title: document.getElementById('v_title').value,
+    thumb: document.getElementById('v_thumb').value,
+    streamid: document.getElementById('v_streamid').value,
+    views: +document.getElementById('v_views').value,
+    offline: document.getElementById('v_status').value === 'offline'
+  };
+  
+  if (!data.videoid || !data.title) {
+    alert('ID and Title required!');
+    return;
+  }
+  
+  await fetch(API + "/video/save", {
+    method: "POST",
+    headers: {Authorization: ADMIN_TOKEN, "Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+  
+  closeModal();
+  load();
+}
+
+async function edit(id) {
+  const v = videos.find(x => x.videoid === id);
+  currentId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Video';
+  document.getElementById('v_videoid').value = v.videoid;
+  document.getElementById('v_videoid').disabled = true;
+  document.getElementById('v_title').value = v.title;
+  document.getElementById('v_thumb').value = v.thumb;
+  document.getElementById('v_streamid').value = v.streamid || '';
+  document.getElementById('v_views').value = v.views || 0;
+  document.getElementById('v_status').value = v.offline ? 'offline' : 'live';
+  document.getElementById('videoModal').style.display = 'flex';
+}
+
+async function del(id) {
+  if (!confirm(`Delete "${videos.find(v=>v.videoid===id)?.title || id}" permanently?`)) return;
+  
+  await fetch(API + "/video/delete", {
+    method: "POST",
+    headers: {Authorization: ADMIN_TOKEN, "Content-Type": "application/json"},
+    body: JSON.stringify({videoid: id})
+  });
+  
+  logAction('delete', id);
+  load();
+}
+
+async function saveOrder() {
+  await fetch(API + '/videos/reorder', {
+    method: 'POST',
+    headers: {Authorization: ADMIN_TOKEN, "Content-Type": 'application/json'},
+    body: JSON.stringify({order: videos.map(v=>v.videoid)})
   });
 }
 
-/* ================= EDIT ================= */
-function edit(id){
-  const v = videos.find(x=>x.videoid===id);
-  currentId = id;
-  m_title.value = v.title;
-  m_views.value = v.views||0;
-  m_status.value = v.offline ? "offline" : "live";
-  modal.style.display="flex";
+/* ================= UPLOAD ================= */
+async function startUpload() {
+  const url = document.getElementById('u_url').value;
+  if (!url) return alert('Enter URL');
+  
+  document.getElementById('uploadStatus').textContent = '⏳ Processing...';
+  
+  const res = await fetch(API + '/upload', {
+    method: 'POST',
+    headers: {Authorization: ADMIN_TOKEN, "Content-Type": 'application/json'},
+    body: JSON.stringify({url})
+  });
+  
+  const data = await res.json();
+  document.getElementById('uploadStatus').innerHTML = data.success ? 
+    '✅ Upload complete! Refreshing...' : `❌ Error: ${data.error}`;
+  
+  if (data.success) {
+    setTimeout(load, 2000);
+    closeModal();
+  }
 }
 
-function closeModal(){
-  modal.style.display="none";
+/* ================= BULK ACTIONS ================= */
+function toggleSelect(id) {
+  if (selectedVideos.has(id)) {
+    selectedVideos.delete(id);
+  } else {
+    selectedVideos.add(id);
+  }
+  updateSelectedCount();
 }
 
-async function save(){
-  await fetch(API + "/video/update",{
-    method:"POST",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      videoid:currentId,
-      data:{
-        title:m_title.value,
-        views:+m_views.value,
-        offline:m_status.value==="offline"
+function toggleSelectAll() {
+  const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    if (!selectedVideos.has(cb.value)) selectedVideos.add(cb.value);
+    else selectedVideos.delete(cb.value);
+    cb.checked = !cb.checked;
+  });
+  updateSelectedCount();
+}
+
+function toggleSelectAllHeader() {
+  document.getElementById('selectAll').checked = !document.getElementById('selectAll').checked;
+  toggleSelectAll();
+}
+
+function updateSelectedCount() {
+  document.getElementById('selectedCount').textContent = `${selectedVideos.size} selected`;
+}
+
+function openBulkActions() {
+  document.getElementById('bulkActions').style.display = 'flex';
+}
+
+async function bulkOffline() {
+  if (selectedVideos.size === 0) return alert('Select videos first');
+  showConfirm('Bulk Offline', `Make ${selectedVideos.size} videos offline?`, bulkAction('offline'));
+}
+
+async function bulkDelete() {
+  if (selectedVideos.size === 0) return alert('Select videos first');
+  showConfirm('Bulk Delete', `Delete ${selectedVideos.size} videos permanently?`, bulkAction('delete'));
+}
+
+function bulkAction(type) {
+  return async () => {
+    for (let id of selectedVideos) {
+      if (type === 'delete') {
+        await fetch(API + '/video/delete', {
+          method: 'POST',
+          headers: {Authorization: ADMIN_TOKEN, "Content-Type": 'application/json'},
+          body: JSON.stringify({videoid: id})
+        });
+      } else {
+        await fetch(API + '/video/update', {
+          method: 'POST',
+          headers: {Authorization: ADMIN_TOKEN, "Content-Type": 'application/json'},
+          body: JSON.stringify({videoid: id, data: {offline: true}})
+        });
       }
-    })
+      logAction(type, id);
+    }
+    selectedVideos.clear();
+    closeModal();
+    load();
+  }
+}
+
+/* ================= THUMBNAIL CONTROL ================= */
+function openThumbModal(id) {
+  const v = videos.find(x => x.videoid === id);
+  document.getElementById('thumbPreview').src = v.thumb;
+  document.getElementById('new_thumb').dataset.id = id;
+  document.getElementById('thumbModal').style.display = 'flex';
+}
+
+async function saveThumb() {
+  const id = document.getElementById('new_thumb').dataset.id;
+  const thumb = document.getElementById('new_thumb').value;
+  
+  await fetch(API + '/video/update', {
+    method: 'POST',
+    headers: {Authorization: ADMIN_TOKEN, "Content-Type": 'application/json'},
+    body: JSON.stringify({videoid: id, data: {thumb}})
+  });
+  
+  closeModal();
+  load();
+}
+
+async function regenThumb() {
+  const id = document.getElementById('new_thumb').dataset.id;
+  await fetch(API + '/video/thumb/regen', {
+    method: 'POST',
+    headers: {Authorization: ADMIN_TOKEN, "Content-Type": 'application/json'},
+    body: JSON.stringify({videoid: id})
   });
   closeModal();
   load();
 }
 
-/* ================= DELETE ================= */
-async function del(id){
-  if(!confirm("Delete video?"))return;
-  await fetch(API + "/video/delete",{
-    method:"POST",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({videoid:id})
-  });
-  load();
+/* ================= MODALS ================= */
+function openModal(type) {
+  if (type === 'add') {
+    document.getElementById('modalTitle').textContent = 'Add New Video';
+    document.getElementById('v_videoid').disabled = false;
+    document.querySelector('#videoModal .modal-box').querySelectorAll('input,select').forEach(el => el.value = '');
+  }
+  document.getElementById(type === 'add' ? 'videoModal' : 'uploadModal').style.display = 'flex';
 }
 
-function refresh(){ load(); }
+function closeModal() {
+  document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+  selectedVideos.clear();
+  updateSelectedCount();
+  document.getElementById('bulkActions').style.display = 'none';
+}
+
+function showConfirm(title, text, action) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmText').textContent = text;
+  document.getElementById('confirmBtn').onclick = action;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+
+async function logAction(type, id) {
+  await fetch(API + '/audit/log', {
+    method: 'POST',
+    headers: {Authorization: ADMIN_TOKEN, "Content-Type": 'application/json'},
+    body: JSON.stringify({action: type, videoid: id, user: currentUser})
+  });
+}
+
+/* ================= PAGINATION ================= */
+function changePage(page) {
+  currentPage = page;
+  render();
+}
 
 /* ================= INIT ================= */
-load();
+document.addEventListener('DOMContentLoaded', () => {
+  if (!ADMIN_TOKEN) login();
+  else load();
+});
+
+function refresh() { load(); }
 </script>
 
 </body>
