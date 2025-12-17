@@ -125,6 +125,7 @@ tr:hover{background:var(--hover)}
   </div>
   <div class="header-bottom">
     <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
+    <button class="btn btn-blue" onclick="syncStreamtape()">🔄 Sync Streamtape</button>
     <button class="btn btn-accent" onclick="openVideoModal('add')">➕ Add Video</button>
     <button class="btn btn-blue" onclick="openUploadModal()">📤 Upload</button>
     <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
@@ -1174,6 +1175,44 @@ function refresh(){
   fetchStatus();
 }
 
+
+
+async function syncStreamtape(){
+  if (!ADMIN_TOKEN) return alert("Login first");
+
+  if (!confirm("Streamtape se saare new videos sync kare?")) return;
+
+  try {
+    const r = await fetch(API + "/admin/streamtape/sync", {
+      method: "POST",
+      headers: {
+        Authorization: ADMIN_TOKEN
+      }
+    });
+
+    const data = await r.json();
+
+    if (!data.ok) {
+      alert("Sync failed: " + (data.error || "Unknown"));
+      return;
+    }
+
+    alert(`Sync complete ✅
+New added: ${data.added}
+Total videos: ${data.total}`);
+
+    addLog("sync", `Streamtape sync added ${data.added}`);
+    loadVideos(); // table refresh
+  } catch (e) {
+    alert("Sync error");
+    console.error(e);
+  }
+}
+
+
+
+
+
 /* ============ INIT ============ */
 
 function init(){
@@ -1213,6 +1252,8 @@ window.addEventListener("load",()=>{
     init();
   }
 });
+
+
 </script>
 
 </body>
