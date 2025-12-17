@@ -129,6 +129,7 @@ tr:hover{background:var(--hover)}
     <button class="btn btn-blue" onclick="openUploadModal()">📤 Upload</button>
     <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
     <button class="btn btn-danger" onclick="toggleKillSwitch()">🚨 Maintenance</button>
+    <button class="btn btn-blue" onclick="syncStreamtape()">🔄 Sync Streamtape Videos</button>
 
     <div class="stats-grid" id="stats"></div>
   </div>
@@ -489,6 +490,29 @@ async function loadVideos(){
     document.getElementById("loginModal").style.display = "flex";
     return;
   }
+
+  async function syncStreamtape() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+
+      if (!confirm("Streamtape se naye videos sync kare?")) return;
+
+      const r = await fetch(API + "/admin/streamtape/sync", {
+            method: "POST",
+            headers: {
+                    \"Authorization\": ADMIN_TOKEN
+                  }
+                });
+
+      const data = await r.json();
+
+      if (!data.ok) {
+            alert(\"Sync failed: \" + (data.error || \"unknown\"));
+                      return;
+          }
+
+      alert(`Sync complete ✅\nNew videos added: ${data.added}`);
+      loadVideos();
+    }
   const r = await fetch(API + "/videos",{
     headers:{Authorization:ADMIN_TOKEN}
   });
