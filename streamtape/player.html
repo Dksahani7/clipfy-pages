@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Clipfy Player</title>
+<title>Clipfy Player | Byse Edition</title>
 
 <style>
 :root{
@@ -12,7 +12,6 @@
   --text:#fff;
   --muted:#8b93b0;
   --accent:#ff2f5b;
-  --hover:#1a2139;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Arial,sans-serif;line-height:1.6;overflow-x:hidden}
@@ -23,7 +22,7 @@ header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop
 .logo{font-weight:900;font-size:22px;display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit}
 .logo span{color:var(--accent)}
 
-/* Video Box */
+/* Video Box - Fixed for Byse Iframe */
 .video-container {
     position: sticky;
     top: 60px;
@@ -33,50 +32,49 @@ header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop
 }
 .video-box{
     width:100%;
-    aspect-ratio: 16/9; /* Standard widescreen ratio */
+    aspect-ratio: 16/9; 
     max-height: 60vh;
     background:#000;
-    display: flex;
-    align-items: center;
 }
-/* Updated Video Styling */
-video#bysePlayer {
+.video-box iframe {
     width: 100%;
     height: 100%;
-    outline: none;
-    background: #000;
+    border: 0;
 }
 
-/* Content */
+/* Content Wrapper */
 .content-wrapper{max-width:1200px;margin:auto;padding:0 20px; position: relative; z-index: 100;}
 
-/* AD Containers */
+/* AD Slots */
 .ad-728-player{margin:20px auto;text-align:center;max-width:728px;min-height:90px}
-.ad-300-player{margin:20px auto;text-align:center;width:300px;height:250px;justify-self:center;display:grid;place-items:center}
+.ad-300-player{margin:20px auto;text-align:center;width:300px;height:250px;display:grid;place-items:center}
 .ad-native-player{margin:30px auto;width:100%;max-width:1200px}
 
-.post{padding:14px 0;display:flex;gap:10px;border-bottom:1px solid rgba(255,255,255,.05)}
-.dp{width:42px;height:42px;border-radius:50%;background:var(--card);background-size:cover;background-position:center}
-#creatorName{font-weight:600}
+/* Video Info Section */
+.post{padding:14px 0;display:flex;gap:12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.dp{width:45px;height:45px;border-radius:50%;background:var(--card);background-size:cover;background-position:center}
+#creatorName{font-weight:600;font-size:16px}
 #timeAgo{font-size:12px;color:var(--muted)}
 .stats{display:flex;gap:20px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px;color:var(--muted)}
 .blog-content{padding:14px 0}
-#mainTitle{font-size:22px;font-weight:700;margin-bottom:10px}
+#mainTitle{font-size:22px;font-weight:700;margin-bottom:5px;line-height:1.3}
+
+/* Suggestions List */
 .suggestions-header{padding:20px 0 10px 0;font-size:20px;font-weight:700;color:var(--text)}
 #suggestions{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding-bottom:20px}
 .suggestion-item{background:var(--card);border-radius:12px;overflow:hidden;cursor:pointer;transition:.3s}
 .suggestion-item:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(255,47,91,.2)}
-.suggestion-thumbnail{width:100%;aspect-ratio:16/9;overflow:hidden}
+.suggestion-thumbnail{width:100%;aspect-ratio:16/9;overflow:hidden;background:#000}
 .suggestion-thumbnail img{width:100%;height:100%;object-fit:cover}
 .suggestion-title{padding:10px 12px;font-size:15px;line-height:1.4;font-weight:600}
 
 /* Footer */
-footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding:40px 20px;margin-top:40px; position: relative; z-index: 1000;}
+footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding:30px 20px;margin-top:40px;text-align:center;font-size:14px;color:var(--muted)}
 
 @media(max-width:768px){
     .ad-728-player{display:none}
     .video-container { top: 55px; }
-    .ad-300-player{width:100%;max-width:300px}
+    .video-box{aspect-ratio: 16/10;}
 }
 </style>
 </head>
@@ -91,7 +89,7 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 <div class="video-container">
     <div class="video-box">
-        <video id="bysePlayer" controls autoplay playsinline poster=""></video>
+        <iframe id="playerFrame" allowfullscreen allow="autoplay"></iframe>
     </div>
 </div>
 
@@ -99,7 +97,7 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 <div class="content-wrapper">
     <div class="blog-content">
-        <h2 id="mainTitle"></h2>
+        <h2 id="mainTitle">Loading...</h2>
     </div>
     
     <div class="post">
@@ -115,23 +113,19 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
         <div><span id="likes">0</span> likes</div>
     </div>
 
-    <div class="suggestions-header">More Videos 🔥</div>
+    <div class="suggestions-header">Recommended for you 🔥</div>
     <div id="suggestions"></div>
 
     <div class="ad-native-player" id="nativeAdSlot"></div>
 </div>
 
 <footer>
-  <div class="footer-content">
-      <div class="footer-section"><h4>About Clipfy</h4><ul><li><a href="#">About Us</a></li></ul></div>
-      <div class="footer-section"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li></ul></div>
-  </div>
   <div class="footer-bottom">© 2024 Clipfy.store. All rights reserved.</div>
 </footer>
 
 <script>
 const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/streamtape/index.json";
-const videoPlayer = document.getElementById("bysePlayer"); // Reference to video tag
+const iframe = document.getElementById("playerFrame");
 const mainTitle = document.getElementById("mainTitle");
 const creatorNameEl = document.getElementById("creatorName");
 const timeAgoEl = document.getElementById("timeAgo");
@@ -146,10 +140,10 @@ let videos = {};
 let popunderReady = false;
 let popFired = false;
 
-/* --------- Helpers ---------- */
+/* --------- Functions ---------- */
 function params(){
-    const p=new URLSearchParams(location.search);
-    return { v:p.get("v") };
+    const p = new URLSearchParams(location.search);
+    return { v: p.get("v") };
 }
 
 function shuffleArray(arr){
@@ -160,7 +154,7 @@ function shuffleArray(arr){
     return arr;
 }
 
-/* --------- Ads (Stay same) ---------- */
+/* --------- Ads Implementation ---------- */
 function renderTopBannerAd(){
     topAdSlot.innerHTML = "";
     const s1 = document.createElement("script");
@@ -193,64 +187,52 @@ function renderBanner300(){
     return [s1, s2];
 }
 
-/* --------- Popunder logic ---------- */
-const VIDEO_PLAY_COUNT_KEY = "clipfy_video_play_count";
-function getVideoPlayCount(){
-    try{ return parseInt(sessionStorage.getItem(VIDEO_PLAY_COUNT_KEY) || "0", 10); }catch(e){ return 0; }
-}
-function setVideoPlayCount(val){
-    try{ sessionStorage.setItem(VIDEO_PLAY_COUNT_KEY, String(val)); }catch(e){}
-}
+/* --------- Popunder (3rd Video Check) ---------- */
+const PLAY_COUNT_KEY = "clp_count";
 function onVideoPlayed(){
-    let count = getVideoPlayCount();
+    let count = parseInt(sessionStorage.getItem(PLAY_COUNT_KEY) || "0", 10);
     count += 1;
-    setVideoPlayCount(count);
+    sessionStorage.setItem(PLAY_COUNT_KEY, String(count));
+    
     if(count % 3 === 0){
         popunderReady = true;
         popFired = false;
     }
 }
 
-/* --------- Data ---------- */
+/* --------- Load Data & Video ---------- */
 async function loadData(){
     try {
         const r = await fetch(DATA_URL,{cache:"no-store"});
         const raw = await r.json();
-        if(!Array.isArray(raw) || !raw.length){
-            mainTitle.textContent = "No videos available right now.";
-            return;
-        }
-        raw.forEach(v=>videos[v.videoid]=v);
+        if(!Array.isArray(raw) || !raw.length) return;
+        
+        raw.forEach(v => videos[v.videoid] = v);
+        
         const { v } = params();
         const id = v && videos[v] ? v : Object.keys(videos)[0];
-        loadVideo(id,true);
-    } catch(e) { console.error("Load failed", e); }
+        loadVideo(id);
+    } catch(e) { console.error("Data Load Failed", e); }
 }
 
-/* --------- Load Video (BYSE DIRECT PLAY) ---------- */
-function loadVideo(id, push = false){
+function loadVideo(id){
     const v = videos[id];
     if(!v) return;
 
-    // 🔥 FIX: Construct Byse Direct URL
-    // Using streamtape_id from JSON as the filename
-    const byseDirectUrl = "https://cdn.byse.sx/" + v.streamtape_id + ".mp4";
-    
-    videoPlayer.src = byseDirectUrl;
-    videoPlayer.poster = v.thumb || ""; // Set thumbnail as poster
-    videoPlayer.load(); // Refresh player with new source
+    // 🔥 BYSE EMBED LOGIC
+    iframe.src = "https://byse.sx/e/" + v.streamtape_id;
 
-    mainTitle.textContent = v.title || "Clipfy Video";
-    creatorNameEl.textContent = v.creator || "Clipfy";
-    timeAgoEl.textContent = v.timeago || "Posted Recently";
-    viewsEl.textContent = (v.views || Math.floor(Math.random() * 100000)).toLocaleString();
-    likesEl.textContent = (v.likes || Math.floor(Math.random() * 1000)).toLocaleString();
+    mainTitle.textContent = v.title || "Untitled Video";
+    creatorNameEl.textContent = v.creator || "Clipfy Creator";
+    timeAgoEl.textContent = v.timeago || "Posted recently";
+    viewsEl.textContent = (v.views || Math.floor(Math.random() * 50000)).toLocaleString();
+    likesEl.textContent = (v.likes || Math.floor(Math.random() * 500)).toLocaleString();
 
     if(v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
-    else creatorDp.style.backgroundImage = "";
+    else creatorDp.style.backgroundImage = "none";
 
     document.title = (v.title || "Video") + " | Clipfy";
-    history.replaceState(null, "", `/streamtape/player.html?v=${id}`);
+    history.replaceState(null, "", `?v=${id}`);
 
     renderTopBannerAd();
     renderNativeAd();
@@ -258,50 +240,53 @@ function loadVideo(id, push = false){
     renderSuggestions(id);
 }
 
-/* --------- Suggestions ---------- */
-function renderSuggestions(current){
+/* --------- Suggestions Rendering ---------- */
+function renderSuggestions(currentId){
     suggestions.innerHTML = "";
-    let ids = Object.keys(videos).filter(i=>i!==current);
+    let ids = Object.keys(videos).filter(id => id !== currentId);
     ids = shuffleArray(ids);
 
     ids.forEach((id, index) => {
-        if (index === 3 && !suggestions.querySelector('.ad-300-player')) {
-            const adDiv = document.createElement("div");
-            adDiv.className = "ad-300-player";
+        // 🔥 Insert 300x250 Banner at 4th slot
+        if (index === 3) {
+            const adContainer = document.createElement("div");
+            adContainer.className = "ad-300-player";
             const [s1, s2] = renderBanner300();
-            adDiv.appendChild(s1);
-            adDiv.appendChild(s2);
-            suggestions.appendChild(adDiv);
+            adContainer.appendChild(s1);
+            adContainer.appendChild(s2);
+            suggestions.appendChild(adContainer);
         }
 
         const v = videos[id];
-        const d = document.createElement("div");
-        d.className = "suggestion-item";
-        d.innerHTML = `
+        const item = document.createElement("div");
+        item.className = "suggestion-item";
+        item.innerHTML = `
             <div class="suggestion-thumbnail">
                 <img loading="lazy" src="${v.thumb || ''}" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
             </div>
-            <div class="suggestion-title">${v.title || "Untitled Video"}</div>
+            <div class="suggestion-title">${v.title || "Untitled"}</div>
         `;
         
-        d.onclick = () => {
+        item.onclick = () => {
+            // 🔥 Popunder Logic Execution
             if(popunderReady && !popFired){
                 popFired = true;
                 const popScript = document.createElement("script");
                 popScript.src = "https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js";
                 document.body.appendChild(popScript);
             }
-            loadVideo(id, true);
+            loadVideo(id);
             window.scrollTo({top: 0, behavior: 'smooth'});
         };
         
-        suggestions.appendChild(d);
+        suggestions.appendChild(item);
     });
 }
 
+// Back Button Sync
 window.onpopstate = () => {
     const { v } = params();
-    if(v && videos[v]) loadVideo(v, false);
+    if(v && videos[v]) loadVideo(v);
 };
 
 loadData();
