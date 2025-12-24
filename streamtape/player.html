@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Clipfy Player</title>
+<meta name="description" content="Watch videos on Clipfy Player">
 
 <style>
 :root{
@@ -12,94 +13,63 @@
   --text:#fff;
   --muted:#8b93b0;
   --accent:#ff2f5b;
+  --hover:#1a2139;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,Arial,sans-serif;
-  overflow-x:hidden
-}
-header{
-  position:sticky;top:0;z-index:1000;
-  background:rgba(15,20,26,.95);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid rgba(255,255,255,.05)
-}
-.nav{
-  max-width:1200px;
-  margin:auto;
-  padding:10px 20px;
-  font-size:22px;
-  font-weight:800
-}
-.nav span{color:var(--accent)}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Arial,sans-serif;line-height:1.6;overflow-x:hidden}
 
-.video-container{
-  position:sticky;
-  top:60px;
-  background:#000;
-  z-index:900
+/* Header */
+header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.nav{max-width:1200px;margin:auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:900;font-size:22px;display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit}
+.logo span{color:var(--accent)}
+
+/* Video Box */
+.video-container {
+    position: sticky;
+    top: 60px;
+    z-index: 900;
+    background: #000;
+    width: 100%;
 }
 .video-box{
-  width:100%;
-  aspect-ratio:16/9;
-  max-height:60vh;
-  background:#000
+    width:100%;
+    aspect-ratio: 16/12;
+    max-height: 60vh;
+    background:#000;
 }
-.video-box iframe{
-  width:100%;
-  height:100%;
-  border:0
-}
+.video-box iframe{width:100%;height:100%;border:0}
 
-.content{
-  max-width:1200px;
-  margin:auto;
-  padding:0 20px
-}
+/* Content */
+.content-wrapper{max-width:1200px;margin:auto;padding:0 20px; position: relative; z-index: 100;}
 
-#adTop{margin:20px auto;max-width:728px;min-height:90px;text-align:center}
-#adNative{margin:30px auto}
+/* AD Containers */
+.ad-728-player{margin:20px auto;text-align:center;max-width:728px;min-height:90px}
+.ad-300-player{margin:20px auto;text-align:center;width:300px;height:250px;justify-self:center;display:grid;place-items:center}
+.ad-native-player{margin:30px auto;width:100%;max-width:1200px}
 
-h1{font-size:22px;margin:15px 0}
-.meta{color:var(--muted);font-size:14px;margin-bottom:10px}
+.post{padding:14px 0;display:flex;gap:10px;border-bottom:1px solid rgba(255,255,255,.05)}
+.dp{width:42px;height:42px;border-radius:50%;background:var(--card);background-size:cover;background-position:center}
+#creatorName{font-weight:600}
+#timeAgo{font-size:12px;color:var(--muted)}
+.stats{display:flex;gap:20px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px;color:var(--muted)}
+.blog-content{padding:14px 0}
+#mainTitle{font-size:22px;font-weight:700;margin-bottom:10px}
+.suggestions-header{padding:20px 0 10px 0;font-size:20px;font-weight:700;color:var(--text)}
+#suggestions{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding-bottom:20px}
+.suggestion-item{background:var(--card);border-radius:12px;overflow:hidden;cursor:pointer;transition:.3s}
+.suggestion-item:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(255,47,91,.2)}
+.suggestion-thumbnail{width:100%;aspect-ratio:16/9;overflow:hidden}
+.suggestion-thumbnail img{width:100%;height:100%;object-fit:cover}
+.suggestion-title{padding:10px 12px;font-size:15px;line-height:1.4;font-weight:600}
 
-#suggestions{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:16px;
-  margin-top:20px
-}
-.item{
-  background:var(--card);
-  border-radius:10px;
-  overflow:hidden;
-  cursor:pointer
-}
-.item img{
-  width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover
-}
-.item div{
-  padding:10px;
-  font-size:14px;
-  font-weight:600
-}
-
-footer{
-  margin-top:40px;
-  padding:20px;
-  text-align:center;
-  font-size:13px;
-  color:var(--muted);
-  border-top:1px solid rgba(255,255,255,.05)
-}
+/* Footer */
+footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding:40px 20px;margin-top:40px; position: relative; z-index: 1000;}
 
 @media(max-width:768px){
-  #adTop{display:none}
-  .video-box{aspect-ratio:16/10}
+    .ad-728-player{display:none}
+    .video-container { top: 55px; }
+    .ad-300-player{width:100%;max-width:300px}
 }
 </style>
 </head>
@@ -107,131 +77,311 @@ footer{
 <body>
 
 <header>
-  <div class="nav">▶ <span>clipfy.store</span></div>
+  <nav class="nav">
+    <a href="/" class="logo">▶ <span>clipfy.store</span></a>
+  </nav>
 </header>
 
 <div class="video-container">
-  <div class="video-box">
-    <iframe
-      id="player"
-      allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-      allowfullscreen
-      referrerpolicy="no-referrer">
-    </iframe>
+    <div class="video-box">
+        <iframe id="playerFrame" allowfullscreen allow="autoplay"></iframe>
+    </div>
+</div>
+
+<!-- Top banner -->
+<div class="ad-728-player" id="topAdSlot"></div>
+
+<div class="content-wrapper">
+    <div class="blog-content">
+        <h2 id="mainTitle"></h2>
+    </div>
+    
+    <div class="post">
+        <div class="dp" id="creatorDp"></div>
+        <div>
+            <div id="creatorName"></div>
+            <div id="timeAgo"></div>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div><span id="views">0</span> views</div>
+        <div><span id="likes">0</span> likes</div>
+        <div style="margin-left:auto">
+            <button id="reportBtn" style="padding:8px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🚩 Report Video</button>
+        </div>
+    </div>
+
+    <div class="suggestions-header">More Videos 🔥</div>
+    <div id="suggestions"></div>
+
+    <!-- Native ad -->
+    <div class="ad-native-player" id="nativeAdSlot"></div>
+</div>
+
+<footer>
+  <div class="footer-content">
+      <div class="footer-section"><h4>About Clipfy</h4><ul><li><a href="#">About Us</a></li></ul></div>
+      <div class="footer-section"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li></ul></div>
   </div>
-</div>
-
-<div id="adTop"></div>
-
-<div class="content">
-  <h1 id="title">Loading…</h1>
-  <div class="meta" id="meta"></div>
-
-  <div id="suggestions"></div>
-
-  <div id="adNative"></div>
-</div>
-
-<footer>© 2024 Clipfy.store</footer>
+  <div class="footer-bottom">© 2024 Clipfy.store. All rights reserved.</div>
+</footer>
 
 <script>
-/* ===== CONFIG ===== */
-const DATA_URL =
-"https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/streamtape/index.json";
-const BYSE_BASE = "https://bysefujedu.com/e/";
+// ---- CONFIG ----
+const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/streamtape/index.json";
+const BYSE_BASE = "https://bysefujedu.com/e/"; // <iframe src="https://bysefujedu.com/e/FILE_CODE">
 
-/* ===== ELEMENTS ===== */
-const iframe = document.getElementById("player");
-const titleEl = document.getElementById("title");
-const metaEl = document.getElementById("meta");
-const sug = document.getElementById("suggestions");
-const adTop = document.getElementById("adTop");
-const adNative = document.getElementById("adNative");
+const iframe = document.getElementById("playerFrame");
+const mainTitle = document.getElementById("mainTitle");
+const creatorNameEl = document.getElementById("creatorName");
+const timeAgoEl = document.getElementById("timeAgo");
+const viewsEl = document.getElementById("views");
+const likesEl = document.getElementById("likes");
+const creatorDp = document.getElementById("creatorDp");
+const suggestions = document.getElementById("suggestions");
+const topAdSlot = document.getElementById("topAdSlot");
+const nativeAdSlot = document.getElementById("nativeAdSlot");
 
 let videos = {};
-let playCount = 0;
+let popunderReady = false;
+let popFired = false;
+let lastAdLoad = 0;
 
-/* ===== HELPERS ===== */
-function qs(){
-  return new URLSearchParams(location.search).get("v");
-}
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
-
-/* ===== ADS ===== */
-function loadTopAd(){
-  adTop.innerHTML="";
-  const s1=document.createElement("script");
-  s1.innerHTML=`atOptions={'key':'b40d9ebf8b9bb68f80451819ab41596e','format':'iframe','height':90,'width':728};`;
-  const s2=document.createElement("script");
-  s2.src="https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js";
-  adTop.append(s1,s2);
-}
-function loadNative(){
-  adNative.innerHTML="";
-  const s=document.createElement("script");
-  s.src="https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
-  s.async=true;
-  const d=document.createElement("div");
-  d.id="container-2095e01c6ff1562d16722ad413d6a9ba";
-  adNative.append(s,d);
+/* --------- Kill-Switch Check ---------- */
+async function checkKillSwitch(){
+    try{
+        const r = await fetch("/api/status");
+        const s = await r.json();
+        if(s.site_disabled){
+            document.body.innerHTML = "<h2 style='color:white;text-align:center;padding:60px;font-family:Arial'>Site is under maintenance</h2>";
+            return false;
+        }
+        return true;
+    }catch(e){
+        return true;
+    }
 }
 
-/* ===== VIDEO ===== */
-function playVideo(id){
-  const v=videos[id];
-  if(!v) return;
-
-  iframe.src = BYSE_BASE + v.streamtape_id;
-
-  titleEl.textContent = v.title || "Untitled";
-  metaEl.textContent =
-    (v.creator||"Clipfy") + " • " +
-    ((v.views||Math.floor(Math.random()*50000)).toLocaleString())+" views";
-
-  history.replaceState(null,"","?v="+id);
-
-  playCount++;
-  if(playCount % 3 === 0){
-    const p=document.createElement("script");
-    p.src="https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js";
-    document.body.appendChild(p);
-  }
-
-  loadTopAd();
-  loadNative();
-  renderSuggestions(id);
+/* --------- Helpers ---------- */
+function params(){
+    const p=new URLSearchParams(location.search);
+    return { v:p.get("v") };
 }
 
+function shuffleArray(arr){
+    for(let i=arr.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+}
+
+/* --------- Ads ---------- */
+function renderTopBannerAd(){
+    const now = Date.now();
+    if(now - lastAdLoad < 2000) return;
+    lastAdLoad = now;
+    
+    topAdSlot.innerHTML = "";
+    const s1 = document.createElement("script");
+    s1.type = "text/javascript";
+    s1.innerHTML = `atOptions = {'key' : 'b40d9ebf8b9bb68f80451819ab41596e','format' : 'iframe','height' : 90,'width' : 728,'params' : {}};`;
+    const s2 = document.createElement("script");
+    s2.src = "https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js";
+    topAdSlot.appendChild(s1);
+    topAdSlot.appendChild(s2);
+}
+
+function renderNativeAd(){
+    const now = Date.now();
+    if(now - lastAdLoad < 2000) return;
+    lastAdLoad = now;
+    
+    nativeAdSlot.innerHTML = "";
+    const s = document.createElement("script");
+    s.async = true;
+    s.setAttribute("data-cfasync","false");
+    s.src = "https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
+    const container = document.createElement("div");
+    container.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
+    nativeAdSlot.appendChild(s);
+    nativeAdSlot.appendChild(container);
+}
+
+function renderBanner300(){
+    const s1 = document.createElement("script");
+    s1.type = "text/javascript";
+    s1.innerHTML = `atOptions = {'key' : 'e8550078b37b6bf29c9b54eed61806f7','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};`;
+    const s2 = document.createElement("script");
+    s2.src = "https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js";
+    return [s1, s2];
+}
+
+/* --------- Popunder ---------- */
+const VIDEO_PLAY_COUNT_KEY = "clipfy_video_play_count";
+
+function getVideoPlayCount(){
+    try{ return parseInt(sessionStorage.getItem(VIDEO_PLAY_COUNT_KEY) || "0", 10); }catch(e){ return 0; }
+}
+
+function setVideoPlayCount(val){
+    try{ sessionStorage.setItem(VIDEO_PLAY_COUNT_KEY, String(val)); }catch(e){}
+}
+
+function onVideoPlayed(){
+    let count = getVideoPlayCount();
+    count += 1;
+    setVideoPlayCount(count);
+    if(count % 3 === 0){
+        popunderReady = true;
+        popFired = false;
+    }
+}
+
+/* --------- Data ---------- */
+async function loadData(){
+    const allowed = await checkKillSwitch();
+    if(!allowed) return;
+    
+    try {
+        const r = await fetch(DATA_URL,{cache:"no-store"});
+        const raw = await r.json();
+        if(!Array.isArray(raw) || !raw.length){
+            mainTitle.textContent = "No videos available right now.";
+            return;
+        }
+        raw.forEach(v=>videos[v.videoid]=v);
+        const { v } = params();
+        const id = v && videos[v] ? v : Object.keys(videos)[0];
+        loadVideo(id,true);
+    } catch(e) { console.error("Load failed", e); }
+}
+
+/* --------- Load Video ---------- */
+function loadVideo(id, push = false){
+    const v = videos[id];
+    if(!v) return;
+
+    currentVideoId = id;
+
+    // IMPORTANT: yahi tumhara BYSE embed hai
+    // Tumhara bot JSON me Byse file_code ko streamtape_id field me daal raha hai [file:67]
+    iframe.src = BYSE_BASE + v.streamtape_id;
+    iframe.onerror = () => {
+        iframe.src = "/offline.html";
+    };
+
+    mainTitle.textContent = v.title || "Clipfy Video";
+    creatorNameEl.textContent = v.creator || "Clipfy";
+    timeAgoEl.textContent = v.timeago || "Posted Recently";
+    viewsEl.textContent = (v.views || Math.floor(Math.random() * 100000)).toLocaleString();
+    likesEl.textContent = (v.likes || Math.floor(Math.random() * 1000)).toLocaleString();
+
+    if(v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
+    else creatorDp.style.backgroundImage = "";
+
+    document.title = (v.title || "Video") + " | Clipfy";
+    const meta = document.querySelector('meta[name="description"]');
+    if(meta) meta.content = v.title + " - Watch on Clipfy";
+    
+    history.replaceState(null, "", `/streamtape/player.html?v=${id}`);
+
+    document.getElementById("reportBtn").disabled = false;
+    document.getElementById("reportBtn").textContent = "🚩 Report Video";
+
+    renderTopBannerAd();
+    renderNativeAd();
+    onVideoPlayed();
+    renderSuggestions(id);
+}
+
+/* --------- Suggestions + SINGLE BANNER ---------- */
 function renderSuggestions(current){
-  sug.innerHTML="";
-  let ids=shuffle(Object.keys(videos).filter(i=>i!==current));
-  ids.forEach(id=>{
-    const v=videos[id];
-    const d=document.createElement("div");
-    d.className="item";
-    d.innerHTML=`
-      <img src="${v.thumb||''}" onerror="this.src='https://via.placeholder.com/640x360'">
-      <div>${v.title||"Untitled"}</div>
-    `;
-    d.onclick=()=>{ playVideo(id); scrollTo({top:0,behavior:"smooth"}); };
-    sug.appendChild(d);
-  });
+    suggestions.innerHTML = "";
+    let ids = Object.keys(videos).filter(i=>i!==current);
+    ids = shuffleArray(ids);
+    ids = ids.slice(0, 12);
+
+    ids.forEach((id, index) => {
+        if (index === 3 && !suggestions.querySelector('.ad-300-player')) {
+            const adDiv = document.createElement("div");
+            adDiv.className = "ad-300-player";
+            const [s1, s2] = renderBanner300();
+            adDiv.appendChild(s1);
+            adDiv.appendChild(s2);
+            suggestions.appendChild(adDiv);
+        }
+
+        const v = videos[id];
+        const d = document.createElement("div");
+        d.className = "suggestion-item";
+        d.innerHTML = `
+            <div class="suggestion-thumbnail">
+                <img loading="lazy" src="${v.thumb || ''}" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
+            </div>
+            <div class="suggestion-title">${v.title || "Untitled Video"}</div>
+        `;
+        
+        d.onclick = () => {
+            if(popunderReady && !popFired){
+                popFired = true;
+                const popScript = document.createElement("script");
+                popScript.src = "https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js";
+                document.body.appendChild(popScript);
+            }
+            loadVideo(id, true);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+        
+        suggestions.appendChild(d);
+    });
 }
 
-/* ===== INIT ===== */
-fetch(DATA_URL,{cache:"no-store"})
-.then(r=>r.json())
-.then(list=>{
-  list.forEach(v=>videos[v.videoid]=v);
-  playVideo(qs() || Object.keys(videos)[0]);
-});
-</script>
+/* --------- Report Function ---------- */
+let currentVideoId = null;
 
+function submitReport(){
+    if(!currentVideoId){
+        alert("No video loaded");
+        return;
+    }
+    const v = videos[currentVideoId];
+    if(!v) return;
+    
+    const reportData = {
+        videoid: currentVideoId,
+        title: v.title,
+        reporter_timestamp: new Date().toISOString()
+    };
+    
+    fetch("/api/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reportData)
+    })
+    .then(r => r.json())
+    .then(res => {
+        if(res.ok){
+            alert("✅ Video reported! Admin will review it.");
+            document.getElementById("reportBtn").disabled = true;
+            document.getElementById("reportBtn").textContent = "✓ Reported";
+        }else{
+            alert("❌ Report failed");
+        }
+    })
+    .catch(e => console.error("Report error:", e));
+}
+
+document.getElementById("reportBtn").onclick = submitReport;
+
+/* --------- Back Button ---------- */
+window.onpopstate = () => {
+    const { v } = params();
+    if(v && videos[v]) loadVideo(v, false);
+};
+
+loadData();
+</script>
 </body>
 </html>
