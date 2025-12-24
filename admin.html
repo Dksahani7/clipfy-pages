@@ -39,7 +39,6 @@ tr:hover{background:var(--hover)}
 
 .status-live{color:var(--success);font-weight:500}
 .status-offline{color:var(--warning);font-weight:500}
-.status-processing{color:var(--blue);font-weight:500}
 
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;align-items:center;justify-content:center;padding:20px}
 .modal-box{background:var(--card);padding:20px;border-radius:12px;width:min(90vw,500px);max-height:90vh;overflow-y:auto;border:1px solid var(--accent)}
@@ -63,18 +62,7 @@ tr:hover{background:var(--hover)}
 
 .thumb-preview{width:70px;height:45px;object-fit:cover;border-radius:4px;cursor:pointer}
 
-.drag-handle{cursor:move;color:var(--muted);font-size:16px;margin-right:4px}
-
 .kill-badge{font-size:11px;padding:4px 8px;border-radius:20px;background:#3b1d1d;color:#ffb4b4;border:1px solid #ff4d4d}
-
-.upload-zone{border:2px dashed var(--border);padding:30px;text-align:center;border-radius:8px;margin:10px 0;cursor:pointer;transition:all .3s}
-.upload-zone:hover{border-color:var(--accent);background:var(--hover)}
-.upload-zone.dragover{border-color:var(--success);background:var(--hover)}
-
-.progress-bar{width:100%;height:8px;background:var(--hover);border-radius:4px;overflow:hidden;margin:8px 0}
-.progress-fill{height:100%;background:var(--accent);transition:width .3s}
-
-.upload-item{background:var(--hover);padding:10px;margin:6px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
 
 .tabs{display:flex;gap:4px;margin:16px 0;border-bottom:2px solid var(--border)}
 .tab{padding:10px 20px;cursor:pointer;border-radius:6px 6px 0 0;transition:all .2s}
@@ -88,27 +76,23 @@ tr:hover{background:var(--hover)}
 .log-item{padding:8px;margin:4px 0;background:var(--hover);border-radius:4px;font-size:12px;display:flex;justify-content:space-between}
 .log-time{color:var(--muted)}
 
-.badge{font-size:10px;padding:3px 8px;border-radius:12px;font-weight:600}
-.badge-success{background:var(--success);color:#000}
-.badge-danger{background:var(--danger);color:#fff}
-.badge-warning{background:var(--warning);color:#000}
-.badge-blue{background:var(--blue);color:#fff}
-
 .settings-section{background:var(--hover);padding:16px;border-radius:8px;margin:12px 0}
 .settings-section h4{color:var(--accent);margin-bottom:10px}
 .setting-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
 .setting-row:last-child{border-bottom:none}
 
-.file-input-wrapper{position:relative;overflow:hidden;display:inline-block}
-.file-input-wrapper input[type=file]{position:absolute;left:-9999px}
-.file-input-label{display:inline-block;padding:8px 14px;background:var(--blue);color:#fff;border-radius:6px;cursor:pointer;font-weight:500}
-.file-input-label:hover{opacity:.9}
+.badge{font-size:10px;padding:3px 8px;border-radius:12px;font-weight:600}
+.badge-success{background:var(--success);color:#000}
+.badge-danger{background:var(--danger);color:#fff}
 
 .analytics-card{background:var(--hover);padding:16px;border-radius:8px;margin:10px 0}
 .analytics-card h4{color:var(--accent);margin-bottom:8px}
 
 .top-video-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
 .top-video-item:last-child{border-bottom:none}
+
+.sync-progress{background:var(--hover);padding:20px;border-radius:8px;margin:20px 0;text-align:center}
+.sync-progress h3{color:var(--accent);margin-bottom:10px}
 </style>
 </head>
 
@@ -125,9 +109,8 @@ tr:hover{background:var(--hover)}
   </div>
   <div class="header-bottom">
     <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
-    <button class="btn btn-blue" onclick="syncStreamtape()">🔄 Sync Streamtape</button>
+    <button class="btn btn-blue" onclick="syncByse()">📡 Sync Byse</button>
     <button class="btn btn-accent" onclick="openVideoModal('add')">➕ Add Video</button>
-    <button class="btn btn-blue" onclick="openUploadModal()">📤 Upload</button>
     <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
     <button class="btn btn-danger" onclick="toggleKillSwitch()">🚨 Maintenance</button>
 
@@ -137,10 +120,10 @@ tr:hover{background:var(--hover)}
 
 <div class="container" id="mainContainer">
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('videos',event)">📹 Videos</div>
-    <div class="tab" onclick="switchTab('uploads',event)">📤 Uploads</div>
+    <div class="tab active" onclick="switchTab('videos',event)">🎬 Videos</div>
     <div class="tab" onclick="switchTab('analytics',event)">📊 Analytics</div>
     <div class="tab" onclick="switchTab('settings',event)">⚙️ Settings</div>
+    <div class="tab" onclick="switchTab('reports',event)">🚩 Reports</div>
     <div class="tab" onclick="switchTab('logs',event)">📋 Logs</div>
   </div>
 
@@ -191,33 +174,6 @@ tr:hover{background:var(--hover)}
     <div class="pagination" id="pagination"></div>
   </div>
 
-  <!-- UPLOADS TAB -->
-  <div class="tab-content" id="tab-uploads">
-    <h3>Upload Manager</h3>
-
-    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-      <p style="font-size:40px;margin-bottom:10px">📁</p>
-      <p>Click to select files or drag &amp; drop here</p>
-      <p style="font-size:12px;color:var(--muted);margin-top:4px">
-        Local file upload UI only – real remote upload uses URL + Streamtape backend.
-      </p>
-      <p style="font-size:12px;color:var(--muted);margin-top:4px">Supported (UI): MP4, AVI, MKV, MOV (Max 2GB)</p>
-      <input type="file" id="fileInput" multiple accept="video/*" style="display:none" onchange="handleFiles(this.files)">
-    </div>
-
-    <div style="margin:20px 0">
-      <h4>Or Upload from URL (recommended)</h4>
-      <input id="urlInput" placeholder="Enter video URL (direct MP4 / file link)" style="width:100%;padding:10px;margin:8px 0;border:1px solid var(--border);border-radius:6px;background:var(--hover);color:var(--text)">
-      <button class="btn btn-accent" onclick="uploadFromURL()">Upload from URL</button>
-    </div>
-
-    <h4 style="margin-top:20px">Upload Queue (UI only)</h4>
-    <div id="uploadQueue"></div>
-
-    <h4 style="margin-top:20px">Recent Uploads (from backend)</h4>
-    <div id="recentUploads"></div>
-  </div>
-
   <!-- ANALYTICS TAB -->
   <div class="tab-content" id="tab-analytics">
     <h3>Analytics Dashboard</h3>
@@ -250,8 +206,8 @@ tr:hover{background:var(--hover)}
         <span class="badge badge-success" id="r2Status">Connected</span>
       </div>
       <div class="setting-row">
-        <span>Total Storage Used</span>
-        <span id="storageUsed">Calculating...</span>
+        <span>Total Videos</span>
+        <span id="totalVideosCount">0</span>
       </div>
       <button class="btn btn-small btn-warning" onclick="clearCache()">Clear Cache</button>
     </div>
@@ -259,25 +215,15 @@ tr:hover{background:var(--hover)}
     <div class="settings-section">
       <h4>API Configuration</h4>
       <div class="setting-row">
-        <span>Streamtape API</span>
-        <input type="text" id="streamtapeKey" placeholder="API Key (local only)" style="width:200px;margin:0">
+        <span>Byse API Key</span>
+        <input type="password" id="byseKey" placeholder="API Key (local only)" style="width:200px;margin:0">
       </div>
       <button class="btn btn-small btn-success" onclick="saveAPIConfig()">Save Config</button>
     </div>
 
     <div class="settings-section">
-      <h4>Security</h4>
-      <button class="btn btn-warning" onclick="changePassword()">Change Password</button>
-      <button class="btn btn-danger" onclick="clearSessions()">Clear All Sessions</button>
-    </div>
-
-    <div class="settings-section">
-      <h4>Backup &amp; Restore</h4>
+      <h4>Backup & Restore</h4>
       <button class="btn btn-blue" onclick="backupData()">📥 Download Backup</button>
-      <div class="file-input-wrapper">
-        <label class="file-input-label">📤 Restore Backup</label>
-        <input type="file" accept=".json" onchange="restoreBackup(this.files[0])">
-      </div>
     </div>
 
     <div class="settings-section">
@@ -287,18 +233,43 @@ tr:hover{background:var(--hover)}
     </div>
   </div>
 
+  <!-- REPORTS TAB -->
+  <div class="tab-content" id="tab-reports">
+    <h3>Video Reports</h3>
+    <div style="margin:10px 0">
+      <button class="btn btn-small btn-blue" onclick="loadReports()">🔄 Refresh Reports</button>
+      <button class="btn btn-small btn-warning" onclick="filterReportsByStatus('pending')">Pending</button>
+      <button class="btn btn-small btn-success" onclick="filterReportsByStatus('resolved')">Resolved</button>
+      <button class="btn btn-small btn-accent" onclick="filterReportsByStatus('all')">All</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Video ID</th>
+          <th>Title</th>
+          <th>Reported</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="reportsTbody">
+        <tr><td colspan="5">Loading reports...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- LOGS TAB -->
   <div class="tab-content" id="tab-logs">
     <h3>Activity Logs</h3>
     <p style="font-size:12px;color:var(--muted);margin-bottom:8px">
-      Local logs + optional server logs. Enable /api/admin/logs in Worker to persist admin actions.
+      Local logs stored in browser
     </p>
     <div style="margin:10px 0">
       <select id="logFilter" class="filter-select" onchange="filterLogs()">
         <option value="all">All Actions</option>
         <option value="save">Save/Edit</option>
         <option value="delete">Delete</option>
-        <option value="upload">Upload</option>
+        <option value="sync">Sync</option>
         <option value="killswitch">Maintenance</option>
       </select>
       <button class="btn btn-small btn-warning" onclick="clearLogs()">Clear Logs</button>
@@ -326,28 +297,14 @@ tr:hover{background:var(--hover)}
     <input id="vtitle" placeholder="Title">
     <textarea id="vdesc" placeholder="Description (optional)"></textarea>
     <input id="vthumb" placeholder="Thumbnail URL">
-    <input id="vstream" placeholder="Streamtape ID">
+    <input id="vstream" placeholder="Byse File Code">
     <input id="vviews" type="number" placeholder="Views" value="0">
     <select id="vstatus">
       <option value="live">Live</option>
       <option value="offline">Offline</option>
-      <option value="processing">Processing</option>
     </select>
     <div style="margin-top:10px">
       <button class="btn btn-success" onclick="saveVideo()">Save</button>
-      <button class="btn btn-danger" onclick="closeAllModals()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- UPLOAD MODAL -->
-<div class="modal" id="uploadModal">
-  <div class="modal-box">
-    <h3>Quick Upload (URL)</h3>
-    <input id="quickUploadURL" placeholder="Video URL">
-    <input id="quickUploadTitle" placeholder="Title">
-    <div style="margin-top:10px">
-      <button class="btn btn-success" onclick="quickUpload()">Start Upload</button>
       <button class="btn btn-danger" onclick="closeAllModals()">Cancel</button>
     </div>
   </div>
@@ -360,7 +317,6 @@ tr:hover{background:var(--hover)}
     <img id="thumbPrev" style="width:100%;border-radius:8px;margin-bottom:8px">
     <input id="thumbNew" placeholder="New thumbnail URL">
     <div style="margin-top:8px">
-      <button class="btn btn-warning" onclick="regenThumb()">Regenerate Blur</button>
       <button class="btn btn-success" onclick="saveThumb()">Save Thumbnail</button>
       <button class="btn btn-danger" onclick="closeAllModals()">Close</button>
     </div>
@@ -390,7 +346,6 @@ const PER_PAGE = 50;
 let editingId = null;
 let currentThumbId = null;
 let siteDisabled = false;
-let uploads = [];
 let logs = [];
 
 /* ============ AUTH ============ */
@@ -434,8 +389,8 @@ function switchTab(tab,ev){
   if (ev && ev.target) ev.target.classList.add("active");
   document.getElementById("tab-"+tab).classList.add("active");
   if (tab==="analytics") updateAnalytics();
+  if (tab==="reports") loadReports();
   if (tab==="logs") loadLogs();
-  if (tab==="uploads") loadUploads();
 }
 
 /* ============ STATUS / KILL SWITCH ============ */
@@ -526,6 +481,8 @@ function updateStats(){
       <div class="stat-label">Total Views</div>
     </div>
   `;
+  
+  document.getElementById("totalVideosCount").textContent = total;
 }
 
 /* ============ FILTER & PAGINATION ============ */
@@ -565,7 +522,7 @@ function renderTable(){
   tb.innerHTML = pageItems.map((v,idx)=>`
     <tr>
       <td><input type="checkbox" value="${v.videoid}" ${selected.has(v.videoid)?"checked":""} onchange="toggleSelect('${v.videoid}',this.checked)"></td>
-      <td><span class="drag-handle">⋮⋮</span>${start+idx+1}</td>
+      <td>${start+idx+1}</td>
       <td><img src="${v.thumb||""}" class="thumb-preview" onclick="openThumb('${v.videoid}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%22120%22 height%3D%2290%22%3E%3Crect fill%3D%22222333%22 width%3D%22120%22 height%3D%2290%22/%3E%3Ctext x%3D%2260%22 y%3D%2245%22 fill%3D%22999%22 text-anchor%3D%22middle%22 dy%3D%22.3em%22 font-size%3D%2212%22%3ENo Img%3C/text%3E%3C/svg%3E'"></td>
       <td ondblclick="openVideoModal('edit','${v.videoid}','${(v.title||"").replace(/"/g,'&quot;')}')">${v.title||""}</td>
       <td>${v.videoid}</td>
@@ -816,133 +773,52 @@ async function saveThumb(){
   closeAllModals();
 }
 
-function regenThumb(){
-  alert("Auto blur/regen not wired in Worker. Use bot/other job if needed.");
-}
+/* ============ BYSE SYNC ============ */
 
-/* ============ UPLOADS ============ */
+async function syncByse(){
+  if (!ADMIN_TOKEN) return alert("Login first");
 
-function openUploadModal(){
-  document.getElementById("uploadModal").style.display = "flex";
-}
+  if (!confirm("Sync all new videos from Byse?")) return;
 
-function handleFiles(fileList){
-  if (!uploads) uploads = [];
-  for (const f of fileList){
-    const item = {name:f.name,size:f.size,progress:0,status:"queue"};
-    uploads.push(item);
-    fakeUpload(item);
-  }
-  renderUploadQueue();
-}
-
-function renderUploadQueue(){
-  const cont = document.getElementById("uploadQueue");
-  if (!uploads || !uploads.length){
-    cont.innerHTML = "<p style='color:var(--muted);font-size:12px'>No queued uploads</p>";
-    return;
-  }
-  cont.innerHTML = uploads.map(u=>`
-    <div class="upload-item">
-      <div>
-        <div>${u.name}</div>
-        <div style="font-size:11px;color:var(--muted)">${(u.size/1024/1024).toFixed(2)} MB</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${u.progress||0}%"></div></div>
+  const mainContainer = document.getElementById("mainContainer");
+  mainContainer.innerHTML = `
+    <div class="sync-progress">
+      <h3>🔄 Syncing from Byse...</h3>
+      <p style="color:var(--muted);margin:10px 0">This may take a while. Please wait...</p>
+      <div style="margin:20px 0">
+        <div style="width:100%;height:8px;background:var(--hover);border-radius:4px;overflow:hidden">
+          <div style="width:100%;height:100%;background:var(--accent);animation:pulse 1.5s infinite"></div>
+        </div>
       </div>
-      <span class="badge ${u.status==="done"?"badge-success":u.status==="error"?"badge-danger":"badge-blue"}">${u.status}</span>
     </div>
-  `).join("");
-}
+  `;
 
-function fakeUpload(item){
-  item.status = "upload";
-  let p = 0;
-  const timer = setInterval(()=>{
-    p += 10;
-    if (p>=100){
-      p = 100;
-      item.status = "done";
-      clearInterval(timer);
-    }
-    item.progress = p;
-    renderUploadQueue();
-  },300);
-}
-
-async function uploadFromURL(){
-  const url = document.getElementById("urlInput").value.trim();
-  if (!url) return alert("Enter URL");
-  if (!ADMIN_TOKEN) return alert("Login first");
-  const title = prompt("Enter title for this URL","Remote Upload");
-  const r = await fetch(API + "/admin/upload/url",{
-    method:"POST",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({url,title})
-  });
-  const data = await r.json();
-  if (data && !data.error && data.success!==false){
-    alert("Upload started / completed on Streamtape");
-    addLog("upload","Remote upload: "+(title||url));
-    loadUploads();
-    loadVideos();
-  } else {
-    alert("Upload failed: "+(data?.error||"Unknown"));
-  }
-}
-
-async function quickUpload(){
-  const url = document.getElementById("quickUploadURL").value.trim();
-  const title = document.getElementById("quickUploadTitle").value.trim();
-  if (!url || !title) return alert("Enter URL & Title");
-  if (!ADMIN_TOKEN) return alert("Login first");
-  const r = await fetch(API + "/admin/upload/url",{
-    method:"POST",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({url,title})
-  });
-  const data = await r.json();
-  if (data && !data.error && data.success!==false){
-    alert("Upload queued/completed");
-    addLog("upload","Quick upload: "+title);
-    closeAllModals();
-    loadUploads();
-    loadVideos();
-  } else {
-    alert("Upload failed: "+(data?.error||"Unknown"));
-  }
-}
-
-async function loadUploads(){
-  if (!ADMIN_TOKEN) return;
-  try{
-    const r = await fetch(API + "/admin/uploads",{
-      headers:{Authorization:ADMIN_TOKEN}
+  try {
+    const r = await fetch(API + "/admin/byse/sync", {
+      method: "POST",
+      headers: {
+        Authorization: ADMIN_TOKEN
+      }
     });
+
     const data = await r.json();
-    const cont = document.getElementById("recentUploads");
-    if (!data || !data.length){
-      cont.innerHTML = "<p style='color:var(--muted);font-size:12px'>No uploads yet</p>";
+
+    if (!data.ok) {
+      alert("Sync failed: " + (data.error || "Unknown"));
+      location.reload();
       return;
     }
-    cont.innerHTML = data.slice(0,20).map(u=>`
-      <div class="upload-item">
-        <div>
-          <div>${u.title||u.name||"Untitled"}</div>
-          <div style="font-size:11px;color:var(--muted)">
-            ${u.status||"unknown"} • ${u.size?(u.size/1024/1024).toFixed(2)+" MB":""}
-          </div>
-        </div>
-        <span class="badge badge-blue">${u.created_at?new Date(u.created_at).toLocaleString():""}</span>
-      </div>
-    `).join("");
-  }catch(e){
-    console.error(e);
+
+    alert(`✅ Sync Complete!
+
+New videos added: ${data.added}
+Total videos: ${data.total}`);
+
+    addLog("sync", `Byse sync added ${data.added}`);
+    location.reload();
+  } catch (e) {
+    alert("Sync error: " + e.message);
+    location.reload();
   }
 }
 
@@ -985,23 +861,13 @@ async function clearCache(){
     method:"POST",
     headers:{Authorization:ADMIN_TOKEN}
   }).catch(()=>{});
-  alert("Cache cleared (if API implemented)");
+  alert("Cache cleared");
 }
 
 function saveAPIConfig(){
-  const key = document.getElementById("streamtapeKey").value.trim();
-  localStorage.setItem("clipfy_streamtape_key",key);
+  const key = document.getElementById("byseKey").value.trim();
+  localStorage.setItem("clipfy_byse_key",key);
   alert("Saved locally (use server env for real key)");
-}
-
-function changePassword(){
-  const p = prompt("Enter new admin password");
-  if (!p) return;
-  alert("Implement API to change password on server.");
-}
-
-function clearSessions(){
-  alert("Implement session clearing on server.");
 }
 
 async function backupData(){
@@ -1013,24 +879,6 @@ async function backupData(){
   a.download = "clipfy-backup.json";
   a.click();
   URL.revokeObjectURL(url);
-}
-
-function restoreBackup(file){
-  const reader = new FileReader();
-  reader.onload = e=>{
-    try{
-      const arr = JSON.parse(e.target.result);
-      if (!Array.isArray(arr)) throw new Error("Invalid");
-      if (!confirm("Replace current videos with backup?")) return;
-      videos = arr;
-      applyFilters();
-      updateStats();
-      alert("Backup loaded in UI. Push to server with your own endpoint if needed.");
-    }catch(err){
-      alert("Invalid backup");
-    }
-  };
-  reader.readAsText(file);
 }
 
 async function deleteAllOffline(){
@@ -1063,17 +911,6 @@ function addLog(action,note){
   const item = {action,note,time:Date.now()};
   logs.push(item);
   localStorage.setItem("clipfy_admin_logs",JSON.stringify(logs));
-  // Optional: also push to backend for KV logs
-  if (ADMIN_TOKEN){
-    fetch(API + "/admin/logs",{
-      method:"POST",
-      headers:{
-        "Authorization":ADMIN_TOKEN,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(item)
-    }).catch(()=>{});
-  }
 }
 
 function loadLogs(){
@@ -1081,24 +918,7 @@ function loadLogs(){
   if (saved && !logs.length){
     try{logs = JSON.parse(saved)||[]}catch(e){logs=[];}
   }
-  // Optional: merge with backend logs
-  if (ADMIN_TOKEN){
-    fetch(API + "/admin/logs",{
-      headers:{Authorization:ADMIN_TOKEN}
-    })
-    .then(r=>r.json())
-    .then(serverLogs=>{
-      if (Array.isArray(serverLogs)){
-        // merge: server priority
-        logs = serverLogs;
-        localStorage.setItem("clipfy_admin_logs",JSON.stringify(logs));
-      }
-      renderLogs();
-    })
-    .catch(()=>renderLogs());
-  } else {
-    renderLogs();
-  }
+  renderLogs();
 }
 
 function renderLogs(){
@@ -1175,44 +995,6 @@ function refresh(){
   fetchStatus();
 }
 
-
-
-async function syncStreamtape(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-
-  if (!confirm("Streamtape se saare new videos sync kare?")) return;
-
-  try {
-    const r = await fetch(API + "/admin/streamtape/sync", {
-      method: "POST",
-      headers: {
-        Authorization: ADMIN_TOKEN
-      }
-    });
-
-    const data = await r.json();
-
-    if (!data.ok) {
-      alert("Sync failed: " + (data.error || "Unknown"));
-      return;
-    }
-
-    alert(`Sync complete ✅
-New added: ${data.added}
-Total videos: ${data.total}`);
-
-    addLog("sync", `Streamtape sync added ${data.added}`);
-    loadVideos(); // table refresh
-  } catch (e) {
-    alert("Sync error");
-    console.error(e);
-  }
-}
-
-
-
-
-
 /* ============ INIT ============ */
 
 function init(){
@@ -1221,22 +1003,8 @@ function init(){
   loadVideos();
   loadLogs();
 
-  const savedKey = localStorage.getItem("clipfy_streamtape_key");
-  if (savedKey) document.getElementById("streamtapeKey").value = savedKey;
-
-  const uz = document.getElementById("uploadZone");
-  uz.addEventListener("dragover",e=>{
-    e.preventDefault();
-    uz.classList.add("dragover");
-  });
-  uz.addEventListener("dragleave",e=>{
-    uz.classList.remove("dragover");
-  });
-  uz.addEventListener("drop",e=>{
-    e.preventDefault();
-    uz.classList.remove("dragover");
-    if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
-  });
+  const savedKey = localStorage.getItem("clipfy_byse_key");
+  if (savedKey) document.getElementById("byseKey").value = savedKey;
 }
 
 window.addEventListener("click",e=>{
@@ -1254,7 +1022,99 @@ window.addEventListener("load",()=>{
 });
 
 
+/* ===== REPORTS SYSTEM ===== */
+let allReports = [];
+let reportFilter = "all";
+
+async function loadReports(){
+  try {
+    const r = await fetch(API + "/reports", {
+      headers: { "Authorization": ADMIN_TOKEN }
+    });
+    const data = await r.json();
+    allReports = data.reports || [];
+    renderReports(allReports);
+  } catch(e) {
+    console.error("Load reports failed:", e);
+    document.getElementById("reportsTbody").innerHTML = "<tr><td colspan='5'>Failed to load reports</td></tr>";
+  }
+}
+
+function filterReportsByStatus(status) {
+  reportFilter = status;
+  const filtered = status === "all" ? allReports : allReports.filter(r => r.status === status);
+  renderReports(filtered);
+}
+
+function renderReports(reports) {
+  const tbody = document.getElementById("reportsTbody");
+  if (reports.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;padding:20px'>No reports</td></tr>";
+    return;
+  }
+  
+  tbody.innerHTML = reports.map((r, i) => {
+    const date = new Date(r.timestamp);
+    const timeStr = date.toLocaleString();
+    const statusBadge = r.status === "pending" ? '<span class="badge badge-danger">Pending</span>' : '<span class="badge badge-success">Resolved</span>';
+    
+    return `<tr>
+      <td style="font-family:monospace;font-size:11px">${r.videoid}</td>
+      <td>${r.title.substring(0, 40)}</td>
+      <td style="font-size:11px">${timeStr}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <button class="btn btn-small btn-danger" onclick="deleteReportedVideo('${r.videoid}')">Delete</button>
+        <button class="btn btn-small btn-success" onclick="markResolved('${r.videoid}')">Resolve</button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+async function deleteReportedVideo(videoid) {
+  if (!ADMIN_TOKEN) return alert("Login required");
+  if (!confirm(`Delete video ${videoid}?`)) return;
+  
+  try {
+    const r = await fetch(API + `/admin/videos/${videoid}`, {
+      method: "DELETE",
+      headers: { "Authorization": ADMIN_TOKEN }
+    });
+    if (!r.ok) throw new Error("Delete failed");
+    alert("✅ Video deleted");
+    loadReports();
+    loadVideos();
+  } catch(e) {
+    alert("Delete error: " + e.message);
+  }
+}
+
+async function markResolved(videoid) {
+  if (!ADMIN_TOKEN) return alert("Login required");
+  try {
+    const r = await fetch(API + "/admin/reports/resolve", {
+      method: "POST",
+      headers: { 
+        "Authorization": ADMIN_TOKEN,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ videoid })
+    });
+    if (!r.ok) throw new Error("Resolve failed");
+    loadReports();
+  } catch(e) {
+    console.error("Mark resolved error:", e);
+  }
+}
+
 </script>
+
+<style>
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+</style>
 
 </body>
 </html>
