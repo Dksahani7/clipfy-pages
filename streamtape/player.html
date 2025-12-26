@@ -129,7 +129,7 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 <script>
 // ---- CONFIG ----
-const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/byse/index.json";
+const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/streamtape/index.json";
 const BYSE_BASE = "https://bysefujedu.com/e/"; // <iframe src="https://bysefujedu.com/e/FILE_CODE">
 
 const iframe = document.getElementById("playerFrame");
@@ -147,6 +147,40 @@ let videos = {};
 let popunderReady = false;
 let popFired = false;
 let lastAdLoad = 0;
+
+/* --------- Preview Meta Update --------- */
+function updateMeta(v){
+    document.querySelectorAll('meta[property="og:image"],meta[name="twitter:image"],meta[name="twitter:card"]').forEach(m=>m.remove());
+
+    const head = document.head;
+
+    const ogImg = document.createElement("meta");
+    ogImg.setAttribute("property","og:image");
+    ogImg.setAttribute("content", v.thumb);
+    head.appendChild(ogImg);
+
+    const ogW = document.createElement("meta");
+    ogW.setAttribute("property","og:image:width");
+    ogW.setAttribute("content","1280");
+    head.appendChild(ogW);
+
+    const ogH = document.createElement("meta");
+    ogH.setAttribute("property","og:image:height");
+    ogH.setAttribute("content","720");
+    head.appendChild(ogH);
+
+    const twCard = document.createElement("meta");
+    twCard.setAttribute("name","twitter:card");
+    twCard.setAttribute("content","summary_large_image");
+    head.appendChild(twCard);
+
+    const twImg = document.createElement("meta");
+    twImg.setAttribute("name","twitter:image");
+    twImg.setAttribute("content", v.thumb);
+    head.appendChild(twImg);
+
+    console.log("META UPDATED FOR THUMBNAIL:", v.thumb);
+}
 
 /* --------- Kill-Switch Check ---------- */
 async function checkKillSwitch(){
@@ -285,6 +319,8 @@ function loadVideo(id, push = false){
     const meta = document.querySelector('meta[name="description"]');
     if(meta) meta.content = v.title + " - Watch on Clipfy";
     
+    updateMeta(v);
+    
     history.replaceState(null, "", `/streamtape/player.html?v=${id}`);
 
     document.getElementById("reportBtn").disabled = false;
@@ -318,7 +354,10 @@ function renderSuggestions(current){
         d.className = "suggestion-item";
         d.innerHTML = `
             <div class="suggestion-thumbnail">
-                <img loading="lazy" src="${v.thumb || ''}" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
+                <div class="suggestion-thumb-wrap">
+                    <div class="suggestion-thumb-bg" style="background-image:url('${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}')"></div>
+                    <img loading="lazy" src="${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}" class="suggestion-thumb-img" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
+                </div>
             </div>
             <div class="suggestion-title">${v.title || "Untitled Video"}</div>
         `;
