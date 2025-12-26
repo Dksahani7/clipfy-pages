@@ -93,6 +93,108 @@ tr:hover{background:var(--hover)}
 
 .sync-progress{background:var(--hover);padding:20px;border-radius:8px;margin:20px 0;text-align:center}
 .sync-progress h3{color:var(--accent);margin-bottom:10px}
+
+/* ===== RESPONSIVE - MOBILE ===== */
+@media(max-width:1024px){
+  .stats-grid{margin-left:0;margin-top:10px}
+  table{font-size:13px}
+  th,td{padding:8px}
+  .btn-small{padding:3px 8px;font-size:11px}
+}
+
+@media(max-width:768px){
+  header{padding:12px}
+  .header-top{flex-direction:column;gap:8px;margin-bottom:4px}
+  .header-bottom{flex-direction:column;gap:8px}
+  .logo{font-size:18px}
+  .user-info{font-size:11px;flex-wrap:wrap}
+  .container{padding:12px}
+  
+  .btn{padding:6px 10px;font-size:12px}
+  .btn-small{padding:3px 6px;font-size:10px}
+  
+  .stats-grid{grid-template-columns:repeat(2,1fr);margin-top:8px;gap:6px}
+  .stat-card{padding:8px}
+  .stat-number{font-size:14px}
+  .stat-label{font-size:10px}
+  
+  .tabs{flex-wrap:wrap;gap:2px;margin:12px 0}
+  .tab{padding:8px 12px;font-size:12px}
+  
+  table{font-size:12px;overflow-x:auto;display:block}
+  thead{display:none}
+  tbody{display:block}
+  tr{display:block;margin-bottom:12px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  td{display:block;padding:10px;border:none;text-align:right;position:relative;padding-left:50%;background:var(--hover)}
+  td:before{content:attr(data-label);position:absolute;left:10px;font-weight:600;color:var(--accent);text-align:left}
+  
+  .search-filter{flex-direction:column;gap:8px}
+  .search-box{width:100%}
+  .filter-select{width:100%}
+  
+  .bulk-actions{flex-direction:column;gap:6px}
+  .modal-box{width:95vw;padding:16px}
+  
+  .pagination{flex-wrap:wrap;gap:4px;font-size:12px}
+  .page-btn{padding:4px 8px;font-size:11px}
+  
+  .search-filter .btn-small{width:100%}
+}
+
+@media(max-width:480px){
+  header{padding:8px}
+  .header-top{padding:0}
+  .logo{font-size:16px}
+  .user-info{font-size:10px;gap:4px}
+  .container{padding:8px}
+  
+  .btn{padding:5px 8px;font-size:11px}
+  .btn-small{padding:2px 5px;font-size:9px}
+  
+  .stats-grid{grid-template-columns:1fr;gap:6px}
+  
+  .tabs{gap:0;margin:8px 0}
+  .tab{padding:6px 10px;font-size:11px;flex:1;text-align:center}
+  
+  .modal-box{width:98vw;padding:12px;max-height:95vh}
+  .modal-box h3{font-size:14px;margin-bottom:8px}
+  .modal-box input,select,textarea{padding:8px;font-size:13px;margin:4px 0}
+  
+  .search-filter{flex-direction:column;gap:6px;margin:8px 0}
+  .search-box{width:100%;padding:6px}
+  .filter-select{width:100%;padding:6px}
+  
+  .bulk-actions{flex-direction:column;gap:4px;font-size:11px}
+  .bulk-actions label{width:100%}
+  
+  table{font-size:11px}
+  td{padding:8px;padding-left:40%}
+  
+  .pagination{gap:3px}
+  .page-btn{padding:3px 6px;font-size:10px}
+  
+  .settings-section{padding:12px;margin:8px 0}
+  .setting-row{padding:6px 0;font-size:12px}
+  
+  .analytics-card{padding:12px;margin:8px 0}
+  .analytics-card h4{font-size:13px}
+  
+  .thumb-preview{width:50px;height:30px}
+  
+  .log-item{padding:6px;font-size:10px;flex-direction:column;gap:4px}
+  .log-time{text-align:left}
+}
+
+@media(max-width:360px){
+  .header-top{gap:4px}
+  .logo{font-size:14px}
+  .btn{padding:4px 6px;font-size:10px}
+  .tabs{gap:0}
+  .tab{padding:5px 8px;font-size:10px}
+  .stats-grid{gap:4px}
+  .stat-card{padding:6px}
+  .stat-number{font-size:12px}
+}
 </style>
 </head>
 
@@ -111,6 +213,7 @@ tr:hover{background:var(--hover)}
     <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
     <button class="btn btn-blue" onclick="syncByse()">📡 Sync Byse</button>
     <button class="btn btn-accent" onclick="openVideoModal('add')">➕ Add Video</button>
+    <button class="btn btn-warning" onclick="autoFillTitles()">📝 Auto Title</button>
     <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
     <button class="btn btn-danger" onclick="toggleKillSwitch()">🚨 Maintenance</button>
 
@@ -315,11 +418,24 @@ tr:hover{background:var(--hover)}
   <div class="modal-box">
     <h3>Thumbnail Control</h3>
     <img id="thumbPrev" style="width:100%;border-radius:8px;margin-bottom:8px">
-    <input id="thumbNew" placeholder="New thumbnail URL">
-    <div style="margin-top:8px">
-      <button class="btn btn-success" onclick="saveThumb()">Save Thumbnail</button>
+    
+    <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
+      <h4 style="color:var(--accent);margin-bottom:8px">📤 Upload New</h4>
+      <input type="file" id="thumbFile" accept="image/*" style="width:100%;margin-bottom:6px">
+      <button class="btn btn-blue" onclick="uploadThumbnail()" style="width:100%">⬆️ Upload & Process</button>
+    </div>
+    
+    <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
+      <h4 style="color:var(--accent);margin-bottom:8px">🔗 Paste URL</h4>
+      <input id="thumbNew" placeholder="Image URL (auto-resize to 1280x720)">
+      <button class="btn btn-success" onclick="saveThumb()" style="width:100%;margin-top:6px">💾 Save from URL</button>
+    </div>
+    
+    <div style="margin-top:10px">
       <button class="btn btn-danger" onclick="closeAllModals()">Close</button>
     </div>
+    
+    <div id="thumbStatus" style="margin-top:8px;font-size:12px;color:var(--muted)"></div>
   </div>
 </div>
 
@@ -771,6 +887,112 @@ async function saveThumb(){
   addLog("save","Updated thumb "+currentThumbId);
   applyFilters();
   closeAllModals();
+}
+
+async function uploadThumbnail(){
+  if (!currentThumbId) return alert("No video selected");
+  const file = document.getElementById("thumbFile").files[0];
+  if (!file) return alert("Select a file");
+  if (file.size > 10*1024*1024) return alert("Max 10MB");
+  if (!file.type.startsWith("image/")) return alert("Image only");
+  
+  const status = document.getElementById("thumbStatus");
+  status.textContent = "⏳ Processing (1280x720 letterbox)...";
+  
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const img = new Image();
+      img.onload = async () => {
+        const processed = await resizeToLetterbox(img);
+        processed.toBlob(async (blob) => {
+          const fd = new FormData();
+          fd.append("videoid", currentThumbId);
+          fd.append("image", blob, "thumbnail.jpg");
+          
+          status.textContent = "⏳ Uploading to R2...";
+          
+          const r = await fetch(API + "/admin/thumbnail", {
+            method: "POST",
+            headers: { Authorization: ADMIN_TOKEN },
+            body: fd
+          });
+          const res = await r.json();
+          if (res.ok) {
+            const v = videos.find(x=>x.videoid===currentThumbId);
+            if (v) v.thumb = res.thumb;
+            status.textContent = "✅ 1280x720 thumbnail saved!";
+            document.getElementById("thumbPrev").src = res.thumb;
+            setTimeout(()=>applyFilters(), 500);
+            addLog("save", `Thumbnail uploaded (1280x720) for ${currentThumbId}`);
+          } else {
+            status.textContent = "❌ " + (res.error || "Upload failed");
+          }
+        }, "image/jpeg", 0.85);
+      };
+      img.onerror = () => {
+        status.textContent = "❌ Invalid image format";
+      };
+      img.src = e.target.result;
+    } catch(er) {
+      status.textContent = "❌ Error: " + er.message;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function resizeToLetterbox(img) {
+  return new Promise(resolve => {
+    const TARGET_W = 1280;
+    const TARGET_H = 720;
+    const TARGET_RATIO = TARGET_W / TARGET_H; // 16:9 = 1.777...
+    const imgRatio = img.width / img.height;
+    
+    const canvas = document.createElement("canvas");
+    canvas.width = TARGET_W;
+    canvas.height = TARGET_H;
+    const ctx = canvas.getContext("2d");
+    
+    // Fill with black background
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, TARGET_W, TARGET_H);
+    
+    // Calculate dimensions to fit image without crop/stretch
+    let drawWidth, drawHeight, drawX, drawY;
+    
+    if (imgRatio > TARGET_RATIO) {
+      // Image wider than 16:9 → fit to height, center horizontally
+      drawHeight = TARGET_H;
+      drawWidth = Math.round(TARGET_H * imgRatio);
+      drawX = (TARGET_W - drawWidth) / 2;
+      drawY = 0;
+    } else {
+      // Image taller than 16:9 → fit to width, center vertically
+      drawWidth = TARGET_W;
+      drawHeight = Math.round(TARGET_W / imgRatio);
+      drawX = 0;
+      drawY = (TARGET_H - drawHeight) / 2;
+    }
+    
+    // Draw image on black background (letterbox style, no crop)
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+    
+    resolve(canvas);
+  });
+}
+
+function autoFillTitles(){
+  let updated = 0;
+  videos.forEach(v=>{
+    if (!v.title || v.title.trim()===""){
+      v.title = "Clip " + v.videoid.slice(0,8);
+      updated++;
+    }
+  });
+  if (updated===0) return alert("All videos have titles");
+  alert(`Auto-filled ${updated} titles`);
+  applyFilters();
+  addLog("save", `Auto-filled ${updated} missing titles`);
 }
 
 /* ============ BYSE SYNC ============ */
