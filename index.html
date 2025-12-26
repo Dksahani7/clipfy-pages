@@ -697,7 +697,10 @@
                 card.className = 'card';
                 card.innerHTML = `
                     <div class="card-img-wrapper">
-                        <img loading="lazy" src="${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}" alt="${v.title || 'Video'}" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
+                        <div class="card-thumb-wrap">
+                            <div class="card-thumb-bg" style="background-image:url('${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}')"></div>
+                            <img loading="lazy" src="${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}" alt="${v.title || 'Video'}" class="card-thumb-img" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
+                        </div>
                         <div class="play-overlay"><div class="play-icon"></div></div>
                         <span class="duration">${formatDuration(v.duration)}</span>
                     </div>
@@ -861,6 +864,52 @@
                 }
             }
         });
+    </script>
+
+    <!-- TELEGRAM JOIN POPUP (shows once per day) -->
+    <div id="tgPopup" style="
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,.75);z-index:5000;
+      justify-content:center;align-items:center;
+    ">
+      <div style="
+        background:#12182e;padding:20px;border-radius:12px;
+        max-width:320px;text-align:center;border:1px solid #ff2f5b;
+      ">
+        <h3 style="margin-bottom:8px;color:#ff2f5b;font-size:20px;">📢 Join our Telegram!</h3>
+        <p style="color:#ccc;font-size:14px;margin-bottom:14px;">
+          New videos, updates & leaks directly on Telegram 👇
+        </p>
+        <a href="https://t.me/+626MQDOX5iAxMmJh" target="_blank"
+          style="display:block;background:#ff2f5b;color:#fff;
+          padding:10px;border-radius:6px;margin-bottom:10px;
+          font-weight:600;text-decoration:none;">➡️ Join Telegram</a>
+        <button onclick="closeTgPopup()" 
+          style="background:#333;color:#fff;padding:8px 14px;
+          border:none;border-radius:6px;font-size:12px;">
+          Close & don't show today
+        </button>
+      </div>
+    </div>
+
+    <script>
+    function shouldShowTgPopup(){
+      const last = localStorage.getItem("tg_popup");
+      if(!last) return true;
+      const diff = Date.now() - Number(last);
+      return diff > 86400000; // 1 day
+    }
+    function showTgPopup(){
+      if(shouldShowTgPopup()){
+        document.getElementById("tgPopup").style.display="flex";
+      }
+    }
+    function closeTgPopup(){
+      localStorage.setItem("tg_popup", Date.now());
+      document.getElementById("tgPopup").style.display="none";
+    }
+    // popup delay: 25 sec after page open
+    setTimeout(showTgPopup, 25000);
     </script>
 </body>
 
