@@ -309,8 +309,8 @@ function loadVideo(id, push = false){
     mainTitle.textContent = v.title || "Clipfy Video";
     creatorNameEl.textContent = v.creator || "Clipfy";
     timeAgoEl.textContent = v.timeago || "Posted Recently";
-    viewsEl.textContent = (v.views || Math.floor(Math.random() * 100000)).toLocaleString();
-    likesEl.textContent = (v.likes || Math.floor(Math.random() * 1000)).toLocaleString();
+    viewsEl.textContent = (v.views || 0).toLocaleString();
+    likesEl.textContent = (v.likes || 0).toLocaleString();
 
     if(v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
     else creatorDp.style.backgroundImage = "";
@@ -326,10 +326,30 @@ function loadVideo(id, push = false){
     document.getElementById("reportBtn").disabled = false;
     document.getElementById("reportBtn").textContent = "🚩 Report Video";
 
+    // Record view
+    recordVideoView(id);
+
     renderTopBannerAd();
     renderNativeAd();
     onVideoPlayed();
     renderSuggestions(id);
+}
+
+/* --------- Record View ---------- */
+async function recordVideoView(videoid){
+    try {
+        const r = await fetch("/api/watch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ videoid })
+        });
+        const res = await r.json();
+        if(res.ok && res.views){
+            viewsEl.textContent = res.views.toLocaleString();
+        }
+    } catch(e) {
+        console.error("Failed to record view:", e);
+    }
 }
 
 /* --------- Suggestions + SINGLE BANNER ---------- */
