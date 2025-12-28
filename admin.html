@@ -18,7 +18,13 @@ header{background:var(--card);padding:16px;border-bottom:2px solid var(--accent)
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .logo{font-size:22px;font-weight:900;color:var(--accent)}
 .user-info{font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center}
-.header-bottom{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.header-bottom{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;
+  padding:10px;
+  align-items:center;
+}
 
 .container{padding:20px;max-width:1600px;margin:auto}
 
@@ -55,7 +61,13 @@ tr:hover{background:var(--hover)}
 
 .bulk-actions{display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap;font-size:12px;color:var(--muted)}
 
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-left:auto}
+.stats-grid{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:10px;
+  margin-top:10px;
+}
 .stat-card{background:var(--hover);padding:10px 12px;border-radius:8px;text-align:left;border:1px solid var(--border)}
 .stat-number{font-size:18px;font-weight:800;color:var(--accent)}
 .stat-label{color:var(--muted);font-size:11px}
@@ -103,97 +115,309 @@ tr:hover{background:var(--hover)}
 }
 
 @media(max-width:768px){
-  header{padding:12px}
-  .header-top{flex-direction:column;gap:8px;margin-bottom:4px}
-  .header-bottom{flex-direction:column;gap:8px}
-  .logo{font-size:18px}
-  .user-info{font-size:11px;flex-wrap:wrap}
-  .container{padding:12px}
-  
-  .btn{padding:6px 10px;font-size:12px}
-  .btn-small{padding:3px 6px;font-size:10px}
-  
-  .stats-grid{grid-template-columns:repeat(2,1fr);margin-top:8px;gap:6px}
-  .stat-card{padding:8px}
-  .stat-number{font-size:14px}
-  .stat-label{font-size:10px}
-  
-  .tabs{flex-wrap:wrap;gap:2px;margin:12px 0}
-  .tab{padding:8px 12px;font-size:12px}
-  
-  table{font-size:12px;overflow-x:auto;display:block}
+  header{padding:8px;background:var(--card)}
+  .header-top{flex-direction:row;gap:8px;margin-bottom:0;justify-content:space-between;align-items:center}
+  .header-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:0}
+  .logo{font-size:14px}
+  .user-info{font-size:9px;flex-wrap:wrap;gap:2px}
+  .container{padding:10px}
+
+  .btn{padding:8px 10px;font-size:11px;min-height:38px;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .btn-small{padding:6px 8px;font-size:10px;min-height:34px}
+
+  .stats-grid{grid-template-columns:repeat(2,1fr);margin-top:4px;gap:3px;padding:0}
+  .stat-card{padding:6px;font-size:11px}
+  .stat-number{font-size:12px}
+  .stat-label{font-size:8px}
+
+  .tabs{flex-wrap:wrap;gap:0;margin:10px 0;border-bottom:2px solid var(--border);overflow-x:auto}
+  .tab{padding:8px 10px;font-size:11px;white-space:nowrap;flex:1}
+
+  table{font-size:12px;display:grid;width:100%;margin:0;gap:8px;grid-template-columns:1fr}
   thead{display:none}
-  tbody{display:block}
-  tr{display:block;margin-bottom:12px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
-  td{display:block;padding:10px;border:none;text-align:right;position:relative;padding-left:50%;background:var(--hover)}
-  td:before{content:attr(data-label);position:absolute;left:10px;font-weight:600;color:var(--accent);text-align:left}
+  tbody{display:contents}
+  tr{display:grid;grid-template-columns:60px 1fr;gap:8px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--hover);min-height:auto}
+  td{padding:0;border:none;font-size:11px;display:flex;align-items:center;flex-shrink:0}
+  td:nth-child(1){grid-column:1/3;width:auto;margin-bottom:6px}
+  td:nth-child(2){display:none}
+  td:nth-child(3){grid-column:1;grid-row:2}
+  td:nth-child(4){grid-column:2;grid-row:2;align-items:flex-start;flex-direction:column;gap:2px}
+  td:nth-child(5){grid-column:2;grid-row:3;font-size:10px;color:var(--muted)}
+  td:nth-child(6){display:none}
+  td:nth-child(7){grid-column:2;grid-row:4;font-size:10px}
+  td:nth-child(8){display:none}
+  td:nth-child(9){grid-column:1/3;display:flex;gap:6px;margin-top:6px}
+  td:before{display:none}
+  td:nth-child(9) .btn{padding:6px 8px;font-size:10px;min-height:32px;flex:1}
+  .thumb-preview{width:60px;height:40px;object-fit:cover;border-radius:4px}
+
+  .search-filter{flex-direction:column;gap:6px;margin:10px 0}
+  .search-box{width:100%;padding:8px;font-size:13px}
+  .filter-select{width:100%;padding:8px;font-size:13px}
+
+  .bulk-actions{flex-direction:column;gap:6px;font-size:11px}
+  .bulk-actions button{width:100%}
+  .modal-box{width:95vw;padding:14px;max-height:90vh;border-radius:8px}
+  .modal-box h3{font-size:15px;margin-bottom:10px}
+  .modal-box input,select,textarea{width:100%;padding:10px;font-size:13px;margin:6px 0;min-height:40px}
+
+  .pagination{flex-wrap:wrap;gap:4px;font-size:11px}
+  .page-btn{padding:6px 8px;font-size:10px;min-height:36px}
+
+  .search-filter .btn-small{width:100%;min-height:44px}
+
+  #tab-reports > div:first-of-type{display:flex;flex-direction:column;gap:6px}
+  #tab-reports .btn{width:100%;min-height:38px}
+}
+
+@media(max-width:600px){
+  .header-bottom{grid-template-columns:repeat(2,1fr);gap:4px}
   
-  .search-filter{flex-direction:column;gap:8px}
-  .search-box{width:100%}
-  .filter-select{width:100%}
+  .btn{padding:7px 8px;font-size:10px;min-height:36px}
+  .btn-small{padding:5px 6px;font-size:9px;min-height:32px}
   
-  .bulk-actions{flex-direction:column;gap:6px}
-  .modal-box{width:95vw;padding:16px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
   
-  .pagination{flex-wrap:wrap;gap:4px;font-size:12px}
-  .page-btn{padding:4px 8px;font-size:11px}
+  .tabs{gap:0}
+  .tab{padding:6px;font-size:9px}
   
-  .search-filter .btn-small{width:100%}
+  #tab-reports > div:first-of-type{display:grid;grid-template-columns:1fr;gap:4px}
+  #tab-reports .btn{min-height:36px}
+  
+  table{margin:0;font-size:12px;display:grid;gap:8px;grid-template-columns:1fr}
+  tr{grid-template-columns:55px 1fr;padding:10px;gap:8px;margin-bottom:0}
+  td{font-size:11px}
+  td:nth-child(3){width:55px;height:38px}
+  td:nth-child(4){font-size:11px;font-weight:500}
+  td:nth-child(5){font-size:10px;color:var(--muted)}
+  td:nth-child(7){font-size:10px}
+  td:nth-child(9) .btn{padding:5px 6px;font-size:9px;min-height:30px}
+  .thumb-preview{width:55px;height:38px}
 }
 
 @media(max-width:480px){
-  header{padding:8px}
-  .header-top{padding:0}
-  .logo{font-size:16px}
-  .user-info{font-size:10px;gap:4px}
+  body{font-size:11px}
+  header{padding:6px}
+  .header-top{gap:4px}
+  .logo{font-size:12px}
+  .user-info{font-size:8px;gap:2px}
   .container{padding:8px}
-  
-  .btn{padding:5px 8px;font-size:11px}
-  .btn-small{padding:2px 5px;font-size:9px}
-  
-  .stats-grid{grid-template-columns:1fr;gap:6px}
-  
-  .tabs{gap:0;margin:8px 0}
-  .tab{padding:6px 10px;font-size:11px;flex:1;text-align:center}
-  
-  .modal-box{width:98vw;padding:12px;max-height:95vh}
-  .modal-box h3{font-size:14px;margin-bottom:8px}
-  .modal-box input,select,textarea{padding:8px;font-size:13px;margin:4px 0}
-  
-  .search-filter{flex-direction:column;gap:6px;margin:8px 0}
-  .search-box{width:100%;padding:6px}
-  .filter-select{width:100%;padding:6px}
-  
-  .bulk-actions{flex-direction:column;gap:4px;font-size:11px}
-  .bulk-actions label{width:100%}
-  
-  table{font-size:11px}
-  td{padding:8px;padding-left:40%}
-  
-  .pagination{gap:3px}
-  .page-btn{padding:3px 6px;font-size:10px}
-  
-  .settings-section{padding:12px;margin:8px 0}
-  .setting-row{padding:6px 0;font-size:12px}
-  
-  .analytics-card{padding:12px;margin:8px 0}
-  .analytics-card h4{font-size:13px}
-  
-  .thumb-preview{width:50px;height:30px}
-  
-  .log-item{padding:6px;font-size:10px;flex-direction:column;gap:4px}
-  .log-time{text-align:left}
+
+  .btn{padding:6px 7px;font-size:9px;min-height:34px}
+  .btn-small{padding:5px 6px;font-size:8px;min-height:30px}
+
+  .header-bottom{grid-template-columns:repeat(3,1fr);gap:3px}
+  .stats-grid{grid-template-columns:1fr;gap:4px;padding:0;margin:4px 0}
+  .stat-card{padding:6px;font-size:11px}
+  .stat-number{font-size:12px}
+  .stat-label{font-size:8px}
+
+  .tabs{gap:0;margin:6px 0}
+  .tab{padding:6px 8px;font-size:10px;flex:1;text-align:center}
+
+  #tab-reports > div:first-of-type{display:grid;grid-template-columns:1fr;gap:3px}
+  #tab-reports .btn{min-height:34px;padding:6px}
+
+  .modal{padding:10px}
+  .modal-box{width:98vw;padding:10px;max-height:95vh;border-radius:6px}
+  .modal-box h3{font-size:13px;margin-bottom:6px}
+  .modal-box input,select,textarea{padding:8px;font-size:12px;margin:4px 0;min-height:38px}
+  .modal-box textarea{min-height:80px}
+
+  .search-filter{gap:4px;margin:6px 0}
+  .search-box{width:100%;padding:7px;font-size:12px}
+  .filter-select{width:100%;padding:7px;font-size:12px}
+
+  .bulk-actions{gap:4px;font-size:10px}
+  .bulk-actions button{width:100%}
+  .bulk-actions label{width:100%;margin:0}
+
+  table{font-size:11px;margin:0;display:grid;gap:8px;grid-template-columns:1fr}
+  tr{grid-template-columns:50px 1fr;padding:10px;gap:8px;margin-bottom:0}
+  td{font-size:10px;padding:0}
+  td:nth-child(3){width:50px;height:35px}
+  td:nth-child(4){font-size:11px;font-weight:500}
+  td:nth-child(5){font-size:9px;color:var(--muted)}
+  td:nth-child(7){font-size:9px}
+  td:nth-child(9) .btn{padding:4px 5px;font-size:8px;min-height:28px}
+  .thumb-preview{width:50px;height:35px}
+
+  .pagination{gap:2px;margin:6px 0}
+  .page-btn{padding:4px 6px;font-size:9px;min-height:32px}
+
+  .settings-section{padding:10px;margin:6px 0}
+  .setting-row{padding:6px 0;font-size:11px;flex-direction:column;align-items:flex-start;gap:4px}
+  .setting-row input{width:100%}
+
+  .analytics-card{padding:10px;margin:6px 0;font-size:11px}
+  .analytics-card h4{font-size:12px;margin-bottom:6px}
+
+  .thumb-preview{width:50px;height:32px;object-fit:cover;border-radius:3px}
+  .top-video-item{flex-direction:column;gap:2px;padding:4px 0;font-size:10px}
+
+  .log-item{padding:6px;font-size:9px;flex-direction:column;gap:3px}
+  .log-time{font-size:8px;color:var(--muted)}
 }
 
-@media(max-width:360px){
-  .header-top{gap:4px}
-  .logo{font-size:14px}
-  .btn{padding:4px 6px;font-size:10px}
-  .tabs{gap:0}
-  .tab{padding:5px 8px;font-size:10px}
-  .stats-grid{gap:4px}
-  .stat-card{padding:6px}
-  .stat-number{font-size:12px}
+@media(max-width:380px){
+  .header-top{gap:2px}
+  .logo{font-size:11px}
+  .user-info{font-size:7px}
+  
+  .btn{padding:5px 6px;font-size:8px;min-height:32px}
+  .btn-small{padding:4px 5px;font-size:7px;min-height:28px}
+  
+  .tabs{gap:0;margin:4px 0}
+  .tab{padding:5px 6px;font-size:9px}
+  
+  #tab-reports > div:first-of-type{display:grid;grid-template-columns:1fr;gap:3px}
+  #tab-reports .btn{min-height:32px;padding:5px;font-size:8px}
+  
+  .stats-grid{gap:2px;margin:2px 0}
+  .stat-card{padding:4px;font-size:10px}
+  .stat-number{font-size:11px}
+  .stat-label{font-size:7px}
+  
+  .modal-box{width:99vw;padding:8px}
+  .modal-box h3{font-size:12px}
+  .modal-box input,select,textarea{padding:6px;font-size:11px;margin:3px 0}
+  
+  .search-box{padding:6px;font-size:11px}
+  .filter-select{padding:6px;font-size:11px}
+  
+  table{font-size:10px;display:grid;gap:8px;grid-template-columns:1fr}
+  tr{grid-template-columns:48px 1fr;padding:10px;gap:8px;margin-bottom:0}
+  td{font-size:9px}
+  td:nth-child(3){width:48px;height:32px}
+  td:nth-child(4){font-size:10px}
+  td:nth-child(5){font-size:8px;color:var(--muted)}
+  td:nth-child(7){font-size:8px}
+  td:nth-child(9) .btn{padding:4px 5px;font-size:7px;min-height:26px}
+  .thumb-preview{width:48px;height:32px}
+}
+
+/* ===== MULTI-UPLOAD MODAL MOBILE FIX ===== */
+@media(max-width:768px){
+  #multiUploadModal .modal-box{
+    width:95vw !important;
+    padding:12px !important;
+    max-height:90vh !important;
+  }
+
+  #multiUploadModal textarea{
+    min-height:120px !important;
+    font-size:12px !important;
+  }
+
+  #multiUploadModal .btn{
+    font-size:11px !important;
+    padding:8px !important;
+    min-height:42px !important;
+  }
+
+  #multiUploadModal .btn-small{
+    font-size:10px !important;
+    padding:6px !important;
+  }
+
+  #multiUploadModal pre,
+  #multiUploadModal code{
+    font-size:9px !important;
+    white-space:pre-wrap !important;
+    word-break:break-all !important;
+  }
+
+  #multiUploadProgress{
+    padding:8px !important;
+  }
+
+  #multiProgressLogs{
+    max-height:100px !important;
+    font-size:10px !important;
+  }
+}
+
+@media(max-width:600px){
+  #multiUploadModal .modal-box{
+    width:97vw !important;
+    padding:10px !important;
+    max-height:92vh !important;
+  }
+  
+  #multiUploadModal .btn{
+    font-size:10px !important;
+    padding:8px !important;
+    min-height:40px !important;
+  }
+}
+
+@media(max-width:480px){
+  #multiUploadModal .modal-box{
+    width:98vw !important;
+    padding:8px !important;
+    max-height:95vh !important;
+  }
+
+  #multiUploadModal h3{
+    font-size:13px !important;
+    margin-bottom:6px !important;
+  }
+
+  #multiUploadModal p,
+  #multiUploadModal label{
+    font-size:11px !important;
+  }
+
+  #multiUploadModal textarea{
+    min-height:100px !important;
+    font-size:11px !important;
+    padding:8px !important;
+  }
+
+  #multiUploadModal input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    cursor:pointer;
+  }
+
+  #multiUploadModal .modal-box > div:nth-last-child(2) > div{
+    display:flex;
+    flex-direction:column !important;
+    gap:6px !important;
+  }
+
+  #multiUploadModal .btn{
+    width:100% !important;
+    font-size:10px !important;
+    padding:8px !important;
+    min-height:40px !important;
+  }
+  
+  #multiUploadModal .btn-small{
+    font-size:9px !important;
+  }
+}
+
+@media(max-width:380px){
+  #multiUploadModal .modal-box{
+    width:99vw !important;
+    padding:6px !important;
+  }
+
+  #multiUploadModal h3{
+    font-size:12px !important;
+  }
+
+  #multiUploadModal .btn{
+    font-size:9px !important;
+    padding:6px !important;
+    min-height:36px !important;
+  }
+
+  #multiUploadModal textarea{
+    min-height:80px !important;
+    font-size:10px !important;
+  }
 }
 </style>
 </head>
@@ -215,6 +439,7 @@ tr:hover{background:var(--hover)}
     <button class="btn btn-accent" onclick="openVideoModal('add')">➕ Add Video</button>
     <button class="btn btn-warning" onclick="autoFillTitles()">📝 Auto Title</button>
     <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
+    <button class="btn btn-accent" onclick="openMultiUploadModal()">🚀 Multi Upload</button>
     <button class="btn btn-danger" onclick="toggleKillSwitch()">🚨 Maintenance</button>
 
     <div class="stats-grid" id="stats"></div>
@@ -392,6 +617,8 @@ tr:hover{background:var(--hover)}
   </div>
 </div>
 
+
+
 <!-- ADD/EDIT VIDEO MODAL -->
 <div class="modal" id="videoModal">
   <div class="modal-box">
@@ -418,23 +645,23 @@ tr:hover{background:var(--hover)}
   <div class="modal-box">
     <h3>Thumbnail Control</h3>
     <img id="thumbPrev" style="width:100%;border-radius:8px;margin-bottom:8px">
-    
+
     <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
       <h4 style="color:var(--accent);margin-bottom:8px">📤 Upload New</h4>
       <input type="file" id="thumbFile" accept="image/*" style="width:100%;margin-bottom:6px">
       <button class="btn btn-blue" onclick="uploadThumbnail()" style="width:100%">⬆️ Upload & Process</button>
     </div>
-    
+
     <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
       <h4 style="color:var(--accent);margin-bottom:8px">🔗 Paste URL</h4>
       <input id="thumbNew" placeholder="Image URL (auto-resize to 1280x720)">
       <button class="btn btn-success" onclick="saveThumb()" style="width:100%;margin-top:6px">💾 Save from URL</button>
     </div>
-    
+
     <div style="margin-top:10px">
       <button class="btn btn-danger" onclick="closeAllModals()">Close</button>
     </div>
-    
+
     <div id="thumbStatus" style="margin-top:8px;font-size:12px;color:var(--muted)"></div>
   </div>
 </div>
@@ -446,6 +673,61 @@ tr:hover{background:var(--hover)}
     <p id="confirmText" style="margin:10px 0"></p>
     <button class="btn btn-danger" id="confirmBtn">Confirm</button>
     <button class="btn btn-success" onclick="closeAllModals()">Cancel</button>
+  </div>
+</div>
+
+<!-- MULTI-UPLOAD MODAL -->
+<div class="modal" id="multiUploadModal">
+  <div class="modal-box" style="width:min(90vw,700px)">
+    <h3>🚀 Multi Video Remote Upload</h3>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:12px">
+      Paste video URLs and titles in the format below. Each block = 1 video.
+    </p>
+
+    <div style="background:var(--hover);padding:10px;border-radius:6px;margin-bottom:12px;font-size:11px;color:var(--muted);font-family:monospace;white-space:pre;overflow-x:auto">https://example.com/video1.mp4
+Bhabhi Ko Sambhala (Title 1)
+
+https://example.com/video2.mp4
+69 Position (Title 2)
+
+... paste more blocks ...</div>
+
+    <textarea id="multiUploadInput" placeholder="Paste video URLs with titles (format shown above)" style="min-height:180px;margin:10px 0"></textarea>
+
+    <div style="display:flex;gap:10px;margin:10px 0">
+      <label style="display:flex;align-items:center;gap:6px">
+        <input type="checkbox" id="autoThumb" checked>
+        Auto extract thumbnail
+      </label>
+      <label style="display:flex;align-items:center;gap:6px">
+        <input type="checkbox" id="autoLetterbox" checked>
+        Auto letterbox (1280x720)
+      </label>
+    </div>
+
+    <div id="multiUploadProgress" style="display:none;background:var(--hover);padding:12px;border-radius:6px;margin:10px 0">
+      <h4 style="color:var(--accent);margin-bottom:8px">Processing...</h4>
+      <div id="multiProgressBar" style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:8px">
+        <div id="multiProgressFill" style="width:0%;height:100%;background:var(--success);transition:width .3s"></div>
+      </div>
+      <div id="multiProgressText" style="font-size:12px;color:var(--muted)">0/0 videos</div>
+      <div id="multiProgressLogs" style="font-size:11px;color:var(--muted);margin-top:8px;max-height:150px;overflow-y:auto">
+        <div style="padding:4px">Starting...</div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px">
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-small btn-blue" onclick="smartParsePaste()">🔧 Auto-Fix Format</button>
+        <button class="btn btn-accent" onclick="startMultiUpload()" style="flex:1">Start Upload</button>
+        <button class="btn btn-danger" onclick="closeAllModals()">Cancel</button>
+      </div>
+    </div>
+
+    <div id="multiUploadResult" style="display:none;background:var(--hover);padding:12px;border-radius:6px;margin:10px 0;border-left:4px solid var(--success)">
+      <h4 style="color:var(--success);margin-bottom:8px">✅ Upload Complete!</h4>
+      <div id="multiUploadResultText" style="font-size:12px;color:var(--muted)"></div>
+    </div>
   </div>
 </div>
 
@@ -488,6 +770,7 @@ async function doLogin(){
   document.getElementById("loginModal").style.display = "none";
   init();
 }
+
 
 function logout(){
   localStorage.removeItem("clipfy_admin_token");
@@ -597,7 +880,7 @@ function updateStats(){
       <div class="stat-label">Total Views</div>
     </div>
   `;
-  
+
   document.getElementById("totalVideosCount").textContent = total;
 }
 
@@ -895,10 +1178,10 @@ async function uploadThumbnail(){
   if (!file) return alert("Select a file");
   if (file.size > 10*1024*1024) return alert("Max 10MB");
   if (!file.type.startsWith("image/")) return alert("Image only");
-  
+
   const status = document.getElementById("thumbStatus");
   status.textContent = "⏳ Processing (1280x720 letterbox)...";
-  
+
   const reader = new FileReader();
   reader.onload = async (e) => {
     try {
@@ -909,9 +1192,9 @@ async function uploadThumbnail(){
           const fd = new FormData();
           fd.append("videoid", currentThumbId);
           fd.append("image", blob, "thumbnail.jpg");
-          
+
           status.textContent = "⏳ Uploading to R2...";
-          
+
           const r = await fetch(API + "/admin/thumbnail", {
             method: "POST",
             headers: { Authorization: ADMIN_TOKEN },
@@ -947,19 +1230,19 @@ function resizeToLetterbox(img) {
     const TARGET_H = 720;
     const TARGET_RATIO = TARGET_W / TARGET_H; // 16:9 = 1.777...
     const imgRatio = img.width / img.height;
-    
+
     const canvas = document.createElement("canvas");
     canvas.width = TARGET_W;
     canvas.height = TARGET_H;
     const ctx = canvas.getContext("2d");
-    
+
     // Fill with black background
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, TARGET_W, TARGET_H);
-    
+
     // Calculate dimensions to fit image without crop/stretch
     let drawWidth, drawHeight, drawX, drawY;
-    
+
     if (imgRatio > TARGET_RATIO) {
       // Image wider than 16:9 → fit to height, center horizontally
       drawHeight = TARGET_H;
@@ -973,10 +1256,10 @@ function resizeToLetterbox(img) {
       drawX = 0;
       drawY = (TARGET_H - drawHeight) / 2;
     }
-    
+
     // Draw image on black background (letterbox style, no crop)
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-    
+
     resolve(canvas);
   });
 }
@@ -1274,12 +1557,12 @@ function renderReports(reports) {
     tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;padding:20px'>No reports</td></tr>";
     return;
   }
-  
+
   tbody.innerHTML = reports.map((r, i) => {
     const date = new Date(r.timestamp);
     const timeStr = date.toLocaleString();
     const statusBadge = r.status === "pending" ? '<span class="badge badge-danger">Pending</span>' : '<span class="badge badge-success">Resolved</span>';
-    
+
     return `<tr>
       <td style="font-family:monospace;font-size:11px">${r.videoid}</td>
       <td>${r.title.substring(0, 40)}</td>
@@ -1296,7 +1579,7 @@ function renderReports(reports) {
 async function deleteReportedVideo(videoid) {
   if (!ADMIN_TOKEN) return alert("Login required");
   if (!confirm(`Delete video ${videoid}?`)) return;
-  
+
   try {
     const r = await fetch(API + `/admin/videos/${videoid}`, {
       method: "DELETE",
@@ -1327,6 +1610,365 @@ async function markResolved(videoid) {
   } catch(e) {
     console.error("Mark resolved error:", e);
   }
+}
+
+/* ============ MULTI VIDEO UPLOAD SYSTEM ============ */
+
+function openMultiUploadModal(){
+  if (!ADMIN_TOKEN) return alert("Login first");
+  document.getElementById("multiUploadModal").style.display = "flex";
+  document.getElementById("multiUploadInput").value = "";
+  document.getElementById("multiUploadProgress").style.display = "none";
+  document.getElementById("multiUploadResult").style.display = "none";
+}
+
+function parseMultiVideoInput(rawInput) {
+  const blocks = rawInput.split(/\n\n+/).filter(b => b.trim());
+  const videos = [];
+
+  blocks.forEach((block, idx) => {
+    const lines = block.trim().split('\n').filter(l => l.trim());
+    if (lines.length < 2) return;
+
+    const url = lines[0].trim();
+    const title = lines[1].trim();
+
+    if (!url.startsWith('http') || !url.includes('.mp4')) return;
+    if (!title || title.length === 0) return;
+
+    videos.push({
+      url: url,
+      title: title,
+      status: 'pending'
+    });
+  });
+
+  return videos;
+}
+
+function smartParsePaste() {
+  const inputEl = document.getElementById('multiUploadInput');
+  const input = inputEl.value || '';
+  const lines = input.split('\n').map(l => l.trim()).filter(l => l.length);
+
+  let formatted = '';
+  for (let i = 0; i < lines.length; i += 2) {
+    let line1 = lines[i] || '';
+    let line2 = lines[i + 1] || '';
+
+    // If order swapped, fix
+    if (!line1.startsWith('http') && line2.startsWith('http')) {
+      [line1, line2] = [line2, line1];
+    }
+
+    // Skip if missing
+    if (!line1 || !line2) continue;
+
+    // Basic URL validation
+    if (!line1.startsWith('http')) continue;
+
+    // Auto-add .mp4 if obvious missing extension
+    if (!/\.(mp4|mkv|avi|webm)([?#].*)?$/i.test(line1)) {
+      if (!line1.includes('?')) line1 = line1 + '.mp4';
+      else line1 = line1.replace(/(\?.*)$/, '.mp4$1');
+    }
+
+    formatted += `${line1}\n${line2}\n\n`;
+  }
+
+  inputEl.value = formatted.trim();
+  alert('Format fixed! Now click \"Start Upload\"');
+}
+
+async function startMultiUpload() {
+  if (!ADMIN_TOKEN) return alert("Login first");
+
+  const rawInput = document.getElementById("multiUploadInput").value.trim();
+  if (!rawInput) return alert("Paste video URLs first");
+
+  const videos = parseMultiVideoInput(rawInput);
+  if (!videos.length) return alert("No valid video blocks found");
+
+  const autoThumb = document.getElementById("autoThumb").checked;
+  const autoLetterbox = document.getElementById("autoLetterbox").checked;
+
+  document.getElementById("multiUploadProgress").style.display = "block";
+  document.getElementById("multiUploadResult").style.display = "none";
+  document.getElementById("multiProgressLogs").innerHTML = "";
+  addProgressLog(`🔄 Starting upload of ${videos.length} videos...`);
+
+  const results = [];
+  let completed = 0;
+
+  for (let i = 0; i < videos.length; i++) {
+    const video = videos[i];
+    const progressPercent = Math.round((i / videos.length) * 100);
+    document.getElementById("multiProgressFill").style.width = progressPercent + "%";
+    document.getElementById("multiProgressText").textContent = `${completed}/${videos.length} completed`;
+
+    try {
+      addProgressLog(`[${i + 1}/${videos.length}] Processing: "${video.title}"`);
+
+      // Step 1: Remote Upload to BYSE
+      addProgressLog(`  ⬆️ Uploading to BYSE...`);
+      const byseResponse = await remoteUploadToByse(video.url);
+
+      if (!byseResponse || !byseResponse.file_code) {
+        throw new Error("BYSE upload failed or no file_code");
+      }
+
+      const stream_id = byseResponse.file_code;
+      addProgressLog(`  ✅ BYSE stream_id: ${stream_id}`);
+
+      // Step 2: Extract Frame & Create Thumbnail (browser-side)
+      let thumb_url = "";
+      if (autoThumb) {
+        try {
+          addProgressLog(`  🎬 Extracting frame in browser...`);
+
+          // Extract frame canvas in browser (may fail on CORS)
+          const frameCanvas = await extractFrameFromVideo(video.url);
+
+          if (frameCanvas && autoLetterbox) {
+            addProgressLog(`  🎨 Processing letterbox (1280x720)...`);
+
+            // Ensure we have an image to pass into letterbox helper
+            const frameBlob = await new Promise(res => frameCanvas.toBlob(res, 'image/jpeg', 0.9));
+            if (!frameBlob) throw new Error('Canvas to blob failed');
+
+            const img = new Image();
+            await new Promise((resolve, reject) => {
+              img.onload = async () => {
+                try {
+                  const letterboxCanvas = await resizeToLetterbox(img);
+                  thumb_url = await uploadThumbnailToR2(letterboxCanvas, `by_${stream_id}`);
+                  addProgressLog(`  ✅ Thumbnail saved to R2 (1280x720)`);
+                  resolve();
+                } catch (e) { reject(e); }
+              };
+              img.onerror = () => reject(new Error('Image processing failed'));
+              img.src = URL.createObjectURL(frameBlob);
+            });
+
+          } else if (frameCanvas) {
+            // Upload raw extracted frame
+            thumb_url = await uploadThumbnailToR2(frameCanvas, `by_${stream_id}`);
+            addProgressLog(`  ✅ Raw frame uploaded`);
+          }
+        } catch (e) {
+          addProgressLog(`  ⚠️ Thumbnail extraction failed: ${e.message}`, 'error');
+
+          // Fallback: try using BYSE thumbnail if available
+          try {
+            addProgressLog(`  🔁 Falling back to Byse thumbnail...`);
+            const byseThumbUrl = `${API.replace('/api','')}/byse/thumbnail?file_code=${stream_id}`;
+            // Note: this fallback depends on BYSE/public thumbnail availability
+            thumb_url = byseThumbUrl;
+            addProgressLog(`  ✅ Byse thumbnail used`);
+          } catch (ferr) {
+            addProgressLog(`  ⚠️ Fallback failed: ${ferr.message}`, 'error');
+          }
+        }
+      }
+
+      // Step 3: Create Video Entry
+      const videoid = `by_${stream_id}`;
+      const videoEntry = {
+        videoid: videoid,
+        title: video.title,
+        thumb: thumb_url || "",
+        stream_id: stream_id,
+        views: 0,
+        offline: false
+      };
+
+      addProgressLog(`  💾 Creating video entry...`);
+      const saveResponse = await fetch(API + "/admin/videos", {
+        method: "POST",
+        headers: {
+          Authorization: ADMIN_TOKEN,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(videoEntry)
+      });
+
+      const savedData = await saveResponse.json();
+      if (savedData.error) throw new Error(savedData.error);
+
+      results.push({
+        title: video.title,
+        videoid: videoid,
+        success: true,
+        stream_id: stream_id
+      });
+
+      addProgressLog(`  ✅ Video "${video.title}" saved!`);
+      completed++;
+
+    } catch (error) {
+      addProgressLog(`  ❌ Error: ${error.message}`, 'error');
+      results.push({
+        title: video.title,
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
+  // Finalize
+  document.getElementById("multiProgressFill").style.width = "100%";
+  document.getElementById("multiProgressText").textContent = `${completed}/${videos.length} completed`;
+
+  // Show results
+  const successful = results.filter(r => r.success);
+  const failed = results.filter(r => !r.success);
+
+  document.getElementById("multiUploadProgress").style.display = "none";
+  document.getElementById("multiUploadResult").style.display = "block";
+  document.getElementById("multiUploadResultText").innerHTML = `
+    <p><strong>${successful.length}/${results.length} videos uploaded successfully</strong></p>
+    ${successful.length > 0 ? `<p style="color:var(--success);margin:8px 0">✅ Added videos:</p>` : ""}
+    <ul style="margin:4px 0 12px 20px;font-size:11px">
+      ${successful.map(r => `<li>${r.title} (ID: ${r.videoid})</li>`).join("")}
+    </ul>
+    ${failed.length > 0 ? `<p style="color:var(--danger);margin:8px 0">❌ Failed:</p>` : ""}
+    <ul style="margin:4px 0;margin-left:20px;font-size:11px;color:var(--danger)">
+      ${failed.map(r => `<li>${r.title} - ${r.error}</li>`).join("")}
+    </ul>
+  `;
+
+  addProgressLog(`✅ Process Complete! ${successful.length}/${results.length} success`);
+  addLog("save", `Multi-upload: ${successful.length}/${videos.length} videos added`);
+
+  setTimeout(() => {
+    loadVideos();
+  }, 2000);
+}
+
+function addProgressLog(message, type = 'info') {
+  const logsDiv = document.getElementById("multiProgressLogs");
+  const timestamp = new Date().toLocaleTimeString();
+  const line = document.createElement("div");
+  line.style.padding = "4px";
+  line.style.borderBottom = "1px solid var(--border)";
+  line.style.color = type === 'error' ? 'var(--danger)' : 'var(--muted)';
+  line.textContent = `[${timestamp}] ${message}`;
+  logsDiv.appendChild(line);
+  logsDiv.scrollTop = logsDiv.scrollHeight;
+}
+
+async function remoteUploadToByse(videoUrl) {
+  // Call backend /api/admin/remotedl instead of BYSE directly
+  try {
+    const response = await fetch(API + "/admin/remotedl", {
+      method: "POST",
+      headers: {
+        Authorization: ADMIN_TOKEN,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ url: videoUrl })
+    });
+
+    const data = await response.json();
+    if (!data.ok || !data.file_code) {
+      throw new Error(data.error || "Remote upload failed");
+    }
+
+    return { file_code: data.file_code };
+  } catch (error) {
+    throw new Error(`Remote upload failed: ${error.message}`);
+  }
+}
+
+async function extractFrameFromVideo(videoUrl) {
+  return new Promise((resolve, reject) => {
+    addProgressLog(`  📹 Loading video in browser...`);
+
+    const video = document.createElement('video');
+    video.crossOrigin = 'anonymous';
+    video.preload = 'metadata';
+    video.src = videoUrl;
+
+    const onError = (e) => {
+      const msg = (e && e.message) || 'CORS/Network error';
+      reject(new Error(`Video load failed: ${msg}`));
+    };
+
+    let settled = false;
+
+    const cleanup = () => {
+      video.removeAttribute('src');
+      video.load && video.load();
+      video.onloadedmetadata = null;
+      video.onseeked = null;
+      video.onerror = null;
+      if (video.parentNode) video.parentNode.removeChild(video);
+    };
+
+    video.addEventListener('loadedmetadata', () => {
+      try {
+        // Seek to 25% (or 2s fallback)
+        const target = (video.duration && video.duration * 0.25) || 2;
+        video.currentTime = Math.min(target, video.duration || target);
+      } catch (e) {
+        onError(e);
+      }
+    });
+
+    video.addEventListener('seeked', () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 1280;
+        canvas.height = video.videoHeight || 720;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        if (!settled) {
+          settled = true;
+          cleanup();
+          addProgressLog(`  ✅ Frame extracted (${canvas.width}x${canvas.height})`);
+          resolve(canvas);
+        }
+      } catch (e) {
+        cleanup();
+        reject(new Error(`Canvas draw failed: ${e.message}`));
+      }
+    });
+
+    video.addEventListener('error', onError);
+
+    // Timeout
+    const to = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        cleanup();
+        reject(new Error('Video load timeout (15s)'));
+      }
+    }, 15000);
+  });
+}
+
+async function uploadThumbnailToR2(canvas, videoid) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(async (blob) => {
+      if (!blob) return reject(new Error('Canvas to blob conversion failed'));
+
+      const fd = new FormData();
+      fd.append("videoid", videoid);
+      fd.append("image", blob, "thumbnail.jpg");
+      try {
+        const r = await fetch(API + "/admin/thumbnail", {
+          method: "POST",
+          headers: { Authorization: ADMIN_TOKEN },
+          body: fd
+        });
+        const data = await r.json();
+        if (!data.ok) {
+          throw new Error(data.error || 'Upload failed');
+        }
+        resolve(data.thumb);
+      } catch(e) { reject(e); }
+    }, "image/jpeg", 0.85);
+  });
 }
 
 </script>
