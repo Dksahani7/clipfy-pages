@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -300,8 +301,9 @@ function loadVideo(id, push = false){
     currentVideoId = id;
 
     // IMPORTANT: yahi tumhara BYSE embed hai
-    // Tumhara bot JSON me Byse file_code ko streamtape_id field me daal raha hai [file:67]
-    iframe.src = BYSE_BASE + v.streamtape_id;
+    // Fallback ke sath: streamtape_id, stream_id, ya streamtapeid
+    const fileCode = v.streamtape_id || v.stream_id || v.streamtapeid;
+    iframe.src = BYSE_BASE + fileCode;
     iframe.onerror = () => {
         iframe.src = "/offline.html";
     };
