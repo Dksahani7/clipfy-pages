@@ -589,7 +589,7 @@
         <div class="footer-bottom">© 2024 Clipfy.store. All rights reserved.</div>
     </footer>
 
-    <!-- 🔥 30-ACTION POPUNDER (CLICK + SCROLL) -->
+    <!-- 🔥 15-ACTION POPUNDER (CLICK + SCROLL) -->
     <script>
         let actionCount = parseInt(localStorage.getItem("pop_action_count") || "0");
 
@@ -597,7 +597,8 @@
             actionCount++;
             localStorage.setItem("pop_action_count", actionCount);
 
-            if (actionCount >= 30) {
+            // Trigger popunder earlier so most users see at least one
+            if (actionCount >= 15) {
                 firePopunder();
                 actionCount = 0;
                 localStorage.setItem("pop_action_count", "0");
@@ -674,21 +675,14 @@
             const pageVideos = filteredVideos.slice(start, end);
 
             pageVideos.forEach((v, index) => {
-                // INSERT 300x250 AD EVERY 4TH CARD
-                if (index > 0 && index % 4 === 3) {
+                // INSERT 300x250 AD EVERY 6TH CARD (iframe placeholder to avoid repeated scripts)
+                if (index > 0 && index % 6 === 5) {
                     const adDiv = document.createElement('div');
                     adDiv.className = 'ad-300';
+                    adDiv.style.minHeight = '250px'; // Layout shift prevention
                     adDiv.innerHTML = `
-                        <script type="text/javascript">
-                            atOptions = {
-                                'key' : 'e8550078b37b6bf29c9b54eed61806f7',
-                                'format' : 'iframe',
-                                'height' : 250,
-                                'width' : 300,
-                                'params' : {}
-                            };
-                        <\/script>
-                        <script src="https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js"><\/script>
+                        <iframe src="//stinkymildred.com/watch?key=e8550078b37b6bf29c9b54eed61806f7" 
+                        width="300" height="250" frameborder="0" scrolling="no" loading="lazy"></iframe>
                     `;
                     grid.appendChild(adDiv);
                 }
@@ -788,16 +782,29 @@
             const searchTerm = searchInput.value.toLowerCase();
 
             if (searchTerm) {
-                filtered = filtered.filter(v => v.title?.toLowerCase().includes(searchTerm));
+                filtered = filtered.filter(v => (v.title || '').toLowerCase().includes(searchTerm));
             }
 
             if (currentFilter === 'trending') {
-                filtered = filtered.slice(0, 48);
+                // High views + latest mix
+                filtered = filtered
+                    .slice() // copy
+                    .sort((a, b) => (b.views || 0) - (a.views || 0))
+                    .slice(0, 48);
             } else if (currentFilter === 'recent') {
-                filtered = filtered.reverse().slice(0, 96);
+                // Latest by date
+                filtered = filtered
+                    .slice()
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 96);
             } else if (currentFilter === 'popular') {
-                filtered = filtered.sort(() => Math.random() - 0.5).slice(0, 72);
+                // Views descending (pure popular)
+                filtered = filtered
+                    .slice()
+                    .sort((a, b) => (b.views || 0) - (a.views || 0))
+                    .slice(0, 72);
             }
+            // else currentFilter === 'all' -> filtered as is (index order)
 
             filteredVideos = filtered;
             renderVideos();
@@ -809,7 +816,7 @@
                 allVideos = list;
                 filteredVideos = [...allVideos];
                 loading.style.display = 'none';
-                renderVideos();
+                filterVideos();
             })
             .catch(err => {
                 loading.innerHTML = '<p style="color: var(--accent)">Failed to load videos.</p>';
@@ -826,45 +833,56 @@
         });
     </script>
 
-    <!-- VISIBILITY-BASED AD REFRESH (DESKTOP BANNER + NATIVE) -->
+    <!-- VISIBILITY-BASED AD REFRESH (REFRESH TOP BANNER, NATIVE & GRID ADS ON TAB FOCUS) -->
     <script>
-        let adsReloaded = false;
-
         document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible" && !adsReloaded) {
-                adsReloaded = true;
-
-                // Reload 728x90 banner
+            if (document.visibilityState === "visible") {
+                // Refresh 728x90 banner if present
                 const topBanner = document.getElementById("topBanner");
                 if (topBanner) {
+                    const html = topBanner.innerHTML;
                     topBanner.innerHTML = "";
-                    const s1 = document.createElement("script");
-                    s1.type = "text/javascript";
-                    s1.innerHTML = `
-                        atOptions = {
-                            'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
-                            'format' : 'iframe',
-                            'height' : 90,
-                            'width' : 728,
-                            'params' : {}
-                        };
-                    `;
-                    const s2 = document.createElement("script");
-                    s2.src = "https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js";
-                    topBanner.appendChild(s1);
-                    topBanner.appendChild(s2);
+                    setTimeout(() => { topBanner.innerHTML = html; }, 100);
                 }
 
-                // Reload native ad
+                // Refresh native ad
                 const nativeAd = document.getElementById("nativeAd");
                 if (nativeAd) {
                     const html = nativeAd.innerHTML;
                     nativeAd.innerHTML = "";
-                    setTimeout(() => {nativeAd.innerHTML = html;}, 100);
+                    setTimeout(() => { nativeAd.innerHTML = html; }, 100);
                 }
+
+                // Refresh Grid Ads (ad-300)
+                document.querySelectorAll('.ad-300').forEach(ad => {
+                    const html = ad.innerHTML;
+                    ad.innerHTML = "";
+                    setTimeout(() => { ad.innerHTML = html; }, 80);
+                });
             }
         });
     </script>
+
+    <!-- FOOTER -->
+    <footer style="
+      background: rgba(15, 20, 26, .95);
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 60px;
+    ">
+      <div style="max-width: 1200px; margin: 0 auto;">
+        <p style="color: var(--muted); font-size: 14px; margin-bottom: 15px;">
+          © 2024 Clipfy.store — All rights reserved.
+        </p>
+        <p style="font-size: 13px;">
+          <a href="/legal.html" style="color: var(--accent); text-decoration: none; margin: 0 10px;">Legal</a> |
+          <a href="javascript:void(0)" onclick="openLegalModal('privacy')" style="color: var(--accent); text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+          <a href="javascript:void(0)" onclick="openLegalModal('terms')" style="color: var(--accent); text-decoration: none; margin: 0 10px;">Terms of Service</a> |
+          <a href="javascript:void(0)" onclick="openLegalModal('dmca')" style="color: var(--accent); text-decoration: none; margin: 0 10px;">DMCA</a>
+        </p>
+      </div>
+    </footer>
 
     <!-- TELEGRAM JOIN POPUP (shows once per day) -->
     <div id="tgPopup" style="
@@ -892,6 +910,33 @@
       </div>
     </div>
 
+    <!-- LEGAL MODAL -->
+    <div id="legalModal" style="
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,.75);z-index:4999;
+      overflow-y:auto;
+      justify-content:center;align-items:flex-start;
+      padding:20px;
+    ">
+      <div style="
+        background:#12182e;border-radius:12px;
+        max-width:700px;width:100%;margin-top:30px;
+        border:1px solid rgba(255,255,255,.1);
+      ">
+        <div style="
+          display:flex;justify-content:space-between;align-items:center;
+          padding:20px;border-bottom:1px solid rgba(255,255,255,.1);
+        ">
+          <h2 id="legalTitle" style="color:#ff2f5b;margin:0;"></h2>
+          <button onclick="closeLegalModal()" style="
+            background:none;border:none;color:#8b93b0;
+            font-size:24px;cursor:pointer;padding:0;width:30px;height:30px;
+          ">×</button>
+        </div>
+        <div id="legalContent" style="padding:20px;max-height:70vh;overflow-y:auto;"></div>
+      </div>
+    </div>
+
     <script>
     function shouldShowTgPopup(){
       const last = localStorage.getItem("tg_popup");
@@ -910,6 +955,66 @@
     }
     // popup delay: 25 sec after page open
     setTimeout(showTgPopup, 25000);
+
+    // LEGAL MODAL FUNCTIONS
+    const legalContent = {
+      privacy: {
+        title: "Privacy Policy",
+        html: `
+          <h3 style="color:#ff2f5b;">Privacy Policy</h3>
+          <p>Clipfy does not require user registration and does not collect personally identifiable information.</p>
+          <p>We may use third-party advertising services which may use cookies or similar technologies.</p>
+          <p>By using Clipfy, you agree to this privacy policy.</p>
+        `
+      },
+      terms: {
+        title: "Terms of Service",
+        html: `
+          <h3 style="color:#ff2f5b;">Terms of Service</h3>
+          <p>By accessing Clipfy, you agree to comply with these terms.</p>
+          <p>Clipfy does not host any content and is not responsible for media hosted on third-party platforms.</p>
+          <p>We reserve the right to remove any content or links at any time without notice.</p>
+        `
+      },
+      dmca: {
+        title: "DMCA Takedown Policy",
+        html: `
+          <h3 style="color:#ff2f5b;">DMCA Takedown Policy</h3>
+          <p>Clipfy respects intellectual property rights.</p>
+          <p>If you believe that any content infringes your copyright, please send a DMCA notice including:</p>
+          <ul style="margin:10px 0;padding-left:20px;">
+            <li>Proof of ownership</li>
+            <li>Exact URL(s) of the content</li>
+            <li>Your contact information</li>
+          </ul>
+          <p><strong>Email:</strong> dmca@clipfy.store</p>
+          <p>Valid requests are processed within <strong>24–48 hours</strong>.</p>
+        `
+      }
+    };
+
+    function openLegalModal(section) {
+      const modal = document.getElementById("legalModal");
+      const title = document.getElementById("legalTitle");
+      const content = document.getElementById("legalContent");
+      
+      if (legalContent[section]) {
+        title.textContent = legalContent[section].title;
+        content.innerHTML = legalContent[section].html;
+        modal.style.display = "flex";
+      }
+    }
+
+    function closeLegalModal() {
+      document.getElementById("legalModal").style.display = "none";
+    }
+
+    // Close modal when clicking outside
+    document.getElementById("legalModal").addEventListener("click", (e) => {
+      if (e.target.id === "legalModal") {
+        closeLegalModal();
+      }
+    });
     </script>
 </body>
 
