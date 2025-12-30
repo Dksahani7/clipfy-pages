@@ -69,7 +69,7 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 @media(max-width:768px){
     .ad-728-player{display:none}
-    .video-container { top: 55px; }
+    .video-container { top: 55px; position: static; }
     .ad-300-player{width:100%;max-width:300px}
 }
 </style>
@@ -86,6 +86,14 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 <div class="video-container">
     <div class="video-box">
         <iframe id="playerFrame" allowfullscreen allow="autoplay"></iframe>
+    </div>
+</div>
+
+<!-- Social Bar (placed directly below video to increase CTR) -->
+<div id="socialBar" style="max-width:1200px;margin:10px auto;text-align:center;">
+    <div style="display:inline-flex;gap:8px;align-items:center;">
+        <a href="#" onclick="window.open('https://t.me/+626MQDOX5iAxMmJh')" style="background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:700">Join Telegram</a>
+        <a href="#" onclick="navigator.share && navigator.share({title:document.title,url:location.href})" style="background:#222;color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:700">Share</a>
     </div>
 </div>
 
@@ -268,7 +276,8 @@ function onVideoPlayed(){
     let count = getVideoPlayCount();
     count += 1;
     setVideoPlayCount(count);
-    if(count % 3 === 0){
+    // Only prepare popunder if user hasn't seen one this session
+    if(count >= 2 && !sessionStorage.getItem('pop_shown')){
         popunderReady = true;
         popFired = false;
     }
@@ -335,6 +344,15 @@ function loadVideo(id, push = false){
     renderNativeAd();
     onVideoPlayed();
     renderSuggestions(id);
+
+    // Refresh Grid Ad inside suggestions (if present) after video change
+    const suggestionAd = suggestions.querySelector('.ad-300-player');
+    if(suggestionAd) {
+        suggestionAd.innerHTML = "";
+        const [s1, s2] = renderBanner300();
+        suggestionAd.appendChild(s1);
+        suggestionAd.appendChild(s2);
+    }
 }
 
 /* --------- Record View ---------- */
@@ -385,8 +403,9 @@ function renderSuggestions(current){
         `;
         
         d.onclick = () => {
-            if(popunderReady && !popFired){
+            if(popunderReady && !popFired && !sessionStorage.getItem('pop_shown')){
                 popFired = true;
+                sessionStorage.setItem('pop_shown', 'true'); // limit to 1 per session
                 const popScript = document.createElement("script");
                 popScript.src = "https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js";
                 document.body.appendChild(popScript);
