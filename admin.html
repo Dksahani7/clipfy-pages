@@ -435,7 +435,7 @@ tr:hover{background:var(--hover)}
   </div>
   <div class="header-bottom">
     <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
-    <button class="btn btn-blue" onclick="syncByse()">📡 Sync Byse</button>
+
     <button class="btn btn-accent" onclick="openVideoModal('add')">➕ Add Video</button>
     <button class="btn btn-warning" onclick="autoFillTitles()">📝 Auto Title</button>
     <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
@@ -812,28 +812,36 @@ function updateKillBadge(){
 
 async function toggleKillSwitch(){
   if (!ADMIN_TOKEN) return alert("Login first");
-  const wantOff = !siteDisabled;
-  const r = await fetch(API + "/killswitch",{
-    method:"POST",
-    headers:{
-      "Authorization":ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({disabled:wantOff})
-  });
-  const data = await r.json();
-  siteDisabled = wantOff;
-  updateKillBadge();
-  addLog("killswitch",wantOff ? "Site disabled" : "Site enabled");
-  if (siteDisabled){
-    document.getElementById("mainContainer").innerHTML = `
-      <div style="text-align:center;padding:60px">
-        <h2>Maintenance Mode</h2>
-        <p>Site is disabled. Toggle again to restore.</p>
-      </div>
-    `;
-  } else {
-    location.reload();
+  try {
+    const wantOff = !siteDisabled;
+    const r = await fetch(API + "/killswitch",{
+      method:"POST",
+      headers:{
+        "Authorization":ADMIN_TOKEN,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({disabled:wantOff})
+    });
+    const data = await r.json();
+    if (!data || data.error || !r.ok){
+      alert("Kill switch error: "+(data?.error||"Unknown"));
+      return;
+    }
+    siteDisabled = wantOff;
+    updateKillBadge();
+    addLog("killswitch",wantOff ? "Site disabled" : "Site enabled");
+    if (siteDisabled){
+      document.getElementById("mainContainer").innerHTML = `
+        <div style="text-align:center;padding:60px">
+          <h2>Maintenance Mode</h2>
+          <p>Site is disabled. Toggle again to restore.</p>
+        </div>
+      `;
+    } else {
+      location.reload();
+    }
+  } catch(e) {
+    alert("Kill switch error: "+e.message);
   }
 }
 
@@ -844,17 +852,23 @@ async function loadVideos(){
     document.getElementById("loginModal").style.display = "flex";
     return;
   }
-  const r = await fetch(API + "/videos",{
-    headers:{Authorization:ADMIN_TOKEN}
-  });
-  const data = await r.json();
-  if (!Array.isArray(data)){
-    alert("Failed to load videos");
-    return;
+  try {
+    const r = await fetch(API + "/videos",{
+      headers:{Authorization:ADMIN_TOKEN}
+    });
+    if (!r.ok) throw new Error("Failed to load videos (HTTP "+r.status+")");
+    const data = await r.json();
+    if (!Array.isArray(data)){
+      alert("Failed to load videos: Invalid data format");
+      return;
+    }
+    videos = data;
+    applyFilters();
+    updateStats();
+  } catch(e) {
+    alert("Error loading videos: "+e.message);
+    console.error("Load videos error:", e);
   }
-  videos = data;
-  applyFilters();
-  updateStats();
 }
 
 function updateStats(){
@@ -1001,50 +1015,77 @@ function toggleBulkBar(){
 async function bulkOffline(){
   if (!selected.size) return alert("No videos selected");
   if (!confirm("Set selected videos to Offline?")) return;
-  await fetch(API + "/admin/bulk/offline",{
-    method:"POST",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({ids:[...selected]})
-  });
-  videos = videos.map(v=>selected.has(v.videoid)?{...v,offline:true}:v);
-  addLog("save",`Bulk offline (${selected.size} videos)`);
-  applyFilters();
+  try {
+    const r = await fetch(API + "/admin/bulk/offline",{
+      method:"POST",
+      headers:{
+        Authorization:ADMIN_TOKEN,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({ids:[...selected]})
+    });
+    const data = await r.json();
+    if (!data || data.error || !r.ok){
+      alert("Bulk offline failed: "+(data?.error||"Unknown error"));
+      return;
+    }
+    videos = videos.map(v=>selected.has(v.videoid)?{...v,offline:true}:v);
+    addLog("save",`Bulk offline (${selected.size} videos)`);
+    applyFilters();
+  } catch(e) {
+    alert("Bulk offline error: "+e.message);
+  }
 }
 
 async function bulkOnline(){
   if (!selected.size) return alert("No videos selected");
   if (!confirm("Set selected videos to Live?")) return;
-  await fetch(API + "/admin/bulk/online",{
-    method:"POST",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({ids:[...selected]})
-  });
-  videos = videos.map(v=>selected.has(v.videoid)?{...v,offline:false}:v);
-  addLog("save",`Bulk online (${selected.size} videos)`);
-  applyFilters();
+  try {
+    const r = await fetch(API + "/admin/bulk/online",{
+      method:"POST",
+      headers:{
+        Authorization:ADMIN_TOKEN,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({ids:[...selected]})
+    });
+    const data = await r.json();
+    if (!data || data.error || !r.ok){
+      alert("Bulk online failed: "+(data?.error||"Unknown error"));
+      return;
+    }
+    videos = videos.map(v=>selected.has(v.videoid)?{...v,offline:false}:v);
+    addLog("save",`Bulk online (${selected.size} videos)`);
+    applyFilters();
+  } catch(e) {
+    alert("Bulk online error: "+e.message);
+  }
 }
 
 async function bulkDelete(){
   if (!selected.size) return alert("No videos selected");
   if (!confirm("Delete selected videos? This cannot be undone.")) return;
-  await fetch(API + "/admin/bulk/delete",{
-    method:"POST",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({ids:[...selected]})
-  });
-  videos = videos.filter(v=>!selected.has(v.videoid));
-  selected.clear();
-  addLog("delete","Bulk delete");
-  applyFilters();
+  try {
+    const r = await fetch(API + "/admin/bulk/delete",{
+      method:"POST",
+      headers:{
+        Authorization:ADMIN_TOKEN,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({ids:[...selected]})
+    });
+    const data = await r.json();
+    if (!data || data.error || !r.ok){
+      alert("Bulk delete failed: "+(data?.error||"Unknown error"));
+      return;
+    }
+    videos = videos.filter(v=>!selected.has(v.videoid));
+    selected.clear();
+    addLog("delete","Bulk delete");
+    applyFilters();
+  } catch(e) {
+    alert("Bulk delete error: "+e.message);
+  }
 }
 
 /* ============ SINGLE VIDEO ACTIONS ============ */
@@ -1088,30 +1129,34 @@ async function saveVideo(){
     offline: document.getElementById("vstatus").value==="offline"
   };
   if (!body.videoid || !body.title) return alert("ID & Title are required");
-  const url = API + "/admin/videos" + (editingId?"/"+encodeURIComponent(editingId):"");
-  const method = editingId ? "PUT" : "POST";
-  const r = await fetch(url,{
-    method,
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify(body)
-  });
-  const data = await r.json();
-  if (!data || data.error){
-    alert("Save failed: "+(data.error||"Unknown"));
-    return;
+  try {
+    const url = API + "/admin/videos" + (editingId?"/"+encodeURIComponent(editingId):"");
+    const method = editingId ? "PUT" : "POST";
+    const r = await fetch(url,{
+      method,
+      headers:{
+        Authorization:ADMIN_TOKEN,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(body)
+    });
+    const data = await r.json();
+    if (!data || data.error || !r.ok){
+      alert("Save failed: "+(data?.error||"Unknown"));
+      return;
+    }
+    if (editingId){
+      videos = videos.map(v=>v.videoid===editingId?data:v);
+      addLog("save","Edited video "+editingId);
+    } else {
+      videos.unshift(data);
+      addLog("save","Added video "+body.videoid);
+    }
+    closeAllModals();
+    applyFilters();
+  } catch(e) {
+    alert("Save error: "+e.message);
   }
-  if (editingId){
-    videos = videos.map(v=>v.videoid===editingId?data:v);
-    addLog("save","Edited video "+editingId);
-  } else {
-    videos.unshift(data);
-    addLog("save","Added video "+body.videoid);
-  }
-  closeAllModals();
-  applyFilters();
 }
 
 function deleteSingle(id){
@@ -1124,15 +1169,24 @@ function deleteSingle(id){
 
 async function confirmDeleteSingle(id){
   if (!ADMIN_TOKEN) return alert("Login first");
-  await fetch(API + "/admin/videos/"+encodeURIComponent(id),{
-    method:"DELETE",
-    headers:{Authorization:ADMIN_TOKEN}
-  });
-  videos = videos.filter(v=>v.videoid!==id);
-  selected.delete(id);
-  addLog("delete","Deleted video "+id);
-  closeAllModals();
-  applyFilters();
+  try {
+    const r = await fetch(API + "/admin/videos/"+encodeURIComponent(id),{
+      method:"DELETE",
+      headers:{Authorization:ADMIN_TOKEN}
+    });
+    const data = await r.json();
+    if (!data || data.error || !r.ok){
+      alert("Delete failed: "+(data?.error||"Unknown error"));
+      return;
+    }
+    videos = videos.filter(v=>v.videoid!==id);
+    selected.delete(id);
+    addLog("delete","Deleted video "+id);
+    closeAllModals();
+    applyFilters();
+  } catch(e) {
+    alert("Delete error: "+e.message);
+  }
 }
 
 /* ============ THUMBNAIL CONTROL ============ */
@@ -1278,54 +1332,7 @@ function autoFillTitles(){
   addLog("save", `Auto-filled ${updated} missing titles`);
 }
 
-/* ============ BYSE SYNC ============ */
 
-async function syncByse(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-
-  if (!confirm("Sync all new videos from Byse?")) return;
-
-  const mainContainer = document.getElementById("mainContainer");
-  mainContainer.innerHTML = `
-    <div class="sync-progress">
-      <h3>🔄 Syncing from Byse...</h3>
-      <p style="color:var(--muted);margin:10px 0">This may take a while. Please wait...</p>
-      <div style="margin:20px 0">
-        <div style="width:100%;height:8px;background:var(--hover);border-radius:4px;overflow:hidden">
-          <div style="width:100%;height:100%;background:var(--accent);animation:pulse 1.5s infinite"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  try {
-    const r = await fetch(API + "/admin/byse/sync", {
-      method: "POST",
-      headers: {
-        Authorization: ADMIN_TOKEN
-      }
-    });
-
-    const data = await r.json();
-
-    if (!data.ok) {
-      alert("Sync failed: " + (data.error || "Unknown"));
-      location.reload();
-      return;
-    }
-
-    alert(`✅ Sync Complete!
-
-New videos added: ${data.added}
-Total videos: ${data.total}`);
-
-    addLog("sync", `Byse sync added ${data.added}`);
-    location.reload();
-  } catch (e) {
-    alert("Sync error: " + e.message);
-    location.reload();
-  }
-}
 
 /* ============ ANALYTICS ============ */
 
@@ -1709,16 +1716,16 @@ async function startMultiUpload() {
     try {
       addProgressLog(`[${i + 1}/${videos.length}] Processing: "${video.title}"`);
 
-      // Step 1: Remote Upload to BYSE
-      addProgressLog(`  ⬆️ Uploading to BYSE...`);
-      const byseResponse = await remoteUploadToByse(video.url);
+      // Step 1: Remote Upload to R2
+      addProgressLog(`  ⬆️ Uploading to R2...`);
+      const r2Response = await remoteUploadToR2(video.url);
 
-      if (!byseResponse || !byseResponse.file_code) {
-        throw new Error("BYSE upload failed or no file_code");
+      if (!r2Response || !r2Response.file_code) {
+        throw new Error("R2 upload failed or no file_code");
       }
 
-      const stream_id = byseResponse.file_code;
-      addProgressLog(`  ✅ BYSE stream_id: ${stream_id}`);
+      const stream_id = r2Response.file_code;
+      addProgressLog(`  ✅ R2 stream_id: ${stream_id}`);
 
       // Step 2: Extract Frame & Create Thumbnail (browser-side)
       let thumb_url = "";
@@ -1757,17 +1764,6 @@ async function startMultiUpload() {
           }
         } catch (e) {
           addProgressLog(`  ⚠️ Thumbnail extraction failed: ${e.message}`, 'error');
-
-          // Fallback: try using BYSE thumbnail if available
-          try {
-            addProgressLog(`  🔁 Falling back to Byse thumbnail...`);
-            const byseThumbUrl = `${API.replace('/api','')}/byse/thumbnail?file_code=${stream_id}`;
-            // Note: this fallback depends on BYSE/public thumbnail availability
-            thumb_url = byseThumbUrl;
-            addProgressLog(`  ✅ Byse thumbnail used`);
-          } catch (ferr) {
-            addProgressLog(`  ⚠️ Fallback failed: ${ferr.message}`, 'error');
-          }
         }
       }
 
@@ -1857,10 +1853,10 @@ function addProgressLog(message, type = 'info') {
   logsDiv.scrollTop = logsDiv.scrollHeight;
 }
 
-async function remoteUploadToByse(videoUrl) {
-  // Call backend /api/admin/remotedl instead of BYSE directly
+async function remoteUploadToR2(videoUrl) {
+  // Call backend /api/admin/remoteupload to upload to R2
   try {
-    const response = await fetch(API + "/admin/remotedl", {
+    const response = await fetch(API + "/admin/remoteupload", {
       method: "POST",
       headers: {
         Authorization: ADMIN_TOKEN,
