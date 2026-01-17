@@ -137,7 +137,7 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 <header>
   <nav class="nav">
-    <a href="/" class="logo">â–¶ <span>clipfy.store</span></a>
+    <a href="/" class="logo">▶ <span>clipfy.store</span></a>
   </nav>
 </header>
 
@@ -179,11 +179,11 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
         <div><span id="views">0</span> views</div>
         <div><span id="likes">0</span> likes</div>
         <div style="margin-left:auto">
-            <button id="reportBtn" style="padding:8px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">ðŸš© Report Video</button>
+            <button id="reportBtn" style="padding:8px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🚩 Report Video</button>
         </div>
     </div>
 
-    <div class="suggestions-header">More Videos ðŸ”¥</div>
+    <div class="suggestions-header">More Videos 🔥</div>
     <div id="suggestions"></div>
     <div style="text-align:center;margin:20px 0;">
         <button id="loadMoreBtn" style="background:var(--accent);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;display:none;">Load More Videos</button>
@@ -203,7 +203,7 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
       <div class="footer-section"><h4>About Clipfy</h4><ul><li><a href="#">About Us</a></li></ul></div>
       <div class="footer-section"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li></ul></div>
   </div>
-  <div class="footer-bottom">Â© 2024 Clipfy.store. All rights reserved.</div>
+  <div class="footer-bottom">© 2024 Clipfy.store. All rights reserved.</div>
 </footer>
 
 
@@ -390,7 +390,7 @@ fetch(DATA_URL, { cache: "no-store" })
     .then(data => {
         const list = Array.isArray(data) ? data : (data.videos || []);
         
-        console.log("âœ… Fetched", list.length, "videos");
+        console.log("✅ Fetched", list.length, "videos");
         
         if(!list.length){
             mainTitle.textContent = "No videos available.";
@@ -402,7 +402,7 @@ fetch(DATA_URL, { cache: "no-store" })
             videos[item.videoid] = item;
         });
         
-        console.log("âœ… Videos loaded:", Object.keys(videos).length);
+        console.log("✅ Videos loaded:", Object.keys(videos).length);
 
         initIMA();
 
@@ -422,17 +422,17 @@ fetch(DATA_URL, { cache: "no-store" })
         renderSuggestions(currentV);
     })
     .catch(err => {
-        console.error("âŒ Data load error:", err);
+        console.error("❌ Data load error:", err);
         mainTitle.textContent = "Failed to load videos.";
     });
 
 /* --------- Load Video --------- */
 function loadVideo(id){
-    console.log("ðŸŽ¬ Loading video:", id);
+    console.log("🎬 Loading video:", id);
 
     const v = videos[id];
     if(!v) {
-        console.error("âŒ Video not found:", id);
+        console.error("❌ Video not found:", id);
         return;
     }
 
@@ -465,14 +465,11 @@ function loadVideo(id){
     renderSuggestions(id);
 }
 
-/* --------- Render Suggestions (WITH ADS - FIXED) --------- */
 function renderSuggestions(current, append = false){
     console.log("=== Rendering Suggestions ===");
-    console.log("Current:", current);
-    console.log("Total videos:", Object.keys(videos).length);
 
     if (Object.keys(videos).length === 0) {
-        console.error("âŒ No videos to suggest!");
+        console.error("No videos!");
         return;
     }
 
@@ -480,16 +477,14 @@ function renderSuggestions(current, append = false){
         suggestions.innerHTML = "";
         const allIds = Object.keys(videos);
         const filteredIds = allIds.filter(i => i !== current);
-        console.log("âœ… Filtered:", filteredIds.length, "videos");
         allSuggestionIds = shuffleArray(filteredIds);
         suggestionsLoaded = 0;
     }
 
     const batchSize = 12;
     const nextBatch = allSuggestionIds.slice(suggestionsLoaded, suggestionsLoaded + batchSize);
-    console.log("ðŸ“¦ Batch size:", nextBatch.length);
 
-    // First, render all video cards
+    // Render videos
     nextBatch.forEach(id => {
         const v = videos[id];
         if (!v) return;
@@ -498,41 +493,32 @@ function renderSuggestions(current, append = false){
         card.className = "suggestion-item";
         card.innerHTML = `
             <div class="suggestion-thumbnail">
-                <img loading="lazy"
-                     src="${v.thumb || 'https://via.placeholder.com/640x360?text=No+Thumbnail'}"
-                     onerror="this.src='https://via.placeholder.com/640x360?text=No+Thumbnail'">
+                <img loading="lazy" src="${v.thumb || 'https://via.placeholder.com/640x360?text=No+Thumbnail'}">
             </div>
             <div class="suggestion-title">${v.title || "Untitled"}</div>
         `;
-
         card.onclick = () => {
             loadVideo(id);
             window.scrollTo({top: 0, behavior: 'smooth'});
         };
-
         suggestions.appendChild(card);
     });
 
-    console.log("âœ… Rendered videos:", suggestions.children.length);
-
-    // Random ad insertion (like index.html)
+    // 🔥 PURE RANDOM AD INSERTION
     const videoCards = suggestions.querySelectorAll('.suggestion-item:not(.ad-item)');
-    if (videoCards.length >= 8) {
+    if (videoCards.length >= 10) {
         const AD_COUNT = 3;
-        const MIN_GAP = 4;
-        const usedPositions = [];
 
-        function getRandomPos() {
-            let pos;
-            do {
-                pos = Math.floor(Math.random() * (videoCards.length - 5)) + 3;
-            } while (usedPositions.some(p => Math.abs(p - pos) < MIN_GAP));
-            usedPositions.push(pos);
-            return pos;
+        // Pure random positions - NO MIN_GAP
+        const positions = [];
+        while (positions.length < AD_COUNT) {
+            const pos = Math.floor(Math.random() * (videoCards.length - 2)) + 1; // 1 se (length-1) tak
+            if (!positions.includes(pos)) {
+                positions.push(pos);
+            }
         }
 
-        for (let i = 0; i < AD_COUNT; i++) {
-            const index = getRandomPos();
+        positions.forEach(index => {
             const adDiv = document.createElement('div');
             adDiv.className = 'suggestion-item ad-item';
 
@@ -547,10 +533,8 @@ function renderSuggestions(current, append = false){
             adDiv.appendChild(adScript);
 
             videoCards[index].after(adDiv);
-        }
+        });
     }
-
-    console.log("âœ… Total items:", suggestions.children.length);
 
     suggestionsLoaded += batchSize;
 
@@ -567,7 +551,7 @@ function renderSuggestions(current, append = false){
 
 /* --------- Report Button --------- */
 document.getElementById("reportBtn").onclick = () => {
-    alert("âœ… Report feature coming soon!");
+    alert("✅ Report feature coming soon!");
 };
 
 /* --------- Load More Button --------- */
