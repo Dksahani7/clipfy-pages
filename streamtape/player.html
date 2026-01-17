@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,6 +5,38 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Clipfy Player</title>
 <meta name="description" content="Watch videos on Clipfy Player">
+<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+
+<script type="application/javascript">
+(function() {
+    function randStr(e,t){for(var n="",r=t||"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",o=0;o<e;o++)n+=r.charAt(Math.floor(Math.random()*r.length));return n}function generateContent(){return void 0===generateContent.val&&(generateContent.val="document.dispatchEvent("+randStr(4*Math.random()+3)+");"),generateContent.val}try{Object.defineProperty(document.currentScript,"innerHTML",{get:generateContent}),Object.defineProperty(document.currentScript,"textContent",{get:generateContent})}catch(e){};
+
+    //version 7.0.0
+
+    var adConfig = {
+    "ads_host": "a.pemsrv.com",
+    "syndication_host": "s.pemsrv.com",
+    "idzone": 5830300,
+    "popup_fallback": false,
+    "popup_force": false,
+    "chrome_enabled": true,
+    "new_tab": false,
+    "frequency_period": 60,
+    "frequency_count": 1,
+    "trigger_method": 3,
+    "trigger_class": "",
+    "trigger_delay": 0,
+    "capping_enabled": true,
+    "tcf_enabled": true,
+    "only_inline": false
+};
+
+window.document.querySelectorAll||(document.querySelectorAll=document.body.querySelectorAll=Object.querySelectorAll=function(e,o,t,i,n){var r=document,a=r.createStyleSheet();for(n=r.all,o=[],t=(e=e.replace(/\[for\b/gi,"[htmlFor").split(",")).length;t--;){for(a.addRule(e[t],"k:v"),i=n.length;i--;)n[i].currentStyle.k&&o.push(n[i]);a.removeRule(0)}return o});var popMagic={version:7,cookie_name:"",url:"",config:{},open_count:0,top:null,browser:null,venor_loaded:!1,venor:!1,tcfData:null,configTpl:{ads_host:"",syndication_host:"",idzone:"",frequency_period:720,frequency_count:1,trigger_method:1,trigger_class:"",popup_force:!1,popup_fallback:!1,chrome_enabled:!0,new_tab:!1,cat:"",tags:"",el:"",sub:"",sub2:"",sub3:"",only_inline:!1,trigger_delay:0,capping_enabled:!0,tcf_enabled:!1,cookieconsent:!0,should_fire:function(){return!0},on_redirect:null},init:function(e){if(void 0!==e.idzone&&e.idzone){void 0===e.customTargeting&&(e.customTargeting=[]),window.customTargeting=e.customTargeting||null;var o=Object.keys(e.customTargeting).filter(function(e){return e.search("ex_")>=0});for(var t in o.length&&o.forEach(function(e){return this.configTpl[e]=null}.bind(this)),this.configTpl)Object.prototype.hasOwnProperty.call(this.configTpl,t)&&(void 0!==e[t]?this.config[t]=e[t]:this.config[t]=this.configTpl[t]);if(void 0!==this.config.idzone&&""!==this.config.idzone){!0!==this.config.only_inline&&this.loadHosted();var i=this;this.checkTCFConsent(function(){"complete"===document.readyState?i.preparePopWait():i.addEventToElement(window,"load",i.preparePop)})}}},getCountFromCookie:function(){if(!this.config.cookieconsent)return 0;var e=popMagic.getCookie(popMagic.cookie_name),o=void 0===e?0:parseInt(e);return isNaN(o)&&(o=0),o},getLastOpenedTimeFromCookie:function(){var e=popMagic.getCookie(popMagic.cookie_name),o=null;if(void 0!==e){var t=e.split(";")[1];o=t>0?parseInt(t):0}return isNaN(o)&&(o=null),o},shouldShow:function(e){if(e=e||!1,!popMagic.config.capping_enabled){var o=!0,t=popMagic.config.should_fire;try{e||"function"!=typeof t||(o=Boolean(t()))}catch(e){console.error("Error executing should fire callback function:",e)}return o&&0===popMagic.open_count}if(popMagic.open_count>=popMagic.config.frequency_count)return!1;var i=popMagic.getCountFromCookie(),n=popMagic.getLastOpenedTimeFromCookie(),r=Math.floor(Date.now()/1e3),a=n+popMagic.config.trigger_delay;return!(n&&a>r)&&(popMagic.open_count=i,!(i>=popMagic.config.frequency_count))},venorShouldShow:function(){return popMagic.venor_loaded&&"0"===popMagic.venor},setAsOpened:function(e){var o=e?e.target||e.srcElement:null,t={id:"",tagName:"",classes:"",text:"",href:"",elm:""};void 0!==o&&null!=o&&(t={id:void 0!==o.id&&null!=o.id?o.id:"",tagName:void 0!==o.tagName&&null!=o.tagName?o.tagName:"",classes:void 0!==o.classList&&null!=o.classList?o.classList:"",text:void 0!==o.outerText&&null!=o.outerText?o.outerText:"",href:void 0!==o.href&&null!=o.href?o.href:"",elm:o});var i=new CustomEvent("creativeDisplayed-"+popMagic.config.idzone,{detail:t});if(document.dispatchEvent(i),popMagic.config.capping_enabled){var n=1;n=0!==popMagic.open_count?popMagic.open_count+1:popMagic.getCountFromCookie()+1;var r=Math.floor(Date.now()/1e3);popMagic.config.cookieconsent&&popMagic.setCookie(popMagic.cookie_name,n+";"+r,popMagic.config.frequency_period)}else++popMagic.open_count},loadHosted:function(){var e=document.createElement("script");for(var o in e.type="application/javascript",e.async=!0,e.src="//"+this.config.ads_host+"/popunder1000.js",e.id="popmagicldr",this.config)Object.prototype.hasOwnProperty.call(this.config,o)&&"ads_host"!==o&&"syndication_host"!==o&&e.setAttribute("data-exo-"+o,this.config[o]);var t=document.getElementsByTagName("body").item(0);t.firstChild?t.insertBefore(e,t.firstChild):t.appendChild(e)},preparePopWait:function(){setTimeout(popMagic.preparePop,400)},preparePop:function(){if("object"!=typeof exoJsPop101||!Object.prototype.hasOwnProperty.call(exoJsPop101,"add")){if(popMagic.top=self,popMagic.top!==self)try{top.document.location.toString()&&(popMagic.top=top)}catch(e){}if(popMagic.cookie_name="zone-cap-"+popMagic.config.idzone,popMagic.config.capping_enabled||(document.cookie=popMagic.cookie_name+"=;expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/"),popMagic.shouldShow(!0)){var e=new XMLHttpRequest;e.onreadystatechange=function(){e.readyState==XMLHttpRequest.DONE&&(popMagic.venor_loaded=!0,200==e.status?popMagic.venor=e.responseText:popMagic.venor="0")};var o="https:"!==document.location.protocol&&"http:"!==document.location.protocol?"https:":document.location.protocol;e.open("GET",o+"//"+popMagic.config.syndication_host+"/venor.php",!0);try{e.send()}catch(e){popMagic.venor_loaded:!0}}if(popMagic.buildUrl(),popMagic.browser=popMagic.browserDetector.getBrowserInfo(),popMagic.config.chrome_enabled||!popMagic.browser.isChrome){var t=popMagic.getPopMethod(popMagic.browser);popMagic.addEvent("click",t)}}},getPopMethod:function(e){return popMagic.config.popup_force||popMagic.config.popup_fallback&&e.isChrome&&e.version>=68&&!e.isMobile?popMagic.methods.popup:e.isMobile?popMagic.methods.default:e.isChrome?popMagic.methods.chromeTab:popMagic.methods.default},checkTCFConsent:function(e){if(this.config.tcf_enabled&&"function"==typeof window.__tcfapi){var o=this;window.__tcfapi("addEventListener",2,function(t,i){i&&(o.tcfData=t,"tcloaded"!==t.eventStatus&&"useractioncomplete"!==t.eventStatus||(window.__tcfapi("removeEventListener",2,function(){},t.listenerId),e()))})}else e()},buildUrl:function(){var e,o="https:"!==document.location.protocol&&"http:"!==document.location.protocol?"https:":document.location.protocol,t=top===self?document.URL:document.referrer,i={type:"inline",name:"popMagic",ver:this.version},n="";customTargeting&&Object.keys(customTargeting).length&&("object"==typeof customTargeting?Object.keys(customTargeting):customTargeting).forEach(function(o){"object"==typeof customTargeting?e=customTargeting[o]:Array.isArray(customTargeting)&&(e=scriptEl.getAttribute(o));var t=o.replace("data-exo-","");n+="&"+t+"="+e});var r=this.tcfData&&this.tcfData.gdprApplies&&!0===this.tcfData.gdprApplies?1:0;this.url=o+"//"+this.config.syndication_host+"/v1/link.php?cat="+this.config.cat+"&idzone="+this.config.idzone+"&type=8&p="+encodeURIComponent(t)+"&sub="+this.config.sub+(""!==this.config.sub2?"&sub2="+this.config.sub2:"")+(""!==this.config.sub3?"&sub3="+this.config.sub3:"")+"&block=1&el="+this.config.el+"&tags="+this.config.tags+"&scr_info="+function(e){var o=e.type+"|"+e.name+"|"+e.ver;return encodeURIComponent(btoa(o))}(i)+n+"&gdpr="+r+"&cb="+Math.floor(1e9*Math.random()),this.tcfData&&this.tcfData.tcString?this.url+="&gdpr_consent="+encodeURIComponent(this.tcfData.tcString):this.url+="&cookieconsent="+this.config.cookieconsent},addEventToElement:function(e,o,t){e.addEventListener?e.addEventListener(o,t,!1):e.attachEvent?(e["e"+o+t]=t,e[o+t]=function(){e["e"+o+t](window.event)},e.attachEvent("on"+o,e[o+t])):e["on"+o]=e["e"+o+t]},getTriggerClasses:function(){var e,o=[];-1===popMagic.config.trigger_class.indexOf(",")?e=popMagic.config.trigger_class.split(" "):e=popMagic.config.trigger_class.replace(/\s/g,"").split(",");for(var t=0;t<e.length;t++)""!==e[t]&&o.push("."+e[t]);return o},addEvent:function(e,o){var t;if("3"!=popMagic.config.trigger_method)if("2"!=popMagic.config.trigger_method||""==popMagic.config.trigger_class)if("4"!=popMagic.config.trigger_method||""==popMagic.config.trigger_class)if("5"!=popMagic.config.trigger_method||""==popMagic.config.trigger_class)popMagic.addEventToElement(document,e,o);else{var i="a"+popMagic.getTriggerClasses().map(function(e){return":not("+e+")"}).join("");t=document.querySelectorAll(i);for(var n=0;n<t.length;n++)popMagic.addEventToElement(t[n],e,o)}else{var r=popMagic.getTriggerClasses();popMagic.addEventToElement(document,e,function(e){r.some(function(o){return null!==e.target.closest(o)})||o.call(e.target,e)})}else{var a=popMagic.getTriggerClasses();for(t=document.querySelectorAll(a.join(", ")),n=0;n<t.length;n++)popMagic.addEventToElement(t[n],e,o)}else for(t=document.querySelectorAll("a"),n=0;n<t.length;n++)popMagic.addEventToElement(t[n],e,o)},setCookie:function(e,o,t){if(!this.config.cookieconsent)return!1;t=parseInt(t,10);var i=new Date;i.setMinutes(i.getMinutes()+parseInt(t));var n=encodeURIComponent(o)+"; expires="+i.toUTCString()+"; path=/";document.cookie=e+"="+n},getCookie:function(e){if(!this.config.cookieconsent)return!1;var o,t,i,n=document.cookie.split(";");for(o=0;o<n.length;o++)if(t=n[o].substr(0,n[o].indexOf("=")),i=n[o].substr(n[o].indexOf("=")+1),(t=t.replace(/^\s+|\s+$/g,""))===e)return decodeURIComponent(i)},randStr:function(e,o){for(var t="",i=o||"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",n=0;n<e;n++)t+=i.charAt(Math.floor(Math.random()*r.length));return t},isValidUserEvent:function(e){return!(!("isTrusted"in e)||!e.isTrusted||"ie"===popMagic.browser.name||"safari"===popMagic.browser.name)||0!=e.screenX&&0!=e.screenY},isValidHref:function(e){if(void 0===e||""==e)return!1;return!/\s?javascript\s?:/i.test(e)},findLinkToOpen:function(e){var o=e,t=!1;try{for(var i=0;i<20&&!o.getAttribute("href")&&o!==document&&"html"!==o.nodeName.toLowerCase();)o=o.parentNode,i++;var n=o.getAttribute("target");n&&-1!==n.indexOf("_blank")||(t=o.getAttribute("href"))}catch(e){}return popMagic.isValidHref(t)||(t=!1),t||window.location.href},getPuId:function(){return"ok_"+Math.floor(89999999*Math.random()+1e7)},executeOnRedirect:function(){try{popMagic.config.capping_enabled||"function"!=typeof popMagic.config.on_redirect||popMagic.config.on_redirect()}catch(e){console.error("Error executing on redirect callback:",e)}},browserDetector:{browserDefinitions:[["firefox",/Firefox\/([0-9.]+)(?:\s|$)/],["opera",/Opera\/([0-9.]+)(?:\s|$)/],["opera",/OPR\/([0-9.]+)(:?\s|$)$/],["edge",/Edg(?:e|)\/([0-9._]+)/],["ie",/Trident\/7\.0.*rv:([0-9.]+)\).*Gecko$/],["ie",/MSIE\s([0-9.]+);.*Trident\/[4-7].0/],["ie",/MSIE\s(7\.0)/],["safari",/Version\/([0-9._]+).*Safari/],["chrome",/(?!Chrom.*Edg(?:e|))Chrom(?:e|ium)\/([0-9.]+)(:?\s|$)/],["chrome",/(?!Chrom.*OPR)Chrom(?:e|ium)\/([0-9.]+)(:?\s|$)/],["bb10",/BB10;\sTouch.*Version\/([0-9.]+)/],["android",/Android\s([0-9.]+)/],["ios",/Version\/([0-9._]+).*Mobile.*Safari.*/],["yandexbrowser",/YaBrowser\/([0-9._]+)/],["crios",/CriOS\/([0-9.]+)(:?\s|$)/]],isChromeOrChromium:function(){var e=window.navigator,o=(e.userAgent||"").toLowerCase(),t=e.vendor||"";if(-1!==o.indexOf("crios"))return!0;if(e.userAgentData&&Array.isArray(e.userAgentData.brands)&&e.userAgentData.brands.length>0){var i=e.userAgentData.brands,n=i.some(function(e){return"Google Chrome"===e.brand}),r=i.some(function(e){return"Chromium"===e.brand})&&2===i.length;return n||r}var a=!!window.chrome,c=-1!==o.indexOf("edg"),p=!!window.opr||-1!==o.indexOf("opr"),s=!(!e.brave||!e.brave.isBrave),g=-1!==o.indexOf("vivaldi"),l=-1!==o.indexOf("yabrowser"),d=-1!==o.indexOf("samsungbrowser"),u=-1!==o.indexOf("ucbrowser");return a&&"Google Inc."===t&&!c&&!p&&!s&&!g&&!l&&!d&&!u},getBrowserInfo:function(){var e=window.navigator.userAgent,o={name:"other",version:"1.0",versionNumber:1,isChrome:this.isChromeOrChromium(),isMobile:!!e.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WebOS|Windows Phone/i)};for(var t in this.browserDefinitions){var i=this.browserDefinitions[t];if(i[1].test(e)){var n=i[1].exec(e),r=n&&n[1].split(/[._]/).slice(0,3),a=Array.prototype.slice.call(r,1).join("")||"0";r&&r.length<3&&Array.prototype.push.apply(r,1===r.length?[0,0]:[0]),o.name=i[0],o.version=r.join("."),o.versionNumber=parseFloat(r[0]+"."+a);break}}return o}},methods:{default:function(e){if(!popMagic.shouldShow()||!popMagic.venorShouldShow()||!popMagic.isValidUserEvent(e))return!0;var o=e.target||e.srcElement,t=popMagic.findLinkToOpen(o);return window.open(t,"_blank"),popMagic.setAsOpened(e),popMagic.executeOnRedirect(),popMagic.top.document.location=popMagic.url,void 0!==e.preventDefault&&(e.preventDefault(),e.stopPropagation()),!0},chromeTab:function(e){if(!popMagic.shouldShow()||!popMagic.venorShouldShow()||!popMagic.isValidUserEvent(e))return!0;if(void 0===e.preventDefault)return!0;e.preventDefault(),e.stopPropagation();var o=top.window.document.createElement("a"),t=e.target||e.srcElement;o.href=popMagic.findLinkToOpen(t),document.getElementsByTagName("body")[0].appendChild(o);var i=new MouseEvent("click",{bubbles:!0,cancelable:!0,view:window,screenX:0,screenY:0,clientX:0,clientY:0,ctrlKey:!0,altKey:!1,shiftKey:!1,metaKey:!0,button:0});i.preventDefault=void 0,o.dispatchEvent(i),o.parentNode.removeChild(o),popMagic.executeOnRedirect(),window.open(popMagic.url,"_self"),popMagic.setAsOpened(e)},popup:function(e){if(!popMagic.shouldShow()||!popMagic.venorShouldShow()||!popMagic.isValidUserEvent(e))return!0;var o="";if(popMagic.config.popup_fallback&&!popMagic.config.popup_force){var t=Math.max(Math.round(.8*window.innerHeight),300);o="menubar=1,resizable=1,width="+Math.max(Math.round(.7*window.innerWidth),300)+",height="+t+",top="+(window.screenY+100)+",left="+(window.screenX+100)}var i=document.location.href,n=window.open(i,popMagic.getPuId(),o);popMagic.setAsOpened(e),setTimeout(function(){n.location.href=popMagic.url,popMagic.executeOnRedirect()},200),void 0!==e.preventDefault&&(e.preventDefault(),e.stopPropagation())}}};    popMagic.init(adConfig);
+})();
+
+
+</script>
 
 <style>
 :root{
@@ -27,19 +58,20 @@ header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop
 
 /* Video Box */
 .video-container {
-    position: sticky;
-    top: 60px;
     z-index: 900;
     background: #000;
     width: 100%;
 }
 .video-box{
+    position: relative;
     width:100%;
-    aspect-ratio: 16/12;
+    aspect-ratio: 16/9;
     max-height: 60vh;
     background:#000;
 }
-.video-box iframe{width:100%;height:100%;border:0}
+.video-box video{width:100%;height:100%;border:0;object-fit:contain}
+#adContainer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;display:none;background:#000}
+#adContainer.active{display:block;pointer-events:auto}
 
 /* Content */
 .content-wrapper{max-width:1200px;margin:auto;padding:0 20px; position: relative; z-index: 100;}
@@ -64,12 +96,38 @@ header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop
 .suggestion-thumbnail img{width:100%;height:100%;object-fit:cover}
 .suggestion-title{padding:10px 12px;font-size:15px;line-height:1.4;font-weight:600}
 
+.ad-item {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid rgba(255, 47, 91, 0.3) !important;
+    position: relative;
+}
+
+.ad-item::before {
+    content: "Sponsored";
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(255, 47, 91, 0.9);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    z-index: 10;
+}
+
+.ad-item ins {
+    display: block;
+    min-height: 180px;
+}
+
 /* Footer */
 footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding:40px 20px;margin-top:40px; position: relative; z-index: 1000;}
 
+
+
 @media(max-width:768px){
     .ad-728-player{display:none}
-    .video-container { top: 55px; position: static; }
     .ad-300-player{width:100%;max-width:300px}
 }
 </style>
@@ -79,13 +137,14 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 <header>
   <nav class="nav">
-    <a href="/" class="logo">▶ <span>clipfy.store</span></a>
+    <a href="/" class="logo">â–¶ <span>clipfy.store</span></a>
   </nav>
 </header>
 
 <div class="video-container">
     <div class="video-box">
-        <iframe id="playerFrame" allowfullscreen allow="autoplay"></iframe>
+        <div id="adContainer"></div>
+        <video id="player" controls muted preload="metadata" controlsList="nodownload"></video>
     </div>
 </div>
 
@@ -97,8 +156,11 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
     </div>
 </div>
 
-<!-- Top banner -->
-<div class="ad-728-player" id="topAdSlot"></div>
+
+
+
+
+
 
 <div class="content-wrapper">
     <div class="blog-content">
@@ -117,15 +179,23 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
         <div><span id="views">0</span> views</div>
         <div><span id="likes">0</span> likes</div>
         <div style="margin-left:auto">
-            <button id="reportBtn" style="padding:8px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🚩 Report Video</button>
+            <button id="reportBtn" style="padding:8px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">ðŸš© Report Video</button>
         </div>
     </div>
 
-    <div class="suggestions-header">More Videos 🔥</div>
+    <div class="suggestions-header">More Videos ðŸ”¥</div>
     <div id="suggestions"></div>
+    <div style="text-align:center;margin:20px 0;">
+        <button id="loadMoreBtn" style="background:var(--accent);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;display:none;">Load More Videos</button>
+    </div>
 
-    <!-- Native ad -->
-    <div class="ad-native-player" id="nativeAdSlot"></div>
+    <!-- Recommendation Widget -->
+    <div style="margin-top: 40px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,.05);">
+        <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+        <ins class="eas6a97888e20" data-zoneid="5829434"></ins>
+        <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+    </div>
+
 </div>
 
 <footer>
@@ -133,15 +203,23 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
       <div class="footer-section"><h4>About Clipfy</h4><ul><li><a href="#">About Us</a></li></ul></div>
       <div class="footer-section"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li></ul></div>
   </div>
-  <div class="footer-bottom">© 2024 Clipfy.store. All rights reserved.</div>
+  <div class="footer-bottom">Â© 2024 Clipfy.store. All rights reserved.</div>
 </footer>
+
+
 
 <script>
 // ---- CONFIG ----
-const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/byse/index.json";
-const BYSE_BASE = "https://bysefujedu.com/e/"; // <iframe src="https://bysefujedu.com/e/FILE_CODE">
+const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json";
+const R2_STREAM_BASE = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/";
 
-const iframe = document.getElementById("playerFrame");
+// Aapke saare Ad Zones ka array
+const AD_ZONES = [
+  "5825550", "5829428", "5830146", "5825492", "5825490"
+];
+
+const player = document.getElementById("player");
+const adContainer = document.getElementById("adContainer");
 const mainTitle = document.getElementById("mainTitle");
 const creatorNameEl = document.getElementById("creatorName");
 const timeAgoEl = document.getElementById("timeAgo");
@@ -149,69 +227,155 @@ const viewsEl = document.getElementById("views");
 const likesEl = document.getElementById("likes");
 const creatorDp = document.getElementById("creatorDp");
 const suggestions = document.getElementById("suggestions");
-const topAdSlot = document.getElementById("topAdSlot");
-const nativeAdSlot = document.getElementById("nativeAdSlot");
+
+const adConfigs = [
+    { class: 'eas6a97888e37', zoneid: '5829556' },
+    { class: 'eas6a97888e38', zoneid: '5829557' },
+    { class: 'eas6a97888e39', zoneid: '5829558' }
+];
 
 let videos = {};
-let popunderReady = false;
-let popFired = false;
-let lastAdLoad = 0;
+let currentVideoId = null;
+let allSuggestionIds = [];
+let suggestionsLoaded = 0;
 
-/* --------- Preview Meta Update --------- */
+let adsLoader, adsManager, adDisplayContainer;
+let currentZoneIndex = 0;
+let adSlots = [];
+let retryInterval = null;
+let isAdPlaying = false;
+let hasUserInteracted = false;
+
+function initIMA() {
+  if (adDisplayContainer) return;
+  adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, player);
+  adsLoader = new google.ima.AdsLoader(adDisplayContainer);
+  
+  adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, (e) => {
+    adsManager = e.getAdsManager(player);
+   
+    adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
+      isAdPlaying = true;
+      adContainer.classList.add('active');
+      player.pause();
+    });
+
+    adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
+      resetAdSystem();
+    });
+
+    adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, () => {
+      tryNextZone();
+    });
+
+    adsManager.init(player.clientWidth, player.clientHeight, google.ima.ViewMode.NORMAL);
+    adsManager.start();
+  });
+
+  adsLoader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, () => tryNextZone());
+}
+
+function resetAdSystem() {
+  isAdPlaying = false;
+  adContainer.classList.remove('active');
+  player.play();
+  clearInterval(retryInterval);
+  currentZoneIndex = 0; // Agle slot ke liye shuruat se check karein
+}
+
+// Waterfall Logic: Ek zone fail toh dusra try karo
+function tryNextZone() {
+  currentZoneIndex++;
+  if (currentZoneIndex < AD_ZONES.length) {
+    console.log("Switching to Ad Zone: " + AD_ZONES[currentZoneIndex]);
+    requestAd();
+  } else {
+    console.log("All zones empty. Waiting for next retry cycle...");
+    isAdPlaying = false;
+    adContainer.classList.remove('active');
+    player.play();
+  }
+}
+
+function requestAd() {
+  if (typeof google === 'undefined') return;
+  adDisplayContainer.initialize();
+  const req = new google.ima.AdsRequest();
+  // Dynamic Zone Selection
+  const zoneId = AD_ZONES[currentZoneIndex];
+  req.adTagUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zoneId}&cb=${Date.now()}`;
+  adsLoader.requestAds(req);
+}
+
+// SMART TRIGGER LOGIC
+player.onloadedmetadata = () => {
+  const dur = player.duration;
+  adSlots = []; // Purane slots clear karein
+
+  if (dur <= 300) {
+    // 5 min se kam: 10% par aur khatam hone se 10s pehle
+    adSlots.push(Math.floor(dur * 0.1));
+    adSlots.push(Math.floor(dur - 10));
+  }
+  else if (dur > 300 && dur <= 600) {
+    // 5 se 10 min: 50%, aur 90%
+    adSlots.push(Math.floor(dur * 0.5), Math.floor(dur * 0.9));
+  }
+  else {
+    // 10 min se badi: 30%, 60%, aur 90%
+    adSlots.push(Math.floor(dur * 0.3), Math.floor(dur * 0.6), Math.floor(dur * 0.9));
+  }
+};
+
+player.ontimeupdate = () => {
+  if (isAdPlaying) return;
+  let cur = Math.floor(player.currentTime);
+  
+  if (adSlots.includes(cur)) {
+    adSlots = adSlots.filter(s => s !== cur);
+    startAdCycle();
+  }
+};
+
+function startAdCycle() {
+  currentZoneIndex = 0;
+  requestAd();
+  
+  // Retry loop: Har 45s mein phir koshish karein agar ad nahi mila
+  clearInterval(retryInterval);
+  retryInterval = setInterval(() => {
+    if (!isAdPlaying) {
+      currentZoneIndex = 0;
+      requestAd();
+    }
+  }, 45000);
+}
+
+// Disable right-click
+player.addEventListener('contextmenu', e => e.preventDefault());
+
+// User interaction for ads
+player.addEventListener('play', () => {
+  if (!hasUserInteracted) {
+    hasUserInteracted = true;
+    // Sirf tabhi pre-roll chalayein jab video 5 min (300s) se bada ho
+    if (player.duration > 300) {
+      startAdCycle();
+    }
+  }
+});
+
+/* --------- Meta Update --------- */
 function updateMeta(v){
     document.querySelectorAll('meta[property="og:image"],meta[name="twitter:image"],meta[name="twitter:card"]').forEach(m=>m.remove());
-
     const head = document.head;
-
     const ogImg = document.createElement("meta");
     ogImg.setAttribute("property","og:image");
     ogImg.setAttribute("content", v.thumb);
     head.appendChild(ogImg);
-
-    const ogW = document.createElement("meta");
-    ogW.setAttribute("property","og:image:width");
-    ogW.setAttribute("content","1280");
-    head.appendChild(ogW);
-
-    const ogH = document.createElement("meta");
-    ogH.setAttribute("property","og:image:height");
-    ogH.setAttribute("content","720");
-    head.appendChild(ogH);
-
-    const twCard = document.createElement("meta");
-    twCard.setAttribute("name","twitter:card");
-    twCard.setAttribute("content","summary_large_image");
-    head.appendChild(twCard);
-
-    const twImg = document.createElement("meta");
-    twImg.setAttribute("name","twitter:image");
-    twImg.setAttribute("content", v.thumb);
-    head.appendChild(twImg);
-
-    console.log("META UPDATED FOR THUMBNAIL:", v.thumb);
 }
 
-/* --------- Kill-Switch Check ---------- */
-async function checkKillSwitch(){
-    try{
-        const r = await fetch("/api/status");
-        const s = await r.json();
-        if(s.site_disabled){
-            document.body.innerHTML = "<h2 style='color:white;text-align:center;padding:60px;font-family:Arial'>Site is under maintenance</h2>";
-            return false;
-        }
-        return true;
-    }catch(e){
-        return true;
-    }
-}
-
-/* --------- Helpers ---------- */
-function params(){
-    const p=new URLSearchParams(location.search);
-    return { v:p.get("v") };
-}
-
+/* --------- Helpers --------- */
 function shuffleArray(arr){
     for(let i=arr.length-1;i>0;i--){
         const j=Math.floor(Math.random()*(i+1));
@@ -220,248 +384,196 @@ function shuffleArray(arr){
     return arr;
 }
 
-/* --------- Ads ---------- */
-function renderTopBannerAd(){
-    const now = Date.now();
-    if(now - lastAdLoad < 2000) return;
-    lastAdLoad = now;
-    
-    topAdSlot.innerHTML = "";
-    const s1 = document.createElement("script");
-    s1.type = "text/javascript";
-    s1.innerHTML = `atOptions = {'key' : 'b40d9ebf8b9bb68f80451819ab41596e','format' : 'iframe','height' : 90,'width' : 728,'params' : {}};`;
-    const s2 = document.createElement("script");
-    s2.src = "https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js";
-    topAdSlot.appendChild(s1);
-    topAdSlot.appendChild(s2);
-}
-
-function renderNativeAd(){
-    const now = Date.now();
-    if(now - lastAdLoad < 2000) return;
-    lastAdLoad = now;
-    
-    nativeAdSlot.innerHTML = "";
-    const s = document.createElement("script");
-    s.async = true;
-    s.setAttribute("data-cfasync","false");
-    s.src = "https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js";
-    const container = document.createElement("div");
-    container.id = "container-2095e01c6ff1562d16722ad413d6a9ba";
-    nativeAdSlot.appendChild(s);
-    nativeAdSlot.appendChild(container);
-}
-
-function renderBanner300(){
-    const s1 = document.createElement("script");
-    s1.type = "text/javascript";
-    s1.innerHTML = `atOptions = {'key' : 'e8550078b37b6bf29c9b54eed61806f7','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};`;
-    const s2 = document.createElement("script");
-    s2.src = "https://stinkymildred.com/e8550078b37b6bf29c9b54eed61806f7/invoke.js";
-    return [s1, s2];
-}
-
-/* --------- Popunder ---------- */
-const VIDEO_PLAY_COUNT_KEY = "clipfy_video_play_count";
-
-function getVideoPlayCount(){
-    try{ return parseInt(sessionStorage.getItem(VIDEO_PLAY_COUNT_KEY) || "0", 10); }catch(e){ return 0; }
-}
-
-function setVideoPlayCount(val){
-    try{ sessionStorage.setItem(VIDEO_PLAY_COUNT_KEY, String(val)); }catch(e){}
-}
-
-function onVideoPlayed(){
-    let count = getVideoPlayCount();
-    count += 1;
-    setVideoPlayCount(count);
-    // Only prepare popunder if user hasn't seen one this session
-    if(count >= 2 && !sessionStorage.getItem('pop_shown')){
-        popunderReady = true;
-        popFired = false;
-    }
-}
-
-/* --------- Data ---------- */
-async function loadData(){
-    const allowed = await checkKillSwitch();
-    if(!allowed) return;
-    
-    try {
-        const r = await fetch(DATA_URL,{cache:"no-store"});
-        const raw = await r.json();
-        if(!Array.isArray(raw) || !raw.length){
-            mainTitle.textContent = "No videos available right now.";
+/* --------- Load Data --------- */
+fetch(DATA_URL, { cache: "no-store" })
+    .then(r => r.json())
+    .then(data => {
+        const list = Array.isArray(data) ? data : (data.videos || []);
+        
+        console.log("âœ… Fetched", list.length, "videos");
+        
+        if(!list.length){
+            mainTitle.textContent = "No videos available.";
             return;
         }
-        raw.forEach(v=>videos[v.videoid]=v);
-        const { v } = params();
-        const id = v && videos[v] ? v : Object.keys(videos)[0];
-        loadVideo(id,true);
-    } catch(e) { console.error("Load failed", e); }
-}
+        
+        // Populate videos object
+        list.forEach(item => {
+            videos[item.videoid] = item;
+        });
+        
+        console.log("âœ… Videos loaded:", Object.keys(videos).length);
 
-/* --------- Load Video ---------- */
-function loadVideo(id, push = false){
+        initIMA();
+
+        // Get video ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const vId = urlParams.get('v');
+        const videoKeys = Object.keys(videos);
+        const firstId = videoKeys.length > 0 ? videoKeys[0] : null;
+
+        if (vId && videos[vId]) {
+            loadVideo(vId);
+        } else if (firstId) {
+            loadVideo(firstId);
+        }
+
+        const currentV = vId || firstId;
+        renderSuggestions(currentV);
+    })
+    .catch(err => {
+        console.error("âŒ Data load error:", err);
+        mainTitle.textContent = "Failed to load videos.";
+    });
+
+/* --------- Load Video --------- */
+function loadVideo(id){
+    console.log("ðŸŽ¬ Loading video:", id);
+
     const v = videos[id];
-    if(!v) return;
+    if(!v) {
+        console.error("âŒ Video not found:", id);
+        return;
+    }
 
     currentVideoId = id;
+    hasUserInteracted = false;
 
-    // IMPORTANT: yahi tumhara BYSE embed hai
-    // Fallback ke sath: streamtape_id, stream_id, ya streamtapeid
-    const fileCode = v.streamtape_id || v.stream_id || v.streamtapeid;
-    iframe.src = BYSE_BASE + fileCode;
-    iframe.onerror = () => {
-        iframe.src = "/offline.html";
-    };
+    if (adsManager) adsManager.destroy();
+    clearInterval(retryInterval);
+    isAdPlaying = false;
+    adContainer.classList.remove('active');
 
+    // Set video source
+    player.src = R2_STREAM_BASE + "videos/" + v.videoid + ".mp4";
+    player.poster = v.thumb || "";
+    player.load();
+
+    // Update UI
     mainTitle.textContent = v.title || "Clipfy Video";
     creatorNameEl.textContent = v.creator || "Clipfy";
-    timeAgoEl.textContent = v.timeago || "Posted Recently";
+    timeAgoEl.textContent = v.timeago || "Recently";
     viewsEl.textContent = (v.views || 0).toLocaleString();
     likesEl.textContent = (v.likes || 0).toLocaleString();
 
     if(v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
-    else creatorDp.style.backgroundImage = "";
 
     document.title = (v.title || "Video") + " | Clipfy";
-    const meta = document.querySelector('meta[name="description"]');
-    if(meta) meta.content = v.title + " - Watch on Clipfy";
-    
     updateMeta(v);
-    
-    history.replaceState(null, "", `/streamtape/player.html?v=${id}`);
 
-    document.getElementById("reportBtn").disabled = false;
-    document.getElementById("reportBtn").textContent = "🚩 Report Video";
-
-    // Record view
-    recordVideoView(id);
-
-    renderTopBannerAd();
-    renderNativeAd();
-    onVideoPlayed();
+    // Render suggestions
     renderSuggestions(id);
-
-    // Refresh Grid Ad inside suggestions (if present) after video change
-    const suggestionAd = suggestions.querySelector('.ad-300-player');
-    if(suggestionAd) {
-        suggestionAd.innerHTML = "";
-        const [s1, s2] = renderBanner300();
-        suggestionAd.appendChild(s1);
-        suggestionAd.appendChild(s2);
-    }
 }
 
-/* --------- Record View ---------- */
-async function recordVideoView(videoid){
-    try {
-        const r = await fetch("/api/watch", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ videoid })
-        });
-        const res = await r.json();
-        if(res.ok && res.views){
-            viewsEl.textContent = res.views.toLocaleString();
-        }
-    } catch(e) {
-        console.error("Failed to record view:", e);
-    }
-}
+/* --------- Render Suggestions (WITH ADS - FIXED) --------- */
+function renderSuggestions(current, append = false){
+    console.log("=== Rendering Suggestions ===");
+    console.log("Current:", current);
+    console.log("Total videos:", Object.keys(videos).length);
 
-/* --------- Suggestions + SINGLE BANNER ---------- */
-function renderSuggestions(current){
-    suggestions.innerHTML = "";
-    let ids = Object.keys(videos).filter(i=>i!==current);
-    ids = shuffleArray(ids);
-    ids = ids.slice(0, 12);
-
-    ids.forEach((id, index) => {
-        if (index === 3 && !suggestions.querySelector('.ad-300-player')) {
-            const adDiv = document.createElement("div");
-            adDiv.className = "ad-300-player";
-            const [s1, s2] = renderBanner300();
-            adDiv.appendChild(s1);
-            adDiv.appendChild(s2);
-            suggestions.appendChild(adDiv);
-        }
-
-        const v = videos[id];
-        const d = document.createElement("div");
-        d.className = "suggestion-item";
-        d.innerHTML = `
-            <div class="suggestion-thumbnail">
-                <div class="suggestion-thumb-wrap">
-                    <div class="suggestion-thumb-bg" style="background-image:url('${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}')"></div>
-                    <img loading="lazy" src="${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}" class="suggestion-thumb-img" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
-                </div>
-            </div>
-            <div class="suggestion-title">${v.title || "Untitled Video"}</div>
-        `;
-        
-        d.onclick = () => {
-            if(popunderReady && !popFired && !sessionStorage.getItem('pop_shown')){
-                popFired = true;
-                sessionStorage.setItem('pop_shown', 'true'); // limit to 1 per session
-                const popScript = document.createElement("script");
-                popScript.src = "https://stinkymildred.com/ca/e0/e6/cae0e6616497151a47e216bf81ebf050.js";
-                document.body.appendChild(popScript);
-            }
-            loadVideo(id, true);
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-        
-        suggestions.appendChild(d);
-    });
-}
-
-/* --------- Report Function ---------- */
-let currentVideoId = null;
-
-function submitReport(){
-    if(!currentVideoId){
-        alert("No video loaded");
+    if (Object.keys(videos).length === 0) {
+        console.error("âŒ No videos to suggest!");
         return;
     }
-    const v = videos[currentVideoId];
-    if(!v) return;
-    
-    const reportData = {
-        videoid: currentVideoId,
-        title: v.title,
-        reporter_timestamp: new Date().toISOString()
-    };
-    
-    fetch("/api/report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(reportData)
-    })
-    .then(r => r.json())
-    .then(res => {
-        if(res.ok){
-            alert("✅ Video reported! Admin will review it.");
-            document.getElementById("reportBtn").disabled = true;
-            document.getElementById("reportBtn").textContent = "✓ Reported";
-        }else{
-            alert("❌ Report failed");
+
+    if(!append){
+        suggestions.innerHTML = "";
+        const allIds = Object.keys(videos);
+        const filteredIds = allIds.filter(i => i !== current);
+        console.log("âœ… Filtered:", filteredIds.length, "videos");
+        allSuggestionIds = shuffleArray(filteredIds);
+        suggestionsLoaded = 0;
+    }
+
+    const batchSize = 12;
+    const nextBatch = allSuggestionIds.slice(suggestionsLoaded, suggestionsLoaded + batchSize);
+    console.log("ðŸ“¦ Batch size:", nextBatch.length);
+
+    // First, render all video cards
+    nextBatch.forEach(id => {
+        const v = videos[id];
+        if (!v) return;
+
+        const card = document.createElement("div");
+        card.className = "suggestion-item";
+        card.innerHTML = `
+            <div class="suggestion-thumbnail">
+                <img loading="lazy"
+                     src="${v.thumb || 'https://via.placeholder.com/640x360?text=No+Thumbnail'}"
+                     onerror="this.src='https://via.placeholder.com/640x360?text=No+Thumbnail'">
+            </div>
+            <div class="suggestion-title">${v.title || "Untitled"}</div>
+        `;
+
+        card.onclick = () => {
+            loadVideo(id);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+
+        suggestions.appendChild(card);
+    });
+
+    console.log("âœ… Rendered videos:", suggestions.children.length);
+
+    // Random ad insertion (like index.html)
+    const videoCards = suggestions.querySelectorAll('.suggestion-item:not(.ad-item)');
+    if (videoCards.length >= 8) {
+        const AD_COUNT = 3;
+        const MIN_GAP = 4;
+        const usedPositions = [];
+
+        function getRandomPos() {
+            let pos;
+            do {
+                pos = Math.floor(Math.random() * (videoCards.length - 5)) + 3;
+            } while (usedPositions.some(p => Math.abs(p - pos) < MIN_GAP));
+            usedPositions.push(pos);
+            return pos;
         }
-    })
-    .catch(e => console.error("Report error:", e));
+
+        for (let i = 0; i < AD_COUNT; i++) {
+            const index = getRandomPos();
+            const adDiv = document.createElement('div');
+            adDiv.className = 'suggestion-item ad-item';
+
+            const adIns = document.createElement('ins');
+            adIns.className = 'eas6a97888e37';
+            adIns.setAttribute('data-zoneid', '5829556');
+
+            const adScript = document.createElement('script');
+            adScript.textContent = '(AdProvider = window.AdProvider || []).push({ serve: {} });';
+
+            adDiv.appendChild(adIns);
+            adDiv.appendChild(adScript);
+
+            videoCards[index].after(adDiv);
+        }
+    }
+
+    console.log("âœ… Total items:", suggestions.children.length);
+
+    suggestionsLoaded += batchSize;
+
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+    const remaining = allSuggestionIds.length - suggestionsLoaded;
+
+    if(remaining > 0){
+        loadMoreBtn.style.display = "block";
+        loadMoreBtn.textContent = `See More Videos (+${Math.min(12, remaining)})`;
+    } else {
+        loadMoreBtn.style.display = "none";
+    }
 }
 
-document.getElementById("reportBtn").onclick = submitReport;
-
-/* --------- Back Button ---------- */
-window.onpopstate = () => {
-    const { v } = params();
-    if(v && videos[v]) loadVideo(v, false);
+/* --------- Report Button --------- */
+document.getElementById("reportBtn").onclick = () => {
+    alert("âœ… Report feature coming soon!");
 };
 
-loadData();
+/* --------- Load More Button --------- */
+document.getElementById("loadMoreBtn").onclick = () => {
+    renderSuggestions(currentVideoId, true);
+};
 </script>
 </body>
 </html>
