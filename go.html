@@ -12,6 +12,11 @@ body{
     font-family:system-ui,Arial,sans-serif;
     text-align:center;
     padding:60px 15px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
 }
 .loader{
     width:48px;
@@ -23,79 +28,88 @@ body{
     margin:20px auto;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
-.msg{
-    font-size:18px;
-    font-weight:600;
-    margin-top:10px;
-}
-.sub{
-    font-size:14px;
-    color:#8b93b0;
-    margin-top:6px;
-}
+.msg{ font-size:20px; font-weight:700; margin-top:10px; color: #fff; }
+.sub{ font-size:14px; color:#8b93b0; margin:10px auto; max-width: 300px; }
 .btn{
-    padding:12px 26px;
+    padding:14px 30px;
     background:#ff2f5b;
     color:#fff;
-    border-radius:6px;
+    border-radius:30px;
     text-decoration:none;
     font-size:17px;
+    font-weight: 700;
     display:inline-block;
-    margin-top:30px;
+    margin-top:20px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 47, 91, 0.3);
 }
-.ad-wrap{
-    margin:25px auto;
-    max-width:728px;
-    text-align:center;
-}
+.btn:hover{ transform: scale(1.05); background: #e62a52; }
+.ad-wrap{ margin:25px auto; width:100%; text-align:center; min-height: 250px; }
 </style>
 </head>
 
 <body>
 
 <div class="loader"></div>
-<div class="msg">Your video is getting ready…</div>
-<div class="sub">Please wait a moment, this helps keep videos free.</div>
+<div class="msg">Your video is almost ready!</div>
+<div class="sub">Redirecting you to the player in a few seconds...</div>
 
-<!-- ✅ TOP BANNER AD -->
 <div class="ad-wrap">
-<script type="text/javascript">
-atOptions = {
-    'key' : 'b40d9ebf8b9bb68f80451819ab41596e',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-};
-</script>
-<script src="https://stinkymildred.com/b40d9ebf8b9bb68f80451819ab41596e/invoke.js"></script>
+    <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
+    <ins class="eas6a97888e10" data-zoneid="5829406"></ins> 
+    <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
 </div>
 
-<!-- ✅ NATIVE / SOCIAL BAR -->
-<div class="ad-wrap">
-<script async data-cfasync="false" src="https://stinkymildred.com/2095e01c6ff1562d16722ad413d6a9ba/invoke.js"></script>
-<div id="container-2095e01c6ff1562d16722ad413d6a9ba"></div>
-</div>
+<button id="continueBtn" class="btn">Continue to Video ▶ (3)</button>
 
-<a id="continueBtn" class="btn">Continue to Video ▶</a>
+<div class="ad-wrap">
+    <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
+    <ins class="eas6a97888e2" data-zoneid="5829400"></ins> 
+    <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+</div>
 
 <script>
 const p = new URLSearchParams(location.search);
 const v = p.get("v");
+let redirected = false;
 
+// ✅ Sahi folder path ke saath redirect function
 function go(){
+    if(redirected) return;
+    redirected = true;
     if(v){
+        // Folder structure ke hisaab se path update kiya gaya hai
         location.href = "/streamtape/player.html?v=" + encodeURIComponent(v);
     }else{
         location.href = "/";
     }
 }
 
+// User click par turant bhej do
 document.getElementById("continueBtn").onclick = go;
 
-// ✅ 3 second smooth redirect
-setTimeout(go, 3000);
+// Countdown logic + Auto-redirect
+let countdown = 3;
+const btn = document.getElementById("continueBtn");
+const interval = setInterval(() => {
+    countdown--;
+    if (countdown > 0) {
+        btn.textContent = `Continue to Video ▶ (${countdown})`;
+    } else {
+        clearInterval(interval);
+        btn.textContent = "Redirecting...";
+        go(); // 3 second baad auto redirect
+    }
+}, 1000);
 </script>
+
+<div class="ad-wrap">
+    <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+    <ins class="eas6a97888e20" data-zoneid="5830640"></ins>
+    <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+</div>
 
 </body>
 </html>
