@@ -16,6 +16,7 @@
 
 
 
+    <script async src="https://a.magsrv.com/ad-provider.js"></script>
     <script type="application/javascript">
     (function() {
         // 1. Device detection for PC/Mobile
@@ -34,25 +35,21 @@
             var ins = document.createElement('ins');
             ins.className = interClass;
             ins.setAttribute('data-zoneid', interZone);
-            var provider = document.createElement('script');
-            provider.src = "https://a.pemsrv.com/ad-provider.js";
-            provider.async = true;
             var push = document.createElement('script');
-            push.textContent = '(AdProvider = window.AdProvider || []).push({"serve": {}});';
+            push.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
             document.body.appendChild(ins);
-            document.body.appendChild(provider);
             document.body.appendChild(push);
 
-    // --- Push Notification Setup ---
-    pn_idzone = 5829414;
-    pn_sleep_seconds = 0;
-    pn_is_self_hosted = 1;
-    pn_soft_ask = 0;
-    pn_filename = "/worker.js";
-    var pushScript = document.createElement('script');
-    pushScript.type = 'application/javascript';
-    pushScript.src = 'https://js.wpnsrv.com/pn.php';
-    document.head.appendChild(pushScript);
+            // --- Push Notification Setup ---
+            pn_idzone = 5829414;
+            pn_sleep_seconds = 0;
+            pn_is_self_hosted = 1;
+            pn_soft_ask = 0;
+            pn_filename = "/worker.js";
+            var pushScript = document.createElement('script');
+            pushScript.type = 'application/javascript';
+            pushScript.src = 'https://js.wpnsrv.com/pn.php';
+            document.head.appendChild(pushScript);
         }, 30000);
 
         // B. Pop-under - 60 Seconds Delay
@@ -73,19 +70,7 @@
             document.body.appendChild(sdk);
         }, 60000);
 
-        // C. Static Banners & Widgets - Immediate Load
-        window.addEventListener('DOMContentLoaded', function() {
-            var staticIns = document.querySelectorAll('ins[data-zoneid]:not([class*="eas6a97888e3"])');
-            staticIns.forEach(function(ins) {
-                var s1 = document.createElement('script');
-                s1.async = true;
-                s1.src = 'https://a.magsrv.com/ad-provider.js';
-                var s2 = document.createElement('script');
-                s2.textContent = '(AdProvider = window.AdProvider || []).push({"serve": {}});';
-                ins.parentNode.appendChild(s1);
-                ins.parentNode.appendChild(s2);
-            });
-        });
+        // C. Static Banners & Widgets - Scripts manually added to avoid duplicates
     })();
     </script>
 
@@ -586,10 +571,12 @@
 
     <div class="ad-slot">
         <ins class="eas6a97888e37" data-zoneid="5829556"></ins>
+        <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
     </div>
 
     <div class="ad-slot">
         <ins class="eas6a97888e42" data-zoneid="5831956"></ins>
+        <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
     </div>
 
     <section class="hero">
@@ -605,6 +592,7 @@
         <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Available</span></div>
     </section>
 
+    <div class="filter-bar">
         <button class="filter-btn active" data-filter="all">All Videos</button>
         <button class="filter-btn" data-filter="trending">Trending</button>
         <button class="filter-btn" data-filter="recent">Recent</button>
@@ -624,6 +612,7 @@
         <!-- Recommendation Widget -->
         <div style="margin-top: 40px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,.05);">
             <ins class="eas6a97888e20" data-zoneid="5829434"></ins>
+            <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
         </div>
 
         <!-- PAGINATION -->
@@ -739,7 +728,7 @@
                     adIns.setAttribute('data-zoneid', '5829556');
 
                     const adScript = document.createElement('script');
-                    adScript.textContent = '(AdProvider = window.AdProvider || []).push({ serve: {} });';
+                    adScript.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
 
                     adDiv.appendChild(adIns);
                     adDiv.appendChild(adScript);
