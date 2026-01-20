@@ -155,9 +155,8 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 <!-- Ad Slot -->
 <div class="ad-728-player">
-    <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
     <ins class="eas6a97888e42" data-zoneid="5832056"></ins>
-    <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+    <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
 </div>
 
 
@@ -195,9 +194,8 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
     <!-- Recommendation Widget -->
     <div style="margin-top: 40px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,.05);">
-        <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
         <ins class="eas6a97888e20" data-zoneid="5829434"></ins>
-        <script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+        <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
     </div>
 
 </div>
@@ -249,15 +247,16 @@ let adSlots = [];
 let retryInterval = null;
 let isAdPlaying = false;
 let hasUserInteracted = false;
+let initialized = false;
 
 function initIMA() {
   if (adDisplayContainer) return;
   adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, player);
   adsLoader = new google.ima.AdsLoader(adDisplayContainer);
-  
+
   adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, (e) => {
     adsManager = e.getAdsManager(player);
-   
+
     adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
       isAdPlaying = true;
       adContainer.classList.add('active');
@@ -270,6 +269,15 @@ function initIMA() {
 
     adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, () => {
       tryNextZone();
+    });
+
+    // 🔥 AD CLICK PE AUTO-RESUME
+    adsManager.addEventListener(google.ima.AdEvent.Type.CLICK, () => {
+      setTimeout(() => {
+        if (adsManager && isAdPlaying) {
+          adsManager.resume();
+        }
+      }, 100);
     });
 
     adsManager.init(player.clientWidth, player.clientHeight, google.ima.ViewMode.NORMAL);
@@ -295,6 +303,7 @@ function tryNextZone() {
     requestAd();
   } else {
     console.log("All zones empty. Waiting for next retry cycle...");
+    clearInterval(retryInterval);
     isAdPlaying = false;
     adContainer.classList.remove('active');
     player.play();
@@ -303,7 +312,6 @@ function tryNextZone() {
 
 function requestAd() {
   if (typeof google === 'undefined') return;
-  adDisplayContainer.initialize();
   const req = new google.ima.AdsRequest();
   // Dynamic Zone Selection
   const zoneId = AD_ZONES[currentZoneIndex];
@@ -342,9 +350,10 @@ player.ontimeupdate = () => {
 };
 
 function startAdCycle() {
+  if (AD_ZONES.length === 0) return;
   currentZoneIndex = 0;
   requestAd();
-  
+
   // Retry loop: Har 45s mein phir koshish karein agar ad nahi mila
   clearInterval(retryInterval);
   retryInterval = setInterval(() => {
@@ -362,6 +371,10 @@ player.addEventListener('contextmenu', e => e.preventDefault());
 player.addEventListener('play', () => {
   if (!hasUserInteracted) {
     hasUserInteracted = true;
+    if (!initialized) {
+      adDisplayContainer.initialize();
+      initialized = true;
+    }
     // Sirf tabhi pre-roll chalayein jab video 5 min (300s) se bada ho
     if (player.duration > 300) {
       startAdCycle();
@@ -531,21 +544,24 @@ function renderSuggestions(current, append = false){
             }
         }
 
-        positions.forEach(index => {
+        positions.forEach((pos, i) => {
+            const config = adConfigs[i % adConfigs.length];
             const adDiv = document.createElement('div');
             adDiv.className = 'suggestion-item ad-item';
 
             const adIns = document.createElement('ins');
-            adIns.className = 'eas6a97888e37';
-            adIns.setAttribute('data-zoneid', '5829556');
-
-            const adScript = document.createElement('script');
-            adScript.textContent = '(AdProvider = window.AdProvider || []).push({ serve: {} });';
+            adIns.className = config.class;
+            adIns.setAttribute('data-zoneid', config.zoneid);
 
             adDiv.appendChild(adIns);
-            adDiv.appendChild(adScript);
+            videoCards[pos].after(adDiv);
 
-            videoCards[index].after(adDiv);
+            // Add script with delay to ensure AdProvider is ready
+            setTimeout(() => {
+                const adScript = document.createElement('script');
+                adScript.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
+                adDiv.appendChild(adScript);
+            }, 100);
         });
     }
 
