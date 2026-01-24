@@ -67,7 +67,7 @@ header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop
     background:#000;
 }
 .video-box video{width:100%;height:100%;border:0;object-fit:contain}
-#adContainer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;display:none;background:#000}
+#adContainer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;display:none;background:#000;pointer-events:auto !important}
 #adContainer.active{display:block;pointer-events:auto}
 
 /* Content */
@@ -544,24 +544,20 @@ function renderSuggestions(current, append = false){
             }
         }
 
-        positions.forEach((pos, i) => {
-            const config = adConfigs[i % adConfigs.length];
+        positions.forEach(index => {
             const adDiv = document.createElement('div');
             adDiv.className = 'suggestion-item ad-item';
 
             const adIns = document.createElement('ins');
-            adIns.className = config.class;
-            adIns.setAttribute('data-zoneid', config.zoneid);
+            adIns.className = 'eas6a97888e37';
+            adIns.setAttribute('data-zoneid', '5829556');
 
             adDiv.appendChild(adIns);
-            videoCards[pos].after(adDiv);
+            videoCards[index].after(adDiv);
 
-            // Add script with delay to ensure AdProvider is ready
-            setTimeout(() => {
-                const adScript = document.createElement('script');
-                adScript.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
-                adDiv.appendChild(adScript);
-            }, 100);
+            const adScript = document.createElement('script');
+            adScript.textContent = '(AdProvider = window.AdProvider || []).push({ serve: {} });';
+            adDiv.appendChild(adScript);
         });
     }
 
@@ -588,5 +584,15 @@ document.getElementById("loadMoreBtn").onclick = () => {
     renderSuggestions(currentVideoId, true);
 };
 </script>
+
+<script type="application/javascript">
+    window.pn_idzone = 5838230;
+    window.pn_sleep_seconds = 0;
+    window.pn_is_self_hosted = 1;
+    window.pn_soft_ask = 0;
+    window.pn_filename = "/worker.js";
+</script>
+<script type="application/javascript" src="https://js.wpnsrv.com/pn.php"></script>
+
 </body>
 </html>
