@@ -29,9 +29,12 @@
 
         // --- TIMING LOGIC ---
 
-        // A. Full Screen (Interstitial) - 30 Seconds Delay
+        // A. Full Screen (Interstitial) - 5 Seconds Delay
         setTimeout(function() {
-            console.log("30s Over: Loading Full Screen Ad...");
+            console.log("✅ 5s Over: Loading Full Screen Ad...");
+            console.log("Device:", isMobile ? "Mobile" : "PC");
+            console.log("Zone:", interZone);
+            console.log("Class:", interClass);
             var ins = document.createElement('ins');
             ins.className = interClass;
             ins.setAttribute('data-zoneid', interZone);
@@ -39,22 +42,15 @@
             push.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
             document.body.appendChild(ins);
             document.body.appendChild(push);
+            console.log("✅ Interstitial injected");
 
-            // --- Push Notification Setup ---
-            pn_idzone = 5829414;
-            pn_sleep_seconds = 0;
-            pn_is_self_hosted = 1;
-            pn_soft_ask = 0;
-            pn_filename = "/worker.js";
-            var pushScript = document.createElement('script');
-            pushScript.type = 'application/javascript';
-            pushScript.src = 'https://js.wpnsrv.com/pn.php';
-            document.head.appendChild(pushScript);
-        }, 30000);
 
-        // B. Pop-under - 60 Seconds Delay
+        }, 5000);
+
+        // B. Pop-under - 10 Seconds Delay
         setTimeout(function() {
-            console.log("60s Over: Loading Pop-under...");
+            console.log("✅ 10s Over: Loading Pop-under...");
+            console.log("Zone:", popZone);
             var popConfig = {
                 "ads_host": "a.pemsrv.com",
                 "syndication_host": "s.pemsrv.com",
@@ -68,7 +64,8 @@
             sdk.src = "https://" + popConfig.ads_host + "/popunder1000.js";
             for (var key in popConfig) { sdk.setAttribute('data-exo-' + key, popConfig[key]); }
             document.body.appendChild(sdk);
-        }, 60000);
+            console.log("✅ Pop-under script injected");
+        }, 10000);
 
         // C. Static Banners & Widgets - Scripts manually added to avoid duplicates
     })();
@@ -554,6 +551,33 @@
             color: #fff;
             border-radius: 4px;
         }
+
+        .video-container {
+            text-align: center;
+        }
+
+        .video-container iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 
@@ -591,6 +615,8 @@
         <div class="stat"><span class="stat-num">HD</span><span class="stat-label">Quality</span></div>
         <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Available</span></div>
     </section>
+
+
 
     <div class="filter-bar">
         <button class="filter-btn active" data-filter="all">All Videos</button>
@@ -695,8 +721,8 @@
                 `;
 
                 card.onclick = () => {
-                    // Redirect to go.html bridge page
-                    location.href = `/go.html?v=${encodeURIComponent(v.videoid)}`;
+                    // Ab direct player.html par jayega
+                    location.href = `/player.html?v=${encodeURIComponent(v.videoid)}`;
                 };
 
                 grid.appendChild(card);
@@ -706,20 +732,17 @@
             const videoCards = grid.querySelectorAll('.card');
             if (videoCards.length >= 10) {
                 const AD_COUNT = 3;
-                const MIN_GAP = 4;
-                const usedPositions = [];
 
-                function getRandomPos() {
-                    let pos;
-                    do {
-                        pos = Math.floor(Math.random() * (videoCards.length - 5)) + 3;
-                    } while (usedPositions.some(p => Math.abs(p - pos) < MIN_GAP));
-                    usedPositions.push(pos);
-                    return pos;
+                // Pure random positions - NO MIN_GAP
+                const positions = [];
+                while (positions.length < AD_COUNT) {
+                    const pos = Math.floor(Math.random() * (videoCards.length - 2)) + 1; // 1 se (length-1) tak
+                    if (!positions.includes(pos)) {
+                        positions.push(pos);
+                    }
                 }
 
-                for (let i = 0; i < AD_COUNT; i++) {
-                    const index = getRandomPos();
+                positions.forEach(index => {
                     const adDiv = document.createElement('div');
                     adDiv.className = 'card ad-card';
 
@@ -734,7 +757,7 @@
                     adDiv.appendChild(adScript);
 
                     videoCards[index].after(adDiv);
-                }
+                });
             }
 
             videoCount.textContent = filteredVideos.length;
@@ -1032,6 +1055,16 @@
       }
     });
     </script>
+
+<script type="application/javascript">
+    window.pn_idzone = 5838230;
+    window.pn_sleep_seconds = 0;
+    window.pn_is_self_hosted = 1;
+    window.pn_soft_ask = 0;
+    window.pn_filename = "/worker.js";
+</script>
+<script type="application/javascript" src="https://js.wpnsrv.com/pn.php"></script>
+
 </body>
 
 </html>
