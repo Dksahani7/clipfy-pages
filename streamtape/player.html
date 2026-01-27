@@ -8,32 +8,7 @@
 <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
 
-<script type="application/javascript">
-(function() {
-    function randStr(e,t){for(var n="",r=t||"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",o=0;o<e;o++)n+=r.charAt(Math.floor(Math.random()*r.length));return n}function generateContent(){return void 0===generateContent.val&&(generateContent.val="document.dispatchEvent("+randStr(4*Math.random()+3)+");"),generateContent.val}try{Object.defineProperty(document.currentScript,"innerHTML",{get:generateContent}),Object.defineProperty(document.currentScript,"textContent",{get:generateContent})}catch(e){};
 
-    //version 7.0.0
-
-    var adConfig = {
-    "ads_host": "a.pemsrv.com",
-    "syndication_host": "s.pemsrv.com",
-    "idzone": 5830300,
-    "popup_fallback": false,
-    "popup_force": false,
-    "chrome_enabled": true,
-    "new_tab": false,
-    "frequency_period": 60,
-    "frequency_count": 1,
-    "trigger_method": 3,
-    "trigger_class": "",
-    "trigger_delay": 0,
-    "capping_enabled": true,
-    "tcf_enabled": true,
-    "only_inline": false
-};
-
-})();
-</script>
 
 <style>
 :root{
@@ -240,6 +215,7 @@ let videos = {};
 let currentVideoId = null;
 let allSuggestionIds = [];
 let suggestionsLoaded = 0;
+let isInitialLoad = true;
 
 let adsLoader, adsManager, adDisplayContainer;
 let currentZoneIndex = 0;
@@ -315,6 +291,7 @@ function requestAd() {
   const req = new google.ima.AdsRequest();
   // Dynamic Zone Selection
   const zoneId = AD_ZONES[currentZoneIndex];
+  console.log(`🎯 REQUESTING AD: Zone ${currentZoneIndex + 1}/${AD_ZONES.length} - ID: ${zoneId}`);
   req.adTagUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zoneId}&cb=${Date.now()}`;
   adsLoader.requestAds(req);
 }
@@ -358,7 +335,10 @@ function startAdCycle() {
   clearInterval(retryInterval);
   retryInterval = setInterval(() => {
     if (!isAdPlaying) {
-      currentZoneIndex = 0;
+      // Continue from current zone, don't reset to 0
+      if (currentZoneIndex >= AD_ZONES.length) {
+        currentZoneIndex = 0; // Reset only if we've exhausted all zones
+      }
       requestAd();
     }
   }, 45000);
@@ -444,8 +424,8 @@ fetch(DATA_URL, { cache: "no-store" })
     });
 
 /* --------- Load Video --------- */
-function loadVideo(id){
-    console.log("🎬 Loading video:", id);
+function loadVideo(id, isHistoryNavigation = false){
+    console.log("🎬 Loading video:", id, isHistoryNavigation ? "(from history)" : "");
 
     const v = videos[id];
     if(!v) {
@@ -466,14 +446,16 @@ function loadVideo(id){
     player.poster = v.thumb || "";
     player.load();
 
-    // Increment view count
-    fetch(`https://clipfy.store/api/watch`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoid: id })
-    })
-        .then(() => console.log("View counted"))
-        .catch(err => console.error("View count error:", err));
+    // Increment view count (only if not from history navigation)
+    if (!isHistoryNavigation) {
+        fetch(`https://clipfy.store/api/watch`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ videoid: id })
+        })
+            .then(() => console.log("View counted"))
+            .catch(err => console.error("View count error:", err));
+    }
 
     // Update UI
     mainTitle.textContent = v.title || "Clipfy Video";
@@ -487,8 +469,17 @@ function loadVideo(id){
     document.title = (v.title || "Video") + " | Clipfy";
     updateMeta(v);
 
+    // Update URL and history (only if not from history navigation and not initial load)
+    if (!isHistoryNavigation && !isInitialLoad) {
+        const newUrl = `${window.location.pathname}?v=${encodeURIComponent(id)}`;
+        history.pushState({ videoid: id }, "", newUrl);
+    }
+
     // Render suggestions
     renderSuggestions(id);
+
+    // Mark initial load as complete
+    isInitialLoad = false;
 }
 
 function renderSuggestions(current, append = false){
@@ -583,16 +574,99 @@ document.getElementById("reportBtn").onclick = () => {
 document.getElementById("loadMoreBtn").onclick = () => {
     renderSuggestions(currentVideoId, true);
 };
+
+// AD TIMING SYSTEM
+function shouldShowAds(){
+  const lastAdTime = localStorage.getItem("last_ad_time");
+  if(!lastAdTime) return true;
+  const diff = Date.now() - Number(lastAdTime);
+  return diff > 900000; // 15 minutes = 900000ms
+}
+
+function markAdsShown(){
+  localStorage.setItem("last_ad_time", Date.now());
+}
+
+function initAdTiming(){
+  if(!shouldShowAds()){
+    console.log("⏰ Ads on cooldown - 15 minutes remaining");
+    return;
+  }
+
+  console.log("🚀 Starting ad timing cycle...");
+
+  // 5 seconds: Show interstitial ad
+  setTimeout(() => {
+    console.log("📺 Showing interstitial ad at 5 seconds");
+    // Interstitial ad will auto-show via its own script
+  }, 5000);
+
+  // 10 seconds: Activate pop-under ad
+  setTimeout(() => {
+    console.log("🎯 Activating pop-under ad at 10 seconds");
+    // Pop-under will trigger on next user click
+    markAdsShown();
+  }, 10000);
+}
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', function(event) {
+    if (event.state && event.state.videoid) {
+        loadVideo(event.state.videoid, true);
+    }
+});
+
+// Start ad timing system
+initAdTiming();
 </script>
 
 <script type="application/javascript">
-    window.pn_idzone = 5838230;
-    window.pn_sleep_seconds = 0;
-    window.pn_is_self_hosted = 1;
-    window.pn_soft_ask = 0;
-    window.pn_filename = "/worker.js";
+(function() {
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Sahi Zone Selection
+    var interZone = isMobile ? "5829432" : "5831970";
+    var interClass = isMobile ? "eas6a97888e33" : "eas6a97888e35";
+
+    // Ad element create karna
+    var ins = document.createElement('ins');
+    ins.className = interClass;
+    ins.setAttribute('data-zoneid', interZone);
+
+    var pushScript = document.createElement('script');
+    pushScript.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
+
+    // Page par insert karna
+    document.body.appendChild(ins);
+    document.body.appendChild(pushScript);
+})();
 </script>
-<script type="application/javascript" src="https://js.wpnsrv.com/pn.php"></script>
+
+<script type="application/javascript">
+(function() {
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // AB SAHI HAI: Mobile ke liye 5830300 aur PC ke liye 5830298
+    var selectedZone = isMobile ? 5830300 : 5830298;
+
+    console.log(`🎯 PLAYER POPUNDER: ${isMobile ? 'MOBILE' : 'DESKTOP'} - Zone ID: ${selectedZone}`);
+
+    var adConfig = {
+        "ads_host": "a.pemsrv.com",
+        "syndication_host": "s.pemsrv.com",
+        "idzone": selectedZone,
+        "frequency_period": 15,
+        "frequency_count": 1,
+        "trigger_method": 1,
+        "capping_enabled": true
+    };
+
+    var sdk = document.createElement('script');
+    sdk.src = "https://a.pemsrv.com/popunder1000.js";
+    for (var key in adConfig) { sdk.setAttribute('data-exo-' + key, adConfig[key]); }
+    document.body.appendChild(sdk);
+})();
+</script>
 
 </body>
 </html>
