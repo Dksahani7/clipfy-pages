@@ -17,59 +17,6 @@
 
 
     <script async src="https://a.magsrv.com/ad-provider.js"></script>
-    <script type="application/javascript">
-    (function() {
-        // 1. Device detection for PC/Mobile
-        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        // IDs configuration
-        var popZone = isMobile ? 5830298 : 5830300;
-        var interZone = isMobile ? "5829432" : "5831970";
-        var interClass = isMobile ? "eas6a97888e33" : "eas6a97888e35";
-
-        // --- TIMING LOGIC ---
-
-        // A. Full Screen (Interstitial) - 5 Seconds Delay
-        setTimeout(function() {
-            console.log("✅ 5s Over: Loading Full Screen Ad...");
-            console.log("Device:", isMobile ? "Mobile" : "PC");
-            console.log("Zone:", interZone);
-            console.log("Class:", interClass);
-            var ins = document.createElement('ins');
-            ins.className = interClass;
-            ins.setAttribute('data-zoneid', interZone);
-            var push = document.createElement('script');
-            push.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
-            document.body.appendChild(ins);
-            document.body.appendChild(push);
-            console.log("✅ Interstitial injected");
-
-
-        }, 5000);
-
-        // B. Pop-under - 10 Seconds Delay
-        setTimeout(function() {
-            console.log("✅ 10s Over: Loading Pop-under...");
-            console.log("Zone:", popZone);
-            var popConfig = {
-                "ads_host": "a.pemsrv.com",
-                "syndication_host": "s.pemsrv.com",
-                "idzone": popZone,
-                "frequency_period": 60,
-                "frequency_count": 1,
-                "trigger_method": 3,
-                "capping_enabled": true
-            };
-            var sdk = document.createElement('script');
-            sdk.src = "https://" + popConfig.ads_host + "/popunder1000.js";
-            for (var key in popConfig) { sdk.setAttribute('data-exo-' + key, popConfig[key]); }
-            document.body.appendChild(sdk);
-            console.log("✅ Pop-under script injected");
-        }, 10000);
-
-        // C. Static Banners & Widgets - Scripts manually added to avoid duplicates
-    })();
-    </script>
 
 
 
@@ -288,6 +235,25 @@
             transform: translateY(-6px);
             box-shadow: 0 12px 30px rgba(255, 47, 91, .2);
             border-color: var(--accent);
+        }
+
+        .card.pinned {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(255, 47, 91, .3);
+        }
+
+        .card.pinned::before {
+            content: "📌 PINNED";
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 47, 91, 0.9);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 10;
         }
 
         .card-img-wrapper {
@@ -695,13 +661,20 @@
         function renderVideos() {
             grid.innerHTML = '';
 
+            // Sort pinned videos first
+            const sortedVideos = [...filteredVideos].sort((a, b) => {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                return 0; // Keep original order for non-pinned
+            });
+
             const start = (currentPage - 1) * VIDEOS_PER_PAGE;
             const end = start + VIDEOS_PER_PAGE;
-            const pageVideos = filteredVideos.slice(start, end);
+            const pageVideos = sortedVideos.slice(start, end);
 
             pageVideos.forEach((v, index) => {
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'card' + (v.pinned ? ' pinned' : '');
                 card.innerHTML = `
                     <div class="card-img-wrapper">
                         <div class="card-thumb-wrap">
@@ -722,7 +695,7 @@
 
                 card.onclick = () => {
                     // Ab direct player.html par jayega
-                    location.href = `/streamtape/player.html?v=${encodeURIComponent(v.videoid)}`;
+                    location.href = `/player.html?v=${encodeURIComponent(v.videoid)}`;
                 };
 
                 grid.appendChild(card);
@@ -842,20 +815,17 @@
                 // High views + latest mix
                 filtered = filtered
                     .slice() // copy
-                    .sort((a, b) => (b.views || 0) - (a.views || 0))
-                    .slice(0, 48);
+                    .sort((a, b) => (b.views || 0) - (a.views || 0));
             } else if (currentFilter === 'recent') {
                 // Latest by date
                 filtered = filtered
                     .slice()
-                    .sort((a, b) => new Date(b.date) - new Date(a.date))
-                    .slice(0, 96);
+                    .sort((a, b) => new Date(b.date) - new Date(a.date));
             } else if (currentFilter === 'popular') {
                 // Views descending (pure popular)
                 filtered = filtered
                     .slice()
-                    .sort((a, b) => (b.views || 0) - (a.views || 0))
-                    .slice(0, 72);
+                    .sort((a, b) => (b.views || 0) - (a.views || 0));
             }
             // else currentFilter === 'all' -> filtered as is (index order)
 
@@ -992,8 +962,46 @@
       localStorage.setItem("tg_popup", Date.now());
       document.getElementById("tgPopup").style.display="none";
     }
-    // popup delay: 25 sec after page open
-    setTimeout(showTgPopup, 25000);
+
+    // AD TIMING SYSTEM
+    function shouldShowAds(){
+      const lastAdTime = localStorage.getItem("last_ad_time");
+      if(!lastAdTime) return true;
+      const diff = Date.now() - Number(lastAdTime);
+      return diff > 900000; // 15 minutes = 900000ms
+    }
+
+    function markAdsShown(){
+      localStorage.setItem("last_ad_time", Date.now());
+    }
+
+    function initAdTiming(){
+      if(!shouldShowAds()){
+        console.log("⏰ Ads on cooldown - 15 minutes remaining");
+        return;
+      }
+
+      console.log("🚀 Starting ad timing cycle...");
+
+      // 5 seconds: Show interstitial ad
+      setTimeout(() => {
+        console.log("📺 Showing interstitial ad at 5 seconds");
+        // Interstitial ad will auto-show via its own script
+      }, 5000);
+
+      // 10 seconds: Activate pop-under ad
+      setTimeout(() => {
+        console.log("🎯 Activating pop-under ad at 10 seconds");
+        // Pop-under will trigger on next user click
+        markAdsShown();
+      }, 10000);
+    }
+
+    // popup delay: 45 sec after page open
+    setTimeout(showTgPopup, 45000);
+
+    // Start ad timing system
+    initAdTiming();
 
     // LEGAL MODAL FUNCTIONS
     const legalContent = {
@@ -1057,13 +1065,54 @@
     </script>
 
 <script type="application/javascript">
-    window.pn_idzone = 5838230;
-    window.pn_sleep_seconds = 0;
-    window.pn_is_self_hosted = 1;
-    window.pn_soft_ask = 0;
-    window.pn_filename = "/worker.js";
+(function() {
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Sahi Zone Selection
+    var interZone = isMobile ? "5829432" : "5831970";
+    var interClass = isMobile ? "eas6a97888e33" : "eas6a97888e35";
+
+    console.log(`🎯 INDEX INTERSTITIAL: ${isMobile ? 'MOBILE' : 'DESKTOP'} - Zone ID: ${interZone}`);
+
+    // Ad element create karna
+    var ins = document.createElement('ins');
+    ins.className = interClass;
+    ins.setAttribute('data-zoneid', interZone);
+
+    var pushScript = document.createElement('script');
+    pushScript.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
+
+    // Page par insert karna
+    document.body.appendChild(ins);
+    document.body.appendChild(pushScript);
+})();
 </script>
-<script type="application/javascript" src="https://js.wpnsrv.com/pn.php"></script>
+
+<script type="application/javascript">
+(function() {
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // AB SAHI HAI: Mobile ke liye 5830300 aur PC ke liye 5830298
+    var selectedZone = isMobile ? 5830300 : 5830298;
+
+    console.log(`🎯 INDEX POPUNDER: ${isMobile ? 'MOBILE' : 'DESKTOP'} - Zone ID: ${selectedZone}`);
+
+    var adConfig = {
+        "ads_host": "a.pemsrv.com",
+        "syndication_host": "s.pemsrv.com",
+        "idzone": selectedZone,
+        "frequency_period": 15,
+        "frequency_count": 1,
+        "trigger_method": 1,
+        "capping_enabled": true
+    };
+
+    var sdk = document.createElement('script');
+    sdk.src = "https://a.pemsrv.com/popunder1000.js";
+    for (var key in adConfig) { sdk.setAttribute('data-exo-' + key, adConfig[key]); }
+    document.body.appendChild(sdk);
+})();
+</script>
 
 </body>
 
