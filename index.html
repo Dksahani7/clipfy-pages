@@ -17,6 +17,7 @@
 
 
     <script async src="https://a.magsrv.com/ad-provider.js"></script>
+    <script async src="https://a.pemsrv.com/ad-provider.js"></script>
 
 
 
@@ -518,6 +519,104 @@
             border-radius: 4px;
         }
 
+        .ad-card .ad-close-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,.6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .ad-card .ad-close-btn:hover {
+            opacity: 1;
+            background: rgba(255, 47, 91, 0.8);
+        }
+
+        /* Interstitial Ad Close Button */
+        .interstitial-close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 47, 91, 0.9);
+            color: #fff;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .interstitial-close-btn.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .interstitial-close-btn:hover {
+            background: #ff2f5b;
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+        }
+
+        .interstitial-close-btn:active {
+            transform: scale(0.95);
+        }
+
+/* Interstitial Overlay */
+.interstitial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9); /* Kaala parda */
+    z-index: 99999; /* Sabse upar */
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.interstitial-overlay.active {
+    display: flex !important;
+    opacity: 1;
+    pointer-events: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+        .interstitial-ad-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
         .video-container {
             text-align: center;
         }
@@ -693,7 +792,7 @@
                     </div>
                 `;
 
-                card.onclick = () => {
+                 card.onclick = () => {
                     // Ab direct player.html par jayega
                     location.href = `/streamtape/player.html?v=${encodeURIComponent(v.videoid)}`;
                 };
@@ -720,14 +819,24 @@
                     adDiv.className = 'card ad-card';
 
                     const adIns = document.createElement('ins');
-                    adIns.className = 'eas6a97888e37';
-                    adIns.setAttribute('data-zoneid', '5829556');
+                    adIns.className = 'eas6a97888e20';
+                    adIns.setAttribute('data-zoneid', '5840548');
 
                     const adScript = document.createElement('script');
-                    adScript.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
+                    adScript.textContent = '(AdProvider = window.AdProvider || []).push({"serve": {}});';
 
                     adDiv.appendChild(adIns);
                     adDiv.appendChild(adScript);
+
+                    // Add close button
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'ad-close-btn';
+                    closeBtn.innerHTML = '×';
+                    closeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        adDiv.style.display = 'none';
+                    };
+                    adDiv.appendChild(closeBtn);
 
                     videoCards[index].after(adDiv);
                 });
@@ -963,45 +1072,8 @@
       document.getElementById("tgPopup").style.display="none";
     }
 
-    // AD TIMING SYSTEM
-    function shouldShowAds(){
-      const lastAdTime = localStorage.getItem("last_ad_time");
-      if(!lastAdTime) return true;
-      const diff = Date.now() - Number(lastAdTime);
-      return diff > 900000; // 15 minutes = 900000ms
-    }
-
-    function markAdsShown(){
-      localStorage.setItem("last_ad_time", Date.now());
-    }
-
-    function initAdTiming(){
-      if(!shouldShowAds()){
-        console.log("⏰ Ads on cooldown - 15 minutes remaining");
-        return;
-      }
-
-      console.log("🚀 Starting ad timing cycle...");
-
-      // 5 seconds: Show interstitial ad
-      setTimeout(() => {
-        console.log("📺 Showing interstitial ad at 5 seconds");
-        // Interstitial ad will auto-show via its own script
-      }, 5000);
-
-      // 10 seconds: Activate pop-under ad
-      setTimeout(() => {
-        console.log("🎯 Activating pop-under ad at 10 seconds");
-        // Pop-under will trigger on next user click
-        markAdsShown();
-      }, 10000);
-    }
-
     // popup delay: 45 sec after page open
     setTimeout(showTgPopup, 45000);
-
-    // Start ad timing system
-    initAdTiming();
 
     // LEGAL MODAL FUNCTIONS
     const legalContent = {
@@ -1067,50 +1139,119 @@
 <script type="application/javascript">
 (function() {
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    // Sahi Zone Selection
     var interZone = isMobile ? "5829432" : "5831970";
     var interClass = isMobile ? "eas6a97888e33" : "eas6a97888e35";
 
-    console.log(`🎯 INDEX INTERSTITIAL: ${isMobile ? 'MOBILE' : 'DESKTOP'} - Zone ID: ${interZone}`);
+    var overlay = document.querySelector('.interstitial-overlay') || document.createElement('div');
+    overlay.className = 'interstitial-overlay active'; // Shuruat se hi active rakho
+    overlay.innerHTML = `
+        <div class="interstitial-ad-container">
+            <div class="${interClass}"></div>
+            <button class="interstitial-close-btn show" onclick="this.closest('.interstitial-overlay').classList.remove('active'); document.body.style.overflow='';">✕</button>
+        </div>
+    `;
+    document.body.style.overflow = 'hidden'; // Scrolling block
 
-    // Ad element create karna
-    var ins = document.createElement('ins');
-    ins.className = interClass;
-    ins.setAttribute('data-zoneid', interZone);
+    // 1. Force Remove (Sirf safety ke liye agar net bilkul mar jaye)
+    // Isko 8s ki jagah 12s kar dete hain taaki ad ko load hone ka pura mauka mile
+    var backupRemoval = setTimeout(removeOverlay, 12000);
 
-    var pushScript = document.createElement('script');
-    pushScript.textContent = '(window.AdProvider = window.AdProvider || []).push({"serve": {}});';
+    function removeOverlay() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        clearTimeout(backupRemoval);
+        console.log("Overlay Cleared");
+    }
 
-    // Page par insert karna
-    document.body.appendChild(ins);
-    document.body.appendChild(pushScript);
+    // 2. Ad Provider Call
+    (window.AdProvider = window.AdProvider || []).push({
+        "serve": {
+            "prefix": interClass,
+            "zone": interZone,
+            "onAdLoaded": function() {
+                console.log("Ad Load Ho Gaya!");
+                // Ad dikhne ke baad Close button show karo
+                var closeBtn = document.querySelector('.interstitial-close-btn');
+                if(closeBtn) closeBtn.classList.add('show');
+            },
+            "onAdClosed": function() {
+                removeOverlay(); // User ne ad band kiya toh parda hatao
+            },
+            "onAdError": function() {
+                removeOverlay(); // Agar ad hi nahi hai toh user ko kyun rokna?
+            }
+        }
+    });
+
+    // 3. Fallback: Agar user ad par click karke wapas aaye
+    window.addEventListener('focus', function() {
+        setTimeout(removeOverlay, 1000); // 1 sec delay for smooth transition
+    });
 })();
 </script>
 
 <script type="application/javascript">
 (function() {
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    // AB SAHI HAI: Mobile ke liye 5830300 aur PC ke liye 5830298
     var selectedZone = isMobile ? 5830300 : 5830298;
 
-    console.log(`🎯 INDEX POPUNDER: ${isMobile ? 'MOBILE' : 'DESKTOP'} - Zone ID: ${selectedZone}`);
+    function shouldShowPop() {
+        // Dono keys ko ek hi kar diya taaki conflict na ho
+        const lastPop = localStorage.getItem("last_ad_time");
+        if (!lastPop) return true;
+        return (Date.now() - Number(lastPop)) > 900000;
+    }
 
-    var adConfig = {
-        "ads_host": "a.pemsrv.com",
-        "syndication_host": "s.pemsrv.com",
-        "idzone": selectedZone,
-        "frequency_period": 15,
-        "frequency_count": 1,
-        "trigger_method": 1,
-        "capping_enabled": true
-    };
+    // Isko page load ke 10 sec baad hi trigger karenge taaki VAST ads pehle chalein
+    setTimeout(function() {
+        if (!shouldShowPop()) return;
 
-    var sdk = document.createElement('script');
-    sdk.src = "https://a.pemsrv.com/popunder1000.js";
-    for (var key in adConfig) { sdk.setAttribute('data-exo-' + key, adConfig[key]); }
-    document.body.appendChild(sdk);
+        console.log("🎯 Activating Popunder System...");
+
+        var adConfig = {
+            "ads_host": "a.pemsrv.com",
+            "syndication_host": "s.pemsrv.com",
+            "idzone": selectedZone,
+            "frequency_period": 15,
+            "frequency_count": 1,
+            "trigger_method": 1,
+            "capping_enabled": true
+        };
+
+        var sdk = document.createElement('script');
+        sdk.src = "https://a.pemsrv.com/popunder1000.js";
+        for (var key in adConfig) { sdk.setAttribute('data-exo-' + key, adConfig[key]); }
+        document.body.appendChild(sdk);
+
+        var hasTriggered = false;
+        document.addEventListener('click', function() {
+            if (hasTriggered) return;
+            setTimeout(function() {
+                if (!document.cookie.includes("zone-cap-" + selectedZone)) {
+                    var win = window.open("https://s.pemsrv.com/v1/link.php?idzone=" + selectedZone, '_blank');
+                    if (win) {
+                        win.blur(); window.focus();
+                        localStorage.setItem("last_ad_time", Date.now());
+                        hasTriggered = true;
+                    }
+                }
+            }, 500);
+        }, { once: true });
+    }, 6000); // 6 seconds - better balance
+
+    // Ad Provider failure check (after 5 seconds)
+    setTimeout(function() {
+        if (typeof window.AdProvider === 'undefined') {
+            console.warn("⚠️ Ad Provider failed to load - Hiding ad containers");
+            
+            // Hide all empty ad containers
+            document.querySelectorAll('.ad-728-player, .ad-300-player, .ad-native-player').forEach(el => {
+                if (el && (el.innerHTML.trim() === '' || !el.querySelector('iframe'))) {
+                    el.style.display = 'none';
+                }
+            });
+        }
+    }, 5000);
 })();
 </script>
 
