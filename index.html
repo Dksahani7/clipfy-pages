@@ -1147,10 +1147,9 @@
     overlay.innerHTML = `
         <div class="interstitial-ad-container">
             <div class="${interClass}"></div>
-            <button class="interstitial-close-btn show" onclick="this.closest('.interstitial-overlay').classList.remove('active'); document.body.style.overflow='';">✕</button>
+            <button class="interstitial-close-btn show" onclick="this.closest('.interstitial-overlay').classList.remove('active');">✕</button>
         </div>
     `;
-    document.body.style.overflow = 'hidden'; // Scrolling block
 
     // 1. Force Remove (Sirf safety ke liye agar net bilkul mar jaye)
     // Isko 8s ki jagah 12s kar dete hain taaki ad ko load hone ka pura mauka mile
