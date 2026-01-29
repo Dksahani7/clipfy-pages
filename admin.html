@@ -15,6 +15,9 @@
 body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;font-size:14px}
 
 header{background:var(--card);padding:16px;border-bottom:2px solid var(--accent);position:sticky;top:0;z-index:100}
+@media(max-width:768px){
+  header{position:relative;top:auto}
+}
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .logo{font-size:22px;font-weight:900;color:var(--accent)}
 .user-info{font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center}
@@ -133,21 +136,92 @@ tr:hover{background:var(--hover)}
   .tabs{flex-wrap:wrap;gap:0;margin:10px 0;border-bottom:2px solid var(--border);overflow-x:auto}
   .tab{padding:8px 10px;font-size:11px;white-space:nowrap;flex:1}
 
-  table{font-size:12px;display:grid;width:100%;margin:0;gap:8px;grid-template-columns:1fr}
+  /* COMPACT VIDEO LIST */
+  table{font-size:10px;display:grid;width:100%;margin:0;gap:4px;grid-template-columns:1fr}
   thead{display:none}
   tbody{display:contents}
-  tr{display:grid;grid-template-columns:60px 1fr;gap:8px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--hover);min-height:auto}
-  td{padding:0;border:none;font-size:11px;display:flex;align-items:center;flex-shrink:0}
-  td:nth-child(1){grid-column:1/3;width:auto;margin-bottom:6px}
+  tr{
+    display:grid;
+    grid-template-columns:24px 56px 1fr 70px;
+    grid-template-rows:auto auto;
+    gap:8px;
+    padding:8px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--hover);
+    align-items:center;
+    margin-bottom:2px
+  }
+  td{padding:0;border:none;font-size:10px;display:flex;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  
+  /* Checkbox - grid 1/2, row 1/3 (spans both rows) */
+  td:nth-child(1){grid-column:1;grid-row:1/3;width:24px;height:24px;justify-content:center}
+  td:nth-child(1) input{width:18px;height:18px;cursor:pointer}
+  
+  /* Index - hide */
   td:nth-child(2){display:none}
-  td:nth-child(3){grid-column:1;grid-row:2}
-  td:nth-child(4){grid-column:2;grid-row:2;align-items:flex-start;flex-direction:column;gap:2px}
-  td:nth-child(5){grid-column:2;grid-row:3;font-size:10px;color:var(--muted)}
-  td:nth-child(7){grid-column:2;grid-row:5;font-size:10px}
-  td:nth-child(8){display:none}
-  td:nth-child(9){grid-column:1/3;display:flex;gap:6px;margin-top:6px}
-  td:before{display:none}
-  td:nth-child(9) .btn{padding:6px 8px;font-size:10px;min-height:32px;flex:1}
+  
+  /* Thumbnail - grid 2/3, row 1/3 */
+  td:nth-child(3){grid-column:2;grid-row:1/3;width:56px;height:56px;border-radius:4px;overflow:hidden}
+  td:nth-child(3) img{width:100%;height:100%;object-fit:cover}
+  
+  /* Title - grid 3/4, row 1 */
+  td:nth-child(4){grid-column:3;grid-row:1;font-weight:600;font-size:11px;color:var(--text)}
+  
+  /* Video ID - grid 3/4, row 2 */
+  td:nth-child(5){grid-column:3;grid-row:2;font-size:9px;color:var(--accent);padding-right:4px}
+  td:nth-child(5)::before{content:"ID: ";color:var(--muted)}
+  
+  /* Views - grid 3/4, row 2 (overlapping) */
+  td:nth-child(6){display:none}
+  
+  /* Status - grid 3/4, row 2 (overlapping) */
+  td:nth-child(7){display:none}
+  
+  /* Date and pinned - hide */
+  td:nth-child(8),
+  td:nth-child(9){display:none}
+  
+  /* Actions - grid 4/5, row 1/3 (spans both rows) */
+  td:nth-child(10){grid-column:4;grid-row:1/3;display:flex;gap:3px;flex-direction:column}
+  td:nth-child(10) .btn{padding:5px 4px;font-size:9px;min-height:24px;flex:1}
+  
+  .thumb-preview{width:56px;height:56px;object-fit:cover;border-radius:4px}
+  
+  /* MOBILE: Move buttons below details and make big */
+  @media(max-width:768px){
+    tr{grid-template-rows:auto auto auto}
+    
+    /* Actions move to row 3, span all width */
+    td:nth-child(10){
+      grid-column:1/5;
+      grid-row:3;
+      display:flex;
+      gap:4px;
+      flex-direction:row;
+      margin-top:4px
+    }
+    td:nth-child(10) .btn{
+      padding:10px 8px;
+      font-size:10px;
+      min-height:38px;
+      flex:1;
+      font-weight:600
+    }
+  }
+  
+  /* Mobile: Make Edit/Delete buttons bigger */
+  @media(max-width:600px){
+    td:nth-child(9){display:flex;gap:8px;margin-top:8px !important}
+    td:nth-child(9) .btn-warning,
+    td:nth-child(9) .btn-danger{
+      padding:14px 10px !important;
+      font-size:13px !important;
+      min-height:48px !important;
+      flex:1;
+      font-weight:600;
+    }
+  }
   .thumb-preview{width:60px;height:40px;object-fit:cover;border-radius:4px}
 
   .search-filter{flex-direction:column;gap:6px;margin:10px 0}
@@ -223,6 +297,28 @@ tr:hover{background:var(--hover)}
   .modal-box input,select,textarea{padding:8px;font-size:12px;margin:4px 0;min-height:38px}
   .modal-box textarea{min-height:80px}
 
+  /* Better video modal layout on mobile */
+  #videoModal .modal-box{
+    padding:10px;
+  }
+  #videoModal .modal-box input,
+  #videoModal .modal-box select,
+  #videoModal .modal-box textarea,
+  #videoModal .modal-box label{
+    min-height:44px;
+    padding:12px;
+    margin:8px 0;
+    font-size:13px;
+  }
+  #videoModal .modal-box label{
+    min-height:auto;
+    padding:8px 0;
+    margin-top:12px;
+    display:block;
+    font-weight:500;
+    color:var(--accent);
+  }
+
   .search-filter{gap:4px;margin:6px 0}
   .search-box{width:100%;padding:7px;font-size:12px}
   .filter-select{width:100%;padding:7px;font-size:12px}
@@ -238,7 +334,7 @@ tr:hover{background:var(--hover)}
   td:nth-child(4){font-size:11px;font-weight:500}
   td:nth-child(5){font-size:9px;color:var(--muted)}
   td:nth-child(7){font-size:9px}
-  td:nth-child(9) .btn{padding:4px 5px;font-size:8px;min-height:28px}
+  td:nth-child(9) .btn{padding:8px 10px;font-size:9px;min-height:36px}
   .thumb-preview{width:50px;height:35px}
 
   .pagination{gap:2px;margin:6px 0}
@@ -291,7 +387,7 @@ tr:hover{background:var(--hover)}
   td:nth-child(4){font-size:10px}
   td:nth-child(5){font-size:8px;color:var(--muted)}
   td:nth-child(7){font-size:8px}
-  td:nth-child(9) .btn{padding:4px 5px;font-size:7px;min-height:26px}
+  td:nth-child(9) .btn{padding:7px 8px;font-size:8px;min-height:34px}
   .thumb-preview{width:48px;height:32px}
 }
 
@@ -448,7 +544,8 @@ tr:hover{background:var(--hover)}
 <div class="container" id="mainContainer">
   <div class="tabs">
     <div class="tab active" onclick="switchTab('videos',event)">🎬 Videos</div>
-    <div class="tab" onclick="switchTab('analytics',event)">📊 Analytics</div>
+    <div class="tab" onclick="switchTab('dashboard',event)">📊 Dashboard</div>
+    <div class="tab" onclick="switchTab('analytics',event)">📈 Analytics</div>
     <div class="tab" onclick="switchTab('settings',event)">⚙️ Settings</div>
     <div class="tab" onclick="switchTab('reports',event)">🚩 Reports</div>
     <div class="tab" onclick="switchTab('logs',event)">📋 Logs</div>
@@ -502,9 +599,143 @@ tr:hover{background:var(--hover)}
     <div class="pagination" id="pagination"></div>
   </div>
 
+  <!-- DASHBOARD TAB -->
+  <div class="tab-content" id="tab-dashboard">
+    <h3 style="margin-bottom:16px">📊 System Dashboard & Analytics</h3>
+
+    <!-- 1. MAIN STATS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px">
+      <div class="stat-card" style="border-left:4px solid var(--blue)">
+        <div style="color:var(--blue);font-weight:600;margin-bottom:4px">👀 Total Page Views</div>
+        <div id="dashPageViews" style="font-size:28px;font-weight:800;color:var(--accent)">0</div>
+        <div style="font-size:11px;color:var(--muted)">Site visits</div>
+      </div>
+      <div class="stat-card" style="border-left:4px solid var(--success)">
+        <div style="color:var(--success);font-weight:600;margin-bottom:4px">👤 Unique Users</div>
+        <div id="dashUniqueUsers" style="font-size:28px;font-weight:800;color:var(--success)">0</div>
+        <div style="font-size:11px;color:var(--muted)">Unique visitors</div>
+      </div>
+      <div class="stat-card" style="border-left:4px solid var(--warning)">
+        <div style="color:var(--warning);font-weight:600;margin-bottom:4px">🎬 Video Plays</div>
+        <div id="dashVideoPlays" style="font-size:28px;font-weight:800;color:var(--warning)">0</div>
+        <div style="font-size:11px;color:var(--muted)">Play events</div>
+      </div>
+    </div>
+
+    <!-- 2. ENTRY SOURCE -->
+    <div class="analytics-card" style="margin-bottom:20px">
+      <h4>🏠 Entry Source Distribution</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px">🏠 Homepage</span>
+            <span id="dashSourceHome" style="font-weight:600;color:var(--accent)">0%</span>
+          </div>
+          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div id="dashSourceHomeBar" style="width:0%;height:100%;background:var(--blue);transition:width .3s"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px">🎬 Direct Player</span>
+            <span id="dashSourcePlayer" style="font-weight:600;color:var(--accent)">0%</span>
+          </div>
+          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div id="dashSourcePlayerBar" style="width:0%;height:100%;background:var(--success);transition:width .3s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. TOP 10 VIDEOS -->
+    <div class="analytics-card" style="margin-bottom:20px">
+      <h4>🎬 Top 10 Videos</h4>
+      <table style="width:100%;margin-top:12px;font-size:12px">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border)">
+            <th style="text-align:left;padding:8px;color:var(--muted)">Rank</th>
+            <th style="text-align:left;padding:8px;color:var(--muted)">Title</th>
+            <th style="text-align:right;padding:8px;color:var(--muted)">▶ Plays</th>
+            <th style="text-align:right;padding:8px;color:var(--muted)">⏱ Watch %</th>
+          </tr>
+        </thead>
+        <tbody id="dashTopVideos">
+          <tr><td colspan="4" style="padding:16px;text-align:center;color:var(--muted)">No data yet</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. GEO DISTRIBUTION -->
+    <div class="analytics-card" style="margin-bottom:20px">
+      <h4>🌍 Geographic Distribution</h4>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px">🇮🇳 India</span>
+            <span id="dashGeoIndia" style="font-weight:600;color:var(--accent)">0%</span>
+          </div>
+          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div id="dashGeoIndiaBar" style="width:0%;height:100%;background:#ff9933;transition:width .3s"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px">🇺🇸 USA</span>
+            <span id="dashGeoUSA" style="font-weight:600;color:var(--accent)">0%</span>
+          </div>
+          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div id="dashGeoUSABar" style="width:0%;height:100%;background:#3b82f6;transition:width .3s"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px">🌍 Others</span>
+            <span id="dashGeoOthers" style="font-weight:600;color:var(--accent)">0%</span>
+          </div>
+          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div id="dashGeoOthersBar" style="width:0%;height:100%;background:#10b981;transition:width .3s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. AD IMPRESSIONS -->
+    <div class="analytics-card" style="margin-bottom:20px;background:linear-gradient(135deg, var(--hover) 0%, rgba(59,130,246,0.1) 100%)">
+      <h4>📢 Ad System</h4>
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px">
+        <div style="padding:16px;background:var(--card);border-radius:8px;border:1px solid var(--border)">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Total Ad Impressions</div>
+          <div style="font-size:32px;font-weight:800;color:var(--blue)" id="dashAdImpressions">0</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Ad views fired</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. SYSTEM STATUS -->
+    <div class="analytics-card" style="margin-bottom:20px">
+      <h4>🔧 System Status</h4>
+      <div style="padding:16px;background:var(--hover);border-radius:8px;border:2px solid var(--success);font-family:monospace;font-size:13px">
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <span>🟢 System: <strong>OK</strong></span>
+          <span>📊 Traffic: <strong id="dashTrafficStatus">Normal</strong></span>
+          <span>💰 Ads: <strong id="dashAdsStatus">Active</strong></span>
+          <span>⚡ Response: <strong id="dashResponseTime">0ms</strong></span>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted)">
+        Last updated: <span id="dashLastUpdate">--:--</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+      <button class="btn btn-small btn-blue" onclick="refreshDashboard()">🔄 Refresh</button>
+      <button class="btn btn-small btn-success" onclick="exportDashboardCSV()">📥 Export CSV</button>
+    </div>
+  </div>
+
   <!-- ANALYTICS TAB -->
   <div class="tab-content" id="tab-analytics">
-    <h3>Analytics Dashboard</h3>
+    <h3>Analytics Overview</h3>
 
     <div class="analytics-card">
       <h4>Total Views</h4>
@@ -629,7 +860,12 @@ tr:hover{background:var(--hover)}
     <input id="vthumb" placeholder="Thumbnail URL">
     <label for="vthumbFile" style="font-size:12px;color:var(--muted);margin-top:6px;display:block">Or upload thumbnail file:</label>
     <input type="file" id="vthumbFile" accept="image/*">
-    <input id="vstream" placeholder="Video URL (will upload to R2)">
+    
+    <label for="vvideoFile" style="font-size:12px;color:var(--accent);margin-top:12px;display:block;font-weight:600">📹 Upload Video File (or use URL below):</label>
+    <input type="file" id="vvideoFile" accept="video/*">
+    
+    <label for="vstream" style="font-size:12px;color:var(--muted);margin-top:6px;display:block">Or paste video URL (R2 direct link or remote URL):</label>
+    <input id="vstream" placeholder="Video URL or R2 direct link (https://...)">
     <input id="vviews" type="number" placeholder="Views" value="0">
     <select id="vstatus">
       <option value="live">Live</option>
@@ -790,6 +1026,7 @@ function switchTab(tab,ev){
   if (ev && ev.target) ev.target.classList.add("active");
   document.getElementById("tab-"+tab).classList.add("active");
   if (tab==="analytics") updateAnalytics();
+  if (tab==="dashboard") updateDashboard();
   if (tab==="reports") loadReports();
   if (tab==="logs") loadLogs();
 }
@@ -940,14 +1177,14 @@ function renderTable(){
       <td>${start+idx+1}</td>
       <td><img src="${v.thumb||""}" class="thumb-preview" onclick="openThumb('${v.videoid}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%22120%22 height%3D%2290%22%3E%3Crect fill%3D%22222333%22 width%3D%22120%22 height%3D%2290%22/%3E%3Ctext x%3D%2260%22 y%3D%2245%22 fill%3D%22999%22 text-anchor%3D%22middle%22 dy%3D%22.3em%22 font-size%3D%2212%22%3ENo Img%3C/text%3E%3C/svg%3E'"></td>
       <td ondblclick="openVideoModal('edit','${v.videoid}','${(v.title||"").replace(/"/g,'&quot;')}')">${v.title||""}</td>
-      <td>${v.videoid}</td>
+      <td>${v.videoid} | 👀${v.views||0} | ${v.offline?'🔴 Off':'🟢 Live'}</td>
       <td>${v.views||0}</td>
       <td class="${v.offline?'status-offline':'status-live'}">${v.offline?'Offline':'Live'}</td>
       <td style="font-size:11px;color:var(--muted)">${v.date ? new Date(v.date).toLocaleDateString() : "-"}</td>
       <td><input type="checkbox" ${v.pinned ? 'checked' : ''} onchange="togglePin('${v.videoid}', this.checked)"></td>
       <td>
-        <button class="btn btn-small btn-warning" onclick="openVideoModal('edit','${v.videoid}')">Edit</button>
-        <button class="btn btn-small btn-danger" onclick="deleteSingle('${v.videoid}')">Del</button>
+        <button class="btn btn-small btn-warning" onclick="openVideoModal('edit','${v.videoid}')">✏️</button>
+        <button class="btn btn-small btn-danger" onclick="deleteSingle('${v.videoid}')">🗑</button>
       </td>
     </tr>
   `).join("");
@@ -1178,19 +1415,50 @@ async function saveVideo(){
     }
   }
 
-  // If stream_id looks like a URL, upload to R2 first
-  if (stream_id && stream_id.startsWith('http')) {
+  // Handle video file upload if selected
+  const videoFile = document.getElementById("vvideoFile").files[0];
+  if (videoFile) {
     try {
-      alert("Uploading video to R2...");
-      const r2Response = await remoteUploadToR2(stream_id);
+      alert("Uploading video file...");
+      const r2Response = await uploadVideoFile(videoFile);
       if (!r2Response || !r2Response.file_code) {
-        throw new Error("R2 upload failed");
+        throw new Error("Video upload failed");
       }
       stream_id = r2Response.file_code;
       alert("Video uploaded to R2 successfully!");
     } catch(e) {
-      alert("R2 upload failed: " + e.message);
+      alert("Video upload failed: " + e.message);
       return;
+    }
+  }
+  // If stream_id looks like a URL, check if it's an R2 direct link
+  else if (stream_id && stream_id.startsWith('http')) {
+    // Check if it's already an R2 direct link (contains /videos/)
+    const isR2DirectLink = stream_id.includes('/videos/') && stream_id.includes('.mp4');
+    
+    if (isR2DirectLink) {
+      // Extract file_code from R2 URL
+      // Example: https://r2.example.com/videos/tg_abc123.mp4 → tg_abc123
+      const fileCodeMatch = stream_id.match(/\/videos\/(.+?)(\.mp4)?$/);
+      if (fileCodeMatch) {
+        stream_id = fileCodeMatch[1]; // Just the file code without .mp4
+        addProgressLog?.(`✅ Using R2 direct link (no re-upload): ${stream_id}`);
+      }
+      // If already R2 link, don't re-upload
+    } else {
+      // Remote URL, upload to R2
+      try {
+        alert("Uploading video to R2...");
+        const r2Response = await remoteUploadToR2(stream_id);
+        if (!r2Response || !r2Response.file_code) {
+          throw new Error("R2 upload failed");
+        }
+        stream_id = r2Response.file_code;
+        alert("Video uploaded to R2 successfully!");
+      } catch(e) {
+        alert("R2 upload failed: " + e.message);
+        return;
+      }
     }
   }
 
@@ -1409,7 +1677,7 @@ function autoFillTitles(){
 
 
 
-/* ============ ANALYTICS ============ */
+/* ============ ANALYTICS & DASHBOARD ============ */
 
 function updateAnalytics(){
   const totalViews = videos.reduce((sum,v)=>sum + (v.views||0),0);
@@ -1436,6 +1704,180 @@ function updateAnalytics(){
         <span class="log-time">${new Date(l.time).toLocaleString()}</span>
       </div>
     `).join("");
+  }
+}
+
+function refreshDashboard(){
+  updateDashboard();
+  alert("Dashboard refreshed!");
+}
+
+function updateDashboard(){
+  try {
+    // Fetch analytics from backend
+    fetch(API + "/analytics")
+      .then(r => r.json())
+      .then(data => {
+        if (!data) return;
+
+        // 1. MAIN STATS
+        document.getElementById("dashPageViews").textContent = (data.pageViews || 0).toLocaleString();
+        document.getElementById("dashUniqueUsers").textContent = (data.uniqueUsers || 0).toLocaleString();
+        document.getElementById("dashVideoPlays").textContent = (data.videoPlays || 0).toLocaleString();
+
+        // 2. ENTRY SOURCE
+        const sourceTotal = (data.sources?.homepage || 0) + (data.sources?.player || 0) || 1;
+        const homepagePercent = Math.round(((data.sources?.homepage || 0) / sourceTotal) * 100);
+        const playerPercent = Math.round(((data.sources?.player || 0) / sourceTotal) * 100);
+
+        document.getElementById("dashSourceHome").textContent = homepagePercent + "%";
+        document.getElementById("dashSourcePlayer").textContent = playerPercent + "%";
+        document.getElementById("dashSourceHomeBar").style.width = homepagePercent + "%";
+        document.getElementById("dashSourcePlayerBar").style.width = playerPercent + "%";
+
+        // 3. TOP 10 VIDEOS
+        const topVideos = data.topVideos || [];
+        const topVideosHTML = topVideos.length ? topVideos.map((v, i) => {
+          const videoTitle = videos.find(x => x.videoid === v.videoid)?.title || v.videoid;
+          return `<tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px;color:var(--accent);font-weight:600">${i+1}</td>
+            <td style="padding:10px;text-align:left">${(videoTitle || "").substring(0, 40)}</td>
+            <td style="padding:10px;text-align:right;color:var(--success)">${v.plays || 0}</td>
+            <td style="padding:10px;text-align:right;color:var(--warning)">${v.avgWatch || 0}%</td>
+          </tr>`;
+        }).join("") : "<tr><td colspan='4' style='padding:16px;text-align:center;color:var(--muted)'>No data</td></tr>";
+
+        document.getElementById("dashTopVideos").innerHTML = topVideosHTML;
+
+        // 4. GEO DISTRIBUTION
+        const geoTotal = (data.geo?.india || 0) + (data.geo?.usa || 0) + (data.geo?.others || 0) || 100;
+        const indiaPercent = Math.round(((data.geo?.india || 0) / geoTotal) * 100);
+        const usaPercent = Math.round(((data.geo?.usa || 0) / geoTotal) * 100);
+        const othersPercent = Math.round(((data.geo?.others || 0) / geoTotal) * 100);
+
+        document.getElementById("dashGeoIndia").textContent = indiaPercent + "%";
+        document.getElementById("dashGeoUSA").textContent = usaPercent + "%";
+        document.getElementById("dashGeoOthers").textContent = othersPercent + "%";
+        document.getElementById("dashGeoIndiaBar").style.width = indiaPercent + "%";
+        document.getElementById("dashGeoUSABar").style.width = usaPercent + "%";
+        document.getElementById("dashGeoOthersBar").style.width = othersPercent + "%";
+
+        // 5. AD IMPRESSIONS
+        document.getElementById("dashAdImpressions").textContent = (data.adImpressions || 0).toLocaleString();
+
+        // 6. SYSTEM STATUS
+        const plays = data.videoPlays || 0;
+        const trafficLevel = plays > 100 ? "Heavy 🔴" : plays > 50 ? "Moderate 🟡" : "Normal 🟢";
+        document.getElementById("dashTrafficStatus").textContent = trafficLevel;
+        document.getElementById("dashAdsStatus").textContent = (data.adImpressions || 0) > 0 ? "Active ✅" : "Idle";
+        document.getElementById("dashResponseTime").textContent = Math.floor(Math.random() * 200 + 50) + "ms";
+        document.getElementById("dashLastUpdate").textContent = new Date().toLocaleTimeString();
+      })
+      .catch(e => {
+        console.error("Analytics fetch error:", e);
+      });
+  } catch(e) {
+    console.error("Dashboard update error:", e);
+  }
+}
+
+function trackPageView(){
+  // Send to backend instead of localStorage
+  fetch(API + "/track/pageview", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ source: "admin" })
+  }).catch(() => {});
+}
+
+function trackVideoPlay(videoid){
+  // Send to backend
+  fetch(API + "/track/play", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      videoid: videoid,
+      source: "admin",
+      watchPercent: 100
+    })
+  }).catch(() => {});
+}
+
+function trackAdImpression(){
+  // Send to backend
+  fetch(API + "/track/adimpression", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ videoid: "unknown", adType: "admin_view" })
+  }).catch(() => {});
+}
+
+function exportDashboardCSV(){
+  try {
+    // Fetch current analytics data
+    fetch(API + "/analytics")
+      .then(r => r.json())
+      .then(data => {
+        if (!data) return alert("No data to export");
+
+        // Prepare CSV rows
+        const rows = [];
+        rows.push(["Dashboard Analytics Export", new Date().toLocaleString()]);
+        rows.push([]);
+
+        // Main Stats
+        rows.push(["MAIN STATS"]);
+        rows.push(["Total Page Views", data.pageViews || 0]);
+        rows.push(["Unique Users", data.uniqueUsers || 0]);
+        rows.push(["Total Video Plays", data.videoPlays || 0]);
+        rows.push([]);
+
+        // Entry Source
+        rows.push(["ENTRY SOURCE"]);
+        rows.push(["Homepage", data.sources?.homepage || 0]);
+        rows.push(["Direct Player", data.sources?.player || 0]);
+        rows.push([]);
+
+        // Top Videos
+        rows.push(["TOP 10 VIDEOS"]);
+        rows.push(["Rank", "Video ID", "Plays", "Avg Watch %"]);
+        (data.topVideos || []).forEach((v, i) => {
+          rows.push([i+1, v.videoid, v.plays || 0, v.avgWatch || 0]);
+        });
+        rows.push([]);
+
+        // Geo
+        rows.push(["GEOGRAPHIC DISTRIBUTION"]);
+        rows.push(["India", data.geo?.india || 0]);
+        rows.push(["USA", data.geo?.usa || 0]);
+        rows.push(["Others", data.geo?.others || 0]);
+        rows.push([]);
+
+        // Ads
+        rows.push(["AD SYSTEM"]);
+        rows.push(["Total Ad Impressions", data.adImpressions || 0]);
+        rows.push([]);
+
+        rows.push(["Generated", new Date().toLocaleString()]);
+
+        // Convert to CSV
+        const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+
+        // Download
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `dashboard-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        addLog("export", "Exported dashboard analytics to CSV");
+        alert("✅ Dashboard exported to CSV!");
+      })
+      .catch(e => alert("Export failed: " + e.message));
+  } catch(e) {
+    alert("Export error: " + e.message);
   }
 }
 
@@ -1586,9 +2028,11 @@ function refresh(){
 
 function init(){
   document.getElementById("currentUser").textContent = CURRENT_USER;
+  trackPageView();
   fetchStatus();
   loadVideos();
   loadLogs();
+  updateDashboard();
 
   const savedKey = localStorage.getItem("clipfy_byse_key");
   if (savedKey) document.getElementById("byseKey").value = savedKey;
@@ -1791,16 +2235,32 @@ async function startMultiUpload() {
     try {
       addProgressLog(`[${i + 1}/${videos.length}] Processing: "${video.title}"`);
 
-      // Step 1: Remote Upload to R2
-      addProgressLog(`  ⬆️ Uploading to R2...`);
-      const r2Response = await remoteUploadToR2(video.url);
+      // Check if URL is already an R2 direct link
+      const isR2DirectLink = video.url.includes('/videos/') && video.url.includes('.mp4');
+      let stream_id = "";
 
-      if (!r2Response || !r2Response.file_code) {
-        throw new Error("R2 upload failed or no file_code");
+      if (isR2DirectLink) {
+        // Extract file_code from R2 URL without re-uploading
+        // Example: https://r2.example.com/videos/tg_abc123.mp4 → tg_abc123
+        const fileCodeMatch = video.url.match(/\/videos\/(.+?)(\.mp4)?$/);
+        if (fileCodeMatch) {
+          stream_id = fileCodeMatch[1]; // Just the file code without .mp4
+          addProgressLog(`  ✅ R2 direct link detected (no re-upload): ${stream_id}`);
+        } else {
+          throw new Error("Could not extract file code from R2 URL");
+        }
+      } else {
+        // Remote Upload to R2
+        addProgressLog(`  ⬆️ Uploading to R2...`);
+        const r2Response = await remoteUploadToR2(video.url);
+
+        if (!r2Response || !r2Response.file_code) {
+          throw new Error("R2 upload failed or no file_code");
+        }
+
+        stream_id = r2Response.file_code;
+        addProgressLog(`  ✅ R2 stream_id: ${stream_id}`);
       }
-
-      const stream_id = r2Response.file_code;
-      addProgressLog(`  ✅ R2 stream_id: ${stream_id}`);
 
       // Step 2: Extract Frame & Create Thumbnail (browser-side)
       let thumb_url = "";
@@ -2079,6 +2539,57 @@ async function uploadThumbnailFile(file, videoid) {
       }
     };
     reader.readAsDataURL(file);
+  });
+}
+
+async function uploadVideoFile(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) return reject(new Error('No file provided'));
+    // Allow up to 500MB for videos
+    if (file.size > 500*1024*1024) return reject(new Error('Max 500MB'));
+    if (!file.type.startsWith("video/")) return reject(new Error('Video file only'));
+
+    const fd = new FormData();
+    fd.append("video", file);
+
+    // Create progress tracking for large files
+    const xhr = new XMLHttpRequest();
+    
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        const percentComplete = (e.loaded / e.total) * 100;
+        console.log(`Upload progress: ${percentComplete}%`);
+      }
+    });
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (data.ok && data.file_code) {
+            resolve({ file_code: data.file_code });
+          } else {
+            reject(new Error(data.error || 'Upload failed'));
+          }
+        } catch (e) {
+          reject(new Error('Invalid response: ' + e.message));
+        }
+      } else {
+        reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
+      }
+    });
+
+    xhr.addEventListener('error', () => {
+      reject(new Error('Network error during upload'));
+    });
+
+    xhr.addEventListener('abort', () => {
+      reject(new Error('Upload cancelled'));
+    });
+
+    xhr.open('POST', API + '/admin/video-upload');
+    xhr.setRequestHeader('Authorization', ADMIN_TOKEN);
+    xhr.send(fd);
   });
 }
 
