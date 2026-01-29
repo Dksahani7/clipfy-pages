@@ -1714,9 +1714,25 @@ function refreshDashboard(){
 
 function updateDashboard(){
   try {
-    // Fetch analytics from backend
-    fetch(API + "/analytics")
-      .then(r => r.json())
+    if (!ADMIN_TOKEN) {
+      console.warn("Not logged in - dashboard unavailable");
+      return;
+    }
+
+    // Fetch analytics from backend with Authorization header
+    fetch(API + "/analytics", {
+      headers: {
+        "Authorization": ADMIN_TOKEN,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(r => {
+        if (r.status === 401) {
+          console.error("Token invalid or expired - please login again");
+          return null;
+        }
+        return r.json();
+      })
       .then(data => {
         if (!data) return;
 
