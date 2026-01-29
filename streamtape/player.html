@@ -6,8 +6,12 @@
 <title>Clipfy Player</title>
 <meta name="description" content="Watch videos on Clipfy Player">
 <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+<!-- ExoClick Ad Provider -->
 <script async src="https://a.magsrv.com/ad-provider.js"></script>
 <script async src="https://a.pemsrv.com/ad-provider.js"></script>
+
+<!-- Push Notification Zone 5838230 (5.26% CTR - HIGHEST!) -->
+<script async src="https://s.magsrv.com/v1/push.php?idzone=5838230"></script>
 
 
 
@@ -551,10 +555,25 @@ function loadVideo(id, isHistoryNavigation = false){
     // View count tracking - only count after 5% watched or video ends
     let viewCountedFlag = false;
     let watchedPercentage = 0;
+    let maxWatchedPercent = 0;
     
     function countView() {
         if (!viewCountedFlag && !isHistoryNavigation) {
             viewCountedFlag = true;
+            
+            // Track view on backend
+            fetch(`https://clipfy.store/api/track/play`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    videoid: id,
+                    watchPercent: Math.round(maxWatchedPercent),
+                    source: 'player',
+                    duration: Math.round(player.duration)
+                })
+            }).catch(err => console.error("Track error:", err));
+            
+            // Also increment views in old endpoint for compatibility
             fetch(`https://clipfy.store/api/watch`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -565,10 +584,12 @@ function loadVideo(id, isHistoryNavigation = false){
         }
     }
     
-    // Track video progress for 5% threshold
+    // Track video progress for 5% threshold and max watch
     player.addEventListener('timeupdate', () => {
         if (!viewCountedFlag && player.duration > 0) {
             watchedPercentage = (player.currentTime / player.duration) * 100;
+            maxWatchedPercent = Math.max(maxWatchedPercent, watchedPercentage);
+            
             // Count view when user watches 5% or more
             if (watchedPercentage >= 5) {
                 countView();
@@ -622,7 +643,7 @@ function renderSuggestions(current, append = false){
         suggestionsLoaded = 0;
     }
 
-    const batchSize = 12;
+    const batchSize = 13;
     const nextBatch = allSuggestionIds.slice(suggestionsLoaded, suggestionsLoaded + batchSize);
 
     // Render videos
@@ -648,7 +669,7 @@ function renderSuggestions(current, append = false){
     // 🔥 PURE RANDOM AD INSERTION
     const videoCards = suggestions.querySelectorAll('.suggestion-item:not(.ad-item)');
     if (videoCards.length >= 10) {
-        const AD_COUNT = 3;
+        const AD_COUNT = 2; // Reduced from 3 to 1 - low CPM zone, not worth extra ads
 
     // Pure random positions with MIN_GAP
     const MIN_GAP = 3; // Minimum 3 video cards between ads
@@ -720,50 +741,68 @@ window.addEventListener('popstate', function(event) {
     var interZone = isMobile ? "5829432" : "5831970";
     var interClass = isMobile ? "eas6a97888e33" : "eas6a97888e35";
 
+    // 1. CHECK: Kya 10 minute ho gaye?
+    var lastSeen = localStorage.getItem("inter_last_seen");
+    var now = Date.now();
+    if (lastSeen && (now - lastSeen < 600000)) { // 600,000ms = 10 Minutes
+        console.log("10-min capping active. Skipping ad.");
+        return; 
+    }
+
     var overlay = document.querySelector('.interstitial-overlay') || document.createElement('div');
-    overlay.className = 'interstitial-overlay active'; // Shuruat se hi active rakho
+    overlay.className = 'interstitial-overlay';
     overlay.innerHTML = `
         <div class="interstitial-ad-container">
             <div class="${interClass}"></div>
-            <button class="interstitial-close-btn show" onclick="this.closest('.interstitial-overlay').classList.remove('active');">✕</button>
+            <button class="interstitial-close-btn" onclick="this.closest('.interstitial-overlay').classList.remove('active');">✕</button>
         </div>
     `;
+    if (!document.body.contains(overlay)) document.body.appendChild(overlay);
 
-    // 1. Force Remove (Sirf safety ke liye agar net bilkul mar jaye)
-    // Isko 8s ki jagah 12s kar dete hain taaki ad ko load hone ka pura mauka mile
-    var backupRemoval = setTimeout(removeOverlay, 12000);
-
-    function removeOverlay() {
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-        clearTimeout(backupRemoval);
-        console.log("Overlay Cleared");
+    function showOverlay() {
+        overlay.classList.add('active');
+        setTimeout(function() {
+            var closeBtn = overlay.querySelector('.interstitial-close-btn');
+            if (closeBtn) closeBtn.classList.add('show');
+        }, 3000); // 3s close button delay for UX
     }
 
-    // 2. Ad Provider Call
-    (window.AdProvider = window.AdProvider || []).push({
-        "serve": {
-            "prefix": interClass,
-            "zone": interZone,
-            "onAdLoaded": function() {
-                console.log("Ad Load Ho Gaya!");
-                // Ad dikhne ke baad Close button show karo
-                var closeBtn = document.querySelector('.interstitial-close-btn');
-                if(closeBtn) closeBtn.classList.add('show');
-            },
-            "onAdClosed": function() {
-                removeOverlay(); // User ne ad band kiya toh parda hatao
-            },
-            "onAdError": function() {
-                removeOverlay(); // Agar ad hi nahi hai toh user ko kyun rokna?
-            }
-        }
-    });
+    function hideOverlay() {
+        overlay.classList.remove('active');
+        clearTimeout(backupRemoval);
+    }
 
-    // 3. Fallback: Agar user ad par click karke wapas aaye
-    window.addEventListener('focus', function() {
-        setTimeout(removeOverlay, 1000); // 1 sec delay for smooth transition
-    });
+    var backupRemoval = setTimeout(hideOverlay, 6000); // 6s safety fallback
+
+    (function initInterstitial(){
+        if (typeof window.AdProvider === 'undefined') {
+            // Wait for script to load
+            var checkAd = setInterval(function() {
+                if (typeof window.AdProvider !== 'undefined') {
+                    clearInterval(checkAd);
+                    runAd();
+                }
+            }, 100);
+            setTimeout(function() { clearInterval(checkAd); }, 5000);
+        } else {
+            runAd();
+        }
+
+        function runAd() {
+            (window.AdProvider = window.AdProvider || []).push({
+                serve: {
+                    prefix: interClass, zone: interZone,
+                    onAdLoaded: function() {
+                        // 2. SET TIME: Jab ad load hoga tabhi 10 min ka timer start hoga
+                        localStorage.setItem("inter_last_seen", Date.now());
+                        showOverlay();
+                    },
+                    onAdClosed: function() { hideOverlay(); },
+                    onAdError: function() { hideOverlay(); }
+                }
+            });
+        }
+    })();
 })();
 </script>
 
