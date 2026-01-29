@@ -744,6 +744,20 @@
                     referrer: document.referrer 
                 })
             }).catch(() => {});
+            
+            // Track geo location
+            try {
+                fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
+                    .then(r => r.json())
+                    .then(data => {
+                        fetch('https://clipfy.store/api/track/geo', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
+                        }).catch(() => {});
+                    })
+                    .catch(() => {});
+            } catch(e) {}
         }
 
         // Call on page load
