@@ -1034,8 +1034,11 @@ function switchTab(tab,ev){
 /* ============ STATUS / KILL SWITCH ============ */
 
 async function fetchStatus(){
+  if (!ADMIN_TOKEN) return; // Login required
   try{
-    const r = await fetch(API + "/status");
+    const r = await fetch(API + "/status", {
+      headers: { "Authorization": ADMIN_TOKEN }
+    });
     const s = await r.json();
     siteDisabled = !!s.site_disabled;
     updateKillBadge();
@@ -1798,12 +1801,33 @@ function updateDashboard(){
 }
 
 function trackPageView(){
+  if (!ADMIN_TOKEN) return; // Only track when logged in
   // Send to backend instead of localStorage
   fetch(API + "/track/pageview", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Authorization": ADMIN_TOKEN,
+      "Content-Type": "application/json" 
+    },
     body: JSON.stringify({ source: "admin" })
   }).catch(() => {});
+  
+  // Track geo location
+  try {
+    fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
+      .then(r => r.json())
+      .then(data => {
+        fetch(API + "/track/geo", {
+          method: "POST",
+          headers: { 
+            "Authorization": ADMIN_TOKEN,
+            "Content-Type": "application/json" 
+          },
+          body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
+        }).catch(() => {});
+      })
+      .catch(() => {});
+  } catch(e) {}
 }
 
 function trackVideoPlay(videoid){
