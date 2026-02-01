@@ -10,8 +10,7 @@
 <script async src="https://a.magsrv.com/ad-provider.js"></script>
 <script async src="https://a.pemsrv.com/ad-provider.js"></script>
 
-<!-- Push Notification Zone 5838230 (5.26% CTR - HIGHEST!) -->
-<script async src="https://s.magsrv.com/v1/push.php?idzone=5838230"></script>
+
 
 
 
@@ -205,6 +204,19 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
     .ad-728-player{display:none}
     .ad-300-player{width:100%;max-width:300px}
 }
+
+/* Fullscreen mode mein ad ko video ke upar lane ke liye */
+:fullscreen #adContainer,
+:-webkit-full-screen #adContainer,
+:-moz-full-screen #adContainer {
+    z-index: 2147483647 !important;
+    display: block;
+}
+
+.video-box:fullscreen video {
+    width: 100%;
+    height: 100%;
+}
 </style>
 </head>
 
@@ -288,47 +300,106 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
 
 
 
+// MAINTENANCE MODE CHECK
 <script>
-// ---- CONFIG ----
-const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json";
-const R2_STREAM_BASE = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/";
+    // Check maintenance mode on page load
+    fetch('https://clipfy.store/api/status')
+        .then(r => r.json())
+        .then(data => {
+            if (data.site_disabled) {
+                document.body.innerHTML = `
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 100vh;
+                        background: #0f141a;
+                        color: #fff;
+                        text-align: center;
+                        padding: 20px;
+                        font-family: system-ui, -apple-system, Arial, sans-serif;
+                    ">
+                        <div style="
+                            font-size: 48px;
+                            margin-bottom: 20px;
+                        ">🔧</div>
+                        <h1 style="
+                            font-size: 32px;
+                            margin-bottom: 16px;
+                            color: #ff2f5b;
+                        ">Under Maintenance</h1>
+                        <p style="
+                            font-size: 18px;
+                            color: #8b93b0;
+                            max-width: 500px;
+                            margin-bottom: 30px;
+                        ">We're currently performing maintenance to improve your experience. Please check back soon!</p>
+                        <div style="
+                            font-size: 14px;
+                            color: #8b93b0;
+                        ">© 2024 Clipfy.store</div>
+                    </div>
+                `;
+            } else {
+                initPlayer();
+            }
+        })
+        .catch(() => {
+            // If API fails, assume normal operation
+            initPlayer();
+        });
 
-// Aapke saare Ad Zones ka array
-const AD_ZONES = [
-  "5825550", "5829428", "5830146", "5825492", "5825490"
-];
+    function initPlayer() {
+        // Push Notification Delay for Player (10 sec)
+        setTimeout(function() {
+            var pushScript = document.createElement('script');
+            pushScript.src = "https://s.magsrv.com/v1/push.php?idzone=5838230";
+            pushScript.async = true;
+            document.head.appendChild(pushScript);
+            console.log("Push Notification loaded after 10s");
+        }, 10000);
 
-const player = document.getElementById("player");
-const adContainer = document.getElementById("adContainer");
-const mainTitle = document.getElementById("mainTitle");
-const creatorNameEl = document.getElementById("creatorName");
-const timeAgoEl = document.getElementById("timeAgo");
-const viewsEl = document.getElementById("views");
-const likesEl = document.getElementById("likes");
-const creatorDp = document.getElementById("creatorDp");
-const suggestions = document.getElementById("suggestions");
+        // ---- CONFIG ----
+        const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json";
+        const R2_STREAM_BASE = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/";
 
-const adConfigs = [
-    { class: 'eas6a97888e37', zoneid: '5829556' },
-    { class: 'eas6a97888e38', zoneid: '5829557' },
-    { class: 'eas6a97888e39', zoneid: '5829558' }
-];
+        // Aapke saare Ad Zones ka array
+        const AD_ZONES = [
+          "5825550", "5829428", "5830146", "5825492", "5825490"
+        ];
 
-let videos = {};
-let currentVideoId = null;
-let allSuggestionIds = [];
-let suggestionsLoaded = 0;
-let isInitialLoad = true;
+        const player = document.getElementById("player");
+        const adContainer = document.getElementById("adContainer");
+        const mainTitle = document.getElementById("mainTitle");
+        const creatorNameEl = document.getElementById("creatorName");
+        const timeAgoEl = document.getElementById("timeAgo");
+        const viewsEl = document.getElementById("views");
+        const likesEl = document.getElementById("likes");
+        const creatorDp = document.getElementById("creatorDp");
+        const suggestions = document.getElementById("suggestions");
 
-let adsLoader, adsManager, adDisplayContainer;
-let currentZoneIndex = 0;
-let adSlots = [];
-let retryInterval = null;
-let isAdPlaying = false;
-let hasUserInteracted = false;
-let initialized = false;
+        const adConfigs = [
+            { class: 'eas6a97888e37', zoneid: '5829556' },
+            { class: 'eas6a97888e38', zoneid: '5829557' },
+            { class: 'eas6a97888e39', zoneid: '5829558' }
+        ];
 
-function initIMA() {
+        let videos = {};
+        let currentVideoId = null;
+        let allSuggestionIds = [];
+        let suggestionsLoaded = 0;
+        let isInitialLoad = true;
+
+        let adsLoader, adsManager, adDisplayContainer;
+        let currentZoneIndex = 0;
+        let adSlots = [];
+        let retryInterval = null;
+        let isAdPlaying = false;
+        let hasUserInteracted = false;
+        let initialized = false;
+
+        function initIMA() {
   if (adDisplayContainer) return;
   adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, player);
   adsLoader = new google.ima.AdsLoader(adDisplayContainer);
@@ -339,6 +410,12 @@ function initIMA() {
     adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
       isAdPlaying = true;
       adContainer.classList.add('active');
+
+      // 🔥 FIX: Agar video fullscreen hai, toh ad container ko bhi fullscreen layout mein bhejo
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        adContainer.style.width = '100vw';
+        adContainer.style.height = '100vh';
+      }
       player.pause();
     });
 
@@ -398,7 +475,21 @@ function requestAd() {
   // Dynamic Zone Selection
   const zoneId = AD_ZONES[currentZoneIndex];
   console.log(`🎯 REQUESTING AD: Zone ${currentZoneIndex + 1}/${AD_ZONES.length} - ID: ${zoneId}`);
-  req.adTagUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zoneId}&cb=${Date.now()}`;
+
+  // Rotate between two best VAST zones for in-stream
+  var vastZones = [
+    'https://syndication.exoclick.com/splash.php?idzone=5829428&type=vast',
+    'https://syndication.exoclick.com/splash.php?idzone=5830146&type=vast'
+  ];
+
+  if (zoneId === '5829428' || zoneId === '5830146') {
+    var selectedVastZone = vastZones[Math.floor(Math.random() * vastZones.length)];
+    req.adTagUrl = selectedVastZone;
+    console.log('🎬 Using VAST zone:', selectedVastZone);
+  } else {
+    req.adTagUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zoneId}&cb=${Date.now()}`;
+  }
+
   adsLoader.requestAds(req);
 }
 
@@ -450,6 +541,26 @@ function startAdCycle() {
   }, 45000);
 }
 
+function setupAdMarkers() {
+  // Setup ad slots for mid-roll and post-roll without starting pre-roll
+  const dur = player.duration;
+  adSlots = []; // Purane slots clear karein
+
+  if (dur <= 300) {
+    // 5 min se kam: 10% par aur khatam hone se 10s pehle
+    adSlots.push(Math.floor(dur * 0.1));
+    adSlots.push(Math.floor(dur - 10));
+  }
+  else if (dur > 300 && dur <= 600) {
+    // 5 se 10 min: 50%, aur 90%
+    adSlots.push(Math.floor(dur * 0.5), Math.floor(dur * 0.9));
+  }
+  else {
+    // 10 min se badi: 30%, 60%, aur 90%
+    adSlots.push(Math.floor(dur * 0.3), Math.floor(dur * 0.6), Math.floor(dur * 0.9));
+  }
+}
+
 // Disable right-click
 player.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -461,9 +572,16 @@ player.addEventListener('play', () => {
       adDisplayContainer.initialize();
       initialized = true;
     }
-    // Sirf tabhi pre-roll chalayein jab video 5 min (300s) se bada ho
+
+    // Naya Logic:
     if (player.duration > 300) {
-      startAdCycle();
+        // 5 MIN SE BADI VIDEO: Turant ad engine start karo (Pre-roll aayega)
+        startAdCycle();
+    } else if (player.duration > 3) {
+        // 5 MIN SE CHOTI VIDEO: Pre-roll skip karo, sirf markers setup karo
+        // Isse sirf 10% aur end wala ad chalega
+        setupAdMarkers();
+        console.log("Short video detected: Skipping Pre-roll, markers set.");
     }
   }
 });
@@ -581,6 +699,20 @@ function loadVideo(id, isHistoryNavigation = false){
             })
                 .then(() => console.log("View counted"))
                 .catch(err => console.error("View count error:", err));
+            
+            // Track geo location
+            try {
+                fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
+                    .then(r => r.json())
+                    .then(data => {
+                        fetch('https://clipfy.store/api/track/geo', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
+                        }).catch(() => {});
+                    })
+                    .catch(() => {});
+            } catch(e) {}
         }
     }
     
@@ -666,34 +798,34 @@ function renderSuggestions(current, append = false){
         suggestions.appendChild(card);
     });
 
-    // 🔥 PURE RANDOM AD INSERTION
+    // 🔥 PURE RANDOM AD INSERTION (Better CTR - unpredictable)
     const videoCards = suggestions.querySelectorAll('.suggestion-item:not(.ad-item)');
     if (videoCards.length >= 10) {
-        const AD_COUNT = 2; // Reduced from 3 to 1 - low CPM zone, not worth extra ads
+        const AD_COUNT = 1; // 1 ad
 
-    // Pure random positions with MIN_GAP
-    const MIN_GAP = 3; // Minimum 3 video cards between ads
-    const positions = [];
-    while (positions.length < AD_COUNT) {
-        const pos = Math.floor(Math.random() * (videoCards.length - 2)) + 1; // 1 se (length-1) tak
+        // Pure random positions with MIN_GAP
+        const MIN_GAP = 3; // Minimum 3 video cards between ads
+        const positions = [];
+        while (positions.length < AD_COUNT) {
+            const pos = Math.floor(Math.random() * (videoCards.length - 2)) + 1;
 
-        // Check if position is too close to existing ads
-        const isTooClose = positions.some(existingPos =>
-            Math.abs(existingPos - pos) < MIN_GAP
-        );
+            // Check if position is too close to existing ads
+            const isTooClose = positions.some(existingPos =>
+                Math.abs(existingPos - pos) < MIN_GAP
+            );
 
-        if (!positions.includes(pos) && !isTooClose) {
-            positions.push(pos);
+            if (!positions.includes(pos) && !isTooClose) {
+                positions.push(pos);
+            }
         }
-    }
 
         positions.forEach(index => {
             const adDiv = document.createElement('div');
             adDiv.className = 'suggestion-item ad-item';
 
             const adIns = document.createElement('ins');
-            adIns.className = 'eas6a97888e20';
-            adIns.setAttribute('data-zoneid', '5840548');
+            adIns.className = 'eas6a97888e37';
+            adIns.setAttribute('data-zoneid', '5829556');
 
             adDiv.appendChild(adIns);
             videoCards[index].after(adDiv);
@@ -733,89 +865,47 @@ window.addEventListener('popstate', function(event) {
         loadVideo(event.state.videoid, true);
     }
 });
+
+function toggleFullscreen() {
+    let videoBox = document.querySelector('.video-box');
+    if (!document.fullscreenElement) {
+        if (videoBox.requestFullscreen) {
+            videoBox.requestFullscreen();
+        } else if (videoBox.webkitRequestFullscreen) {
+            videoBox.webkitRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+// Browser ke default fullscreen change ko monitor karein
+document.addEventListener('fullscreenchange', () => {
+    if (adsManager) {
+        // AdsManager ko batayein ki size badal gaya hai
+        adsManager.resize(window.innerWidth, window.innerHeight, google.ima.ViewMode.FULLSCREEN);
+    }
+});
+    } // CLOSE initPlayer() function
 </script>
+
+<!-- Interstitial script removed as part of performance optimization (low performer) -->
 
 <script type="application/javascript">
 (function() {
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var interZone = isMobile ? "5829432" : "5831970";
-    var interClass = isMobile ? "eas6a97888e33" : "eas6a97888e35";
-
-    // 1. CHECK: Kya 10 minute ho gaye?
-    var lastSeen = localStorage.getItem("inter_last_seen");
-    var now = Date.now();
-    if (lastSeen && (now - lastSeen < 600000)) { // 600,000ms = 10 Minutes
-        console.log("10-min capping active. Skipping ad.");
-        return; 
-    }
-
-    var overlay = document.querySelector('.interstitial-overlay') || document.createElement('div');
-    overlay.className = 'interstitial-overlay';
-    overlay.innerHTML = `
-        <div class="interstitial-ad-container">
-            <div class="${interClass}"></div>
-            <button class="interstitial-close-btn" onclick="this.closest('.interstitial-overlay').classList.remove('active');">✕</button>
-        </div>
-    `;
-    if (!document.body.contains(overlay)) document.body.appendChild(overlay);
-
-    function showOverlay() {
-        overlay.classList.add('active');
-        setTimeout(function() {
-            var closeBtn = overlay.querySelector('.interstitial-close-btn');
-            if (closeBtn) closeBtn.classList.add('show');
-        }, 3000); // 3s close button delay for UX
-    }
-
-    function hideOverlay() {
-        overlay.classList.remove('active');
-        clearTimeout(backupRemoval);
-    }
-
-    var backupRemoval = setTimeout(hideOverlay, 6000); // 6s safety fallback
-
-    (function initInterstitial(){
-        if (typeof window.AdProvider === 'undefined') {
-            // Wait for script to load
-            var checkAd = setInterval(function() {
-                if (typeof window.AdProvider !== 'undefined') {
-                    clearInterval(checkAd);
-                    runAd();
-                }
-            }, 100);
-            setTimeout(function() { clearInterval(checkAd); }, 5000);
-        } else {
-            runAd();
-        }
-
-        function runAd() {
-            (window.AdProvider = window.AdProvider || []).push({
-                serve: {
-                    prefix: interClass, zone: interZone,
-                    onAdLoaded: function() {
-                        // 2. SET TIME: Jab ad load hoga tabhi 10 min ka timer start hoga
-                        localStorage.setItem("inter_last_seen", Date.now());
-                        showOverlay();
-                    },
-                    onAdClosed: function() { hideOverlay(); },
-                    onAdError: function() { hideOverlay(); }
-                }
-            });
-        }
-    })();
-})();
-</script>
-
-<script type="application/javascript">
-(function() {
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var selectedZone = isMobile ? 5830300 : 5830298;
+    // ✅ Mobile only - PC popunder removed (poor performer)
+    if (!isMobile) return; // Exit for desktop users
+    var selectedZone = 5830300; // Mobile popunder zone
 
     function shouldShowPop() {
         // Dono keys ko ek hi kar diya taaki conflict na ho
         const lastPop = localStorage.getItem("last_ad_time");
         if (!lastPop) return true;
-        return (Date.now() - Number(lastPop)) > 900000;
+        // ✅ Reduced frequency to 3 minutes (180,000ms)
+        return (Date.now() - Number(lastPop)) > 180000;
     }
 
     // Isko page load ke 10 sec baad hi trigger karenge taaki VAST ads pehle chalein
@@ -890,4 +980,4 @@ if (typeof google !== 'undefined' && google.ima) {
 </script>
 
 </body>
-</html>
+</html> 
