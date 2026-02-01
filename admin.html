@@ -740,11 +740,19 @@ tr:hover{background:var(--hover)}
     <div class="analytics-card">
       <h4>Total Views</h4>
       <div id="totalViews" style="font-size:32px;font-weight:800;color:var(--accent)">0</div>
+      <div id="todayViews" style="font-size:18px;color:var(--success)">Today: 0</div>
       <p style="color:var(--muted);font-size:12px">Across all videos</p>
     </div>
 
     <div class="analytics-card">
-      <h4>Top 10 Videos</h4>
+      <h4>Top Videos</h4>
+      <div style="margin-bottom:10px;display:flex;gap:10px;align-items:center">
+        <select id="topVideosSort" onchange="updateAnalytics()">
+          <option value="most">Most Views</option>
+          <option value="least">Least Views</option>
+        </select>
+        <button class="btn btn-small btn-blue" onclick="loadMoreVideos()">Load More</button>
+      </div>
       <div id="topVideos"></div>
     </div>
 
@@ -983,6 +991,7 @@ let editingId = null;
 let currentThumbId = null;
 let siteDisabled = false;
 let logs = [];
+let topVideosLimit = 10;
 
 /* ============ AUTH ============ */
 
@@ -1072,16 +1081,9 @@ async function toggleKillSwitch(){
     siteDisabled = wantOff;
     updateKillBadge();
     addLog("killswitch",wantOff ? "Site disabled" : "Site enabled");
-    if (siteDisabled){
-      document.getElementById("mainContainer").innerHTML = `
-        <div style="text-align:center;padding:60px">
-          <h2>Maintenance Mode</h2>
-          <p>Site is disabled. Toggle again to restore.</p>
-        </div>
-      `;
-    } else {
-      location.reload();
-    }
+    // Admin panel should continue working normally even in maintenance mode
+    // Only public pages (index.html, player.html) should show maintenance
+    alert(siteDisabled ? "Maintenance mode enabled! Public pages will show maintenance." : "Maintenance mode disabled!");
   } catch(e) {
     alert("Kill switch error: "+e.message);
   }
@@ -1685,12 +1687,19 @@ function autoFillTitles(){
 function updateAnalytics(){
   const totalViews = videos.reduce((sum,v)=>sum + (v.views||0),0);
   document.getElementById("totalViews").textContent = totalViews.toLocaleString();
-  const top = [...videos].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,10);
+
+  // Calculate today views
+  const today = new Date().toDateString();
+  const todayViews = videos.filter(v => v.date && new Date(v.date).toDateString() === today).reduce((sum,v)=>sum + (v.views||0),0);
+  document.getElementById("todayViews").textContent = `Today: ${todayViews.toLocaleString()}`;
+
+  const sortBy = document.getElementById("topVideosSort").value;
+  const sorted = [...videos].sort((a,b)=> sortBy === 'most' ? (b.views||0)-(a.views||0) : (a.views||0)-(b.views||0)).slice(0, topVideosLimit);
   const topDiv = document.getElementById("topVideos");
-  if (!top.length){
+  if (!sorted.length){
     topDiv.innerHTML = "<p style='color:var(--muted);font-size:12px'>No data</p>";
   } else {
-    topDiv.innerHTML = top.map(v=>`
+    topDiv.innerHTML = sorted.map(v=>`
       <div class="top-video-item">
         <span>${v.title||""} (${v.videoid})</span>
         <span>${(v.views||0).toLocaleString()} views</span>
@@ -1708,6 +1717,11 @@ function updateAnalytics(){
       </div>
     `).join("");
   }
+}
+
+function loadMoreVideos(){
+  topVideosLimit += 10;
+  updateAnalytics();
 }
 
 function refreshDashboard(){
@@ -1908,7 +1922,8 @@ function exportDashboardCSV(){
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `dashboard-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+        const kolkataDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
+        a.download = `dashboard-analytics-${kolkataDate}.csv`;
         a.click();
         URL.revokeObjectURL(url);
 
