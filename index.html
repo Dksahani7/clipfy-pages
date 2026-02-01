@@ -20,8 +20,7 @@
     <script async src="https://a.magsrv.com/ad-provider.js"></script>
     <script async src="https://a.pemsrv.com/ad-provider.js"></script>
     
-    <!-- Push Notification Zone 5838230 (5.26% CTR - HIGHEST!) -->
-    <script async src="https://s.magsrv.com/v1/push.php?idzone=5838230"></script>
+
 
 
 
@@ -662,11 +661,7 @@
 
     </header>
 
-    <!-- Single Banner Ad at Top (Keep only highest CPM banner) -->
-    <div class="ad-slot">
-        <ins class="eas6a97888e42" data-zoneid="5831956"></ins>
-        <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
-    </div>
+    <!-- Top banner removed as part of optimization (low performer) -->
 
     <section class="hero">
         <h1>Watch Trending Videos</h1>
@@ -718,21 +713,79 @@
 
 
 
-    <!-- MAIN VIDEO LOADING + PAGINATION -->
+    <!-- MAINTENANCE MODE CHECK -->
     <script>
-        const DATA_URL = 'https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json';
-        const grid = document.getElementById('grid');
-        const loading = document.getElementById('loading');
-        const searchInput = document.getElementById('searchInput');
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const videoCount = document.getElementById('videoCount');
-        const paginationDiv = document.getElementById('pagination');
+        // Check maintenance mode on page load
+        fetch('https://clipfy.store/api/status')
+            .then(r => r.json())
+            .then(data => {
+                if (data.site_disabled) {
+                    document.body.innerHTML = `
+                        <div style="
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            min-height: 100vh;
+                            background: #0f141a;
+                            color: #fff;
+                            text-align: center;
+                            padding: 20px;
+                            font-family: system-ui, -apple-system, Arial, sans-serif;
+                        ">
+                            <div style="
+                                font-size: 48px;
+                                margin-bottom: 20px;
+                            ">🔧</div>
+                            <h1 style="
+                                font-size: 32px;
+                                margin-bottom: 16px;
+                                color: #ff2f5b;
+                            ">Under Maintenance</h1>
+                            <p style="
+                                font-size: 18px;
+                                color: #8b93b0;
+                                max-width: 500px;
+                                margin-bottom: 30px;
+                            ">We're currently performing maintenance to improve your experience. Please check back soon!</p>
+                            <div style="
+                                font-size: 14px;
+                                color: #8b93b0;
+                            ">© 2024 Clipfy.store</div>
+                        </div>
+                    `;
+                } else {
+                    initPage();
+                }
+            })
+            .catch(() => {
+                // If API fails, assume normal operation
+                initPage();
+            });
 
-        let allVideos = [];
-        let filteredVideos = [];
-        let currentFilter = 'all';
-        let currentPage = 1;
-        const VIDEOS_PER_PAGE = 25;
+        function initPage() {
+            // Push Notification Delay for Index (15 sec)
+            setTimeout(function() {
+                var pushScript = document.createElement('script');
+                pushScript.src = "https://s.magsrv.com/v1/push.php?idzone=5838230";
+                pushScript.async = true;
+                document.head.appendChild(pushScript);
+                console.log("Push Notification loaded after 15s");
+            }, 15000);
+
+            const DATA_URL = 'https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json';
+            const grid = document.getElementById('grid');
+            const loading = document.getElementById('loading');
+            const searchInput = document.getElementById('searchInput');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const videoCount = document.getElementById('videoCount');
+            const paginationDiv = document.getElementById('pagination');
+
+            let allVideos = [];
+            let filteredVideos = [];
+            let currentFilter = 'all';
+            let currentPage = 1;
+            const VIDEOS_PER_PAGE = 25;
 
         // TRACKING: Track page view on load
         function trackPageView() {
@@ -859,8 +912,8 @@
                     adDiv.className = 'card ad-card';
 
                     const adIns = document.createElement('ins');
-                    adIns.className = 'eas6a97888e20';
-                    adIns.setAttribute('data-zoneid', '5840548');
+                    adIns.className = 'eas6a97888e37';
+                    adIns.setAttribute('data-zoneid', '5843052');
 
                     const adScript = document.createElement('script');
                     adScript.textContent = '(AdProvider = window.AdProvider || []).push({"serve": {}});';
@@ -1021,6 +1074,7 @@
                 filterVideos();
             });
         });
+        }
     </script>
 
 
@@ -1184,87 +1238,21 @@
     });
     </script>
 
-<script type="application/javascript">
-(function() {
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var interZone = isMobile ? "5829432" : "5831970";
-    var interClass = isMobile ? "eas6a97888e33" : "eas6a97888e35";
-
-    // 1. CHECK: Kya 10 minute ho gaye?
-    var lastSeen = localStorage.getItem("inter_last_seen");
-    var now = Date.now();
-    if (lastSeen && (now - lastSeen < 600000)) { // 600,000ms = 10 Minutes
-        console.log("10-min capping active. Skipping ad.");
-        return; 
-    }
-
-    var overlay = document.querySelector('.interstitial-overlay') || document.createElement('div');
-    overlay.className = 'interstitial-overlay';
-    overlay.innerHTML = `
-        <div class="interstitial-ad-container">
-            <div class="${interClass}"></div>
-            <button class="interstitial-close-btn" onclick="this.closest('.interstitial-overlay').classList.remove('active');">✕</button>
-        </div>
-    `;
-    if (!document.body.contains(overlay)) document.body.appendChild(overlay);
-
-    function showOverlay() {
-        overlay.classList.add('active');
-        setTimeout(function() {
-            var closeBtn = overlay.querySelector('.interstitial-close-btn');
-            if (closeBtn) closeBtn.classList.add('show');
-        }, 3000); // 3s close button delay for UX
-    }
-
-    function hideOverlay() {
-        overlay.classList.remove('active');
-        clearTimeout(backupRemoval);
-    }
-
-    var backupRemoval = setTimeout(hideOverlay, 6000); // 6s safety fallback
-
-    (function initInterstitial(){
-        if (typeof window.AdProvider === 'undefined') {
-            // Wait for script to load
-            var checkAd = setInterval(function() {
-                if (typeof window.AdProvider !== 'undefined') {
-                    clearInterval(checkAd);
-                    runAd();
-                }
-            }, 100);
-            setTimeout(function() { clearInterval(checkAd); }, 5000);
-        } else {
-            runAd();
-        }
-
-        function runAd() {
-            (window.AdProvider = window.AdProvider || []).push({
-                serve: {
-                    prefix: interClass, zone: interZone,
-                    onAdLoaded: function() {
-                        // 2. SET TIME: Jab ad load hoga tabhi 10 min ka timer start hoga
-                        localStorage.setItem("inter_last_seen", Date.now());
-                        showOverlay();
-                    },
-                    onAdClosed: function() { hideOverlay(); },
-                    onAdError: function() { hideOverlay(); }
-                }
-            });
-        }
-    })();
-})();
-</script>
+<!-- Interstitial script removed as part of performance optimization (low performer) -->
 
 <script type="application/javascript">
 (function() {
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var selectedZone = isMobile ? 5830300 : 5830298;
+    // ✅ Mobile only - PC popunder removed (poor performer)
+    if (!isMobile) return; // Exit for desktop users
+    var selectedZone = 5830300; // Mobile popunder zone
 
     function shouldShowPop() {
         // Dono keys ko ek hi kar diya taaki conflict na ho
         const lastPop = localStorage.getItem("last_ad_time");
         if (!lastPop) return true;
-        return (Date.now() - Number(lastPop)) > 900000;
+        // ✅ Reduced frequency to 8 minutes (480,000ms)
+        return (Date.now() - Number(lastPop)) > 480000;
     }
 
     // Isko page load ke 10 sec baad hi trigger karenge taaki VAST ads pehle chalein
