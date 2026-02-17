@@ -1,90 +1,335 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Legal & Information - Clipfy</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
 
-<style>
-body{
-  background:#0f141a;
-  color:#fff;
-  font-family:Arial,system-ui;
-  line-height:1.7;
-  padding:20px;
-  max-width:900px;
-  margin:auto;
-}
-h1,h2{color:#ff2f5b}
-section{
-  background:#12182e;
-  padding:16px;
-  border-radius:12px;
-  margin-bottom:20px;
-}
-a{color:#ff2f5b;text-decoration:none}
-.small{font-size:13px;color:#8b93b0}
-</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal & DMCA | Clipfy.store</title>
+    <meta name="description" content="Legal information, DMCA policy, and terms for Clipfy.store">
+    <meta name="robots" content="index, follow">
+
+    <style>
+        :root {
+            --bg: #0f141a;
+            --card: #12182e;
+            --text: #fff;
+            --muted: #8b93b0;
+            --accent: #ff2f5b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(15, 20, 26, .95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: auto;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .last-updated {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--muted);
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            color: var(--muted);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .warning-box {
+            background: rgba(255, 47, 91, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box strong {
+            color: var(--accent);
+        }
+
+        .contact-box {
+            background: var(--card);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .telegram-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .telegram-btn:hover {
+            background: #ff1f4b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 47, 91, 0.4);
+        }
+
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            padding: 20px;
+            background: #070b10;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        strong {
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .container {
+                margin: 20px auto;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <header>
+        <nav class="nav">
+            <a href="/" class="logo">▶ <span>clipfy</span>.store</a>
+        </nav>
+    </header>
 
-<h1>Legal & Information</h1>
+    <div class="container">
+        <h1>⚖️ Legal Information</h1>
+        <p class="last-updated">Last Updated: February 17, 2026</p>
 
-<!-- ABOUT -->
-<section id="about">
-<h2>About Clipfy</h2>
-<p>Clipfy is an independent video discovery platform that helps users find and explore publicly available video content from across the web.</p>
-<p>We do not host any video files on our servers. All media content is embedded or linked from third-party services.</p>
-</section>
+        <!-- AGE RESTRICTION -->
+        <div class="warning-box">
+            <strong>🔞 18+ ONLY:</strong> You must be at least 18 years old to access this website. By using
+            Clipfy.store, you confirm that you are of legal age.
+        </div>
 
-<!-- CONTACT -->
-<section id="contact">
-<h2>Contact Us</h2>
-<p>If you have any questions or concerns, you can contact us at:</p>
-<p><strong>Email:</strong> support@clipfy.store</p>
-<p class="small">For copyright issues, please refer to the DMCA section below.</p>
-</section>
+        <!-- DISCLAIMER -->
+        <h2>📋 Disclaimer</h2>
+        <p>
+            Clipfy.store is a <strong>private video streaming platform</strong>. All videos are curated and uploaded by
+            the site administrator. We do not accept user uploads.
+        </p>
+        <ul>
+            <li>Videos are hosted on third-party servers (Cloudflare R2)</li>
+            <li>Content is for entertainment purposes only</li>
+            <li>We respect copyright and respond to valid DMCA requests</li>
+            <li>Site is operated privately for adult audiences</li>
+        </ul>
 
-<!-- PRIVACY -->
-<section id="privacy">
-<h2>Privacy Policy</h2>
-<p>Clipfy does not require user registration and does not collect personally identifiable information.</p>
-<p>We may use third-party advertising services which may use cookies or similar technologies.</p>
-<p>By using Clipfy, you agree to this privacy policy.</p>
-</section>
+        <!-- DMCA POLICY -->
+        <h2>🛡️ DMCA & Copyright</h2>
+        <p>
+            If you believe any content on Clipfy.store infringes your copyright, please contact us immediately via
+            Telegram with:
+        </p>
+        <ul>
+            <li>Direct URL of the video on Clipfy.store</li>
+            <li>Proof of copyright ownership</li>
+            <li>Your contact information</li>
+            <li>Brief explanation of the infringement</li>
+        </ul>
+        <p>
+            <strong>Response Time:</strong> We typically respond within 24-48 hours and remove valid infringing content
+            within 72 hours.
+        </p>
 
-<!-- TERMS -->
-<section id="terms">
-<h2>Terms of Service</h2>
-<p>By accessing Clipfy, you agree to comply with these terms.</p>
-<p>Clipfy does not host any content and is not responsible for media hosted on third-party platforms.</p>
-<p>We reserve the right to remove any content or links at any time without notice.</p>
-</section>
+        <div class="contact-box">
+            <h3>📬 DMCA Takedown Request</h3>
+            <p>Contact us via Telegram for copyright issues:</p>
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank" class="telegram-btn">
+                📱 Contact Support on Telegram
+            </a>
+        </div>
 
-<!-- DMCA -->
-<section id="dmca">
-<h2>DMCA Takedown Policy</h2>
-<p>Clipfy respects intellectual property rights.</p>
-<p>If you believe that any content infringes your copyright, please send a DMCA notice including:</p>
-<ul>
-  <li>Proof of ownership</li>
-  <li>Exact URL(s) of the content</li>
-  <li>Your contact information</li>
-</ul>
-<p><strong>Email:</strong> dmca@clipfy.store</p>
-<p>Valid requests are processed within <strong>24–48 hours</strong>.</p>
-</section>
+        <!-- PREMIUM SUBSCRIPTIONS -->
+        <h2>💎 Premium Access</h2>
+        <p>
+            Clipfy.store offers premium subscription plans for ad-free viewing and exclusive content:
+        </p>
+        <ul>
+            <li><strong>₹49 Monthly:</strong> 30-day access to premium content</li>
+            <li><strong>₹199 Lifetime:</strong> Permanent access to all premium content</li>
+        </ul>
+        <p>
+            <strong>Payment:</strong> UPI via Telegram support<br>
+            <strong>Activation:</strong> Within 24 hours of payment<br>
+            <strong>Refund Policy:</strong> No refunds after access is granted
+        </p>
 
-<!-- COOKIES -->
-<section id="cookies">
-<h2>Cookie Policy</h2>
-<p>Clipfy uses cookies to improve user experience and support advertising services.</p>
-<p>You can disable cookies in your browser settings if you prefer.</p>
-</section>
+        <!-- PRIVACY -->
+        <h2>🔒 Privacy & Data</h2>
+        <p>We collect minimal information:</p>
+        <ul>
+            <li><strong>Analytics:</strong> Video views, watch time, general location (country)</li>
+            <li><strong>Cookies:</strong> For site functionality and preferences</li>
+            <li><strong>Ads:</strong> Third-party ads (ExoClick) may use cookies</li>
+        </ul>
+        <p>
+            We <strong>do not</strong> collect personal information unless you contact us for premium subscriptions. We
+            do not sell your data.
+        </p>
 
-<p class="small">© 2024 Clipfy.store — All rights reserved.</p>
+        <!-- TERMS -->
+        <h2>📜 Terms of Use</h2>
+        <p>By using Clipfy.store, you agree to:</p>
+        <ul>
+            <li>Be at least 18 years old</li>
+            <li>Not download or redistribute content without permission</li>
+            <li>Not use automated tools (bots, scrapers) to access the site</li>
+            <li>Accept the site "as is" without warranties</li>
+            <li>Respect intellectual property rights</li>
+        </ul>
 
+        <div class="warning-box">
+            <strong>⚠️ Important:</strong> We reserve the right to terminate access for violations of these terms. The
+            site is provided "as is" without any warranties.
+        </div>
+
+        <!-- ADVERTISING -->
+        <h2>📢 Advertising</h2>
+        <p>
+            Clipfy.store displays third-party advertisements (ExoClick). We do not control ad content. Clicking ads may
+            redirect you to external websites. Premium subscribers enjoy an ad-free experience.
+        </p>
+
+        <!-- CONTACT -->
+        <h2>📞 Contact & Support</h2>
+        <p>For all inquiries including:</p>
+        <ul>
+            <li>DMCA takedown requests</li>
+            <li>Premium subscription support</li>
+            <li>Technical issues</li>
+            <li>General questions</li>
+        </ul>
+
+        <div class="contact-box">
+            <h3>💬 Get in Touch</h3>
+            <p><strong>Telegram Support:</strong> @Clipfy_support</p>
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank" class="telegram-btn">
+                🔗 Open Telegram Chat
+            </a>
+            <p style="margin-top: 20px; font-size: 13px; color: #666;">
+                <strong>Available:</strong> 24/7 for urgent issues<br>
+                <strong>Response Time:</strong> Typically 2-4 hours
+            </p>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="warning-box">
+            <strong>📌 Quick Summary:</strong>
+            <ul style="margin-top: 10px;">
+                <li>18+ only adult content site</li>
+                <li>Private platform - admin curated content</li>
+                <li>DMCA compliant - contact us for takedowns</li>
+                <li>Premium plans: ₹49 Monthly, ₹199 Lifetime</li>
+                <li>Contact via Telegram for all support</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <div>
+            <a href="/" style="color: var(--accent); text-decoration: none; margin: 0 10px;">Home</a>
+            <a href="/legal.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Legal & DMCA</a>
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank"
+                style="color: var(--accent); text-decoration: none; margin: 0 10px;">📱 Support</a>
+        </div>
+        <div style="margin-top: 15px; font-size: 12px;">
+            © 2026 Clipfy.store. All rights reserved. | 18+ Only
+        </div>
+    </footer>
 </body>
+
 </html>
