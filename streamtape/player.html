@@ -1,313 +1,585 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Clipfy Player</title>
-<meta name="description" content="Watch videos on Clipfy Player">
-<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-<!-- ExoClick Ad Provider -->
-<script async src="https://a.magsrv.com/ad-provider.js"></script>
-<script async src="https://a.pemsrv.com/ad-provider.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <!-- Dynamic Title (Updated by JavaScript) -->
+    <title>Clipfy Player | Watch Desi Indian Videos</title>
+
+    <!-- Dynamic Description (Updated by JavaScript) -->
+    <meta name="description" content="Watch hot desi Indian viral videos on Clipfy Player. Free streaming HD quality.">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="rating" content="adult">
+
+    <!-- Canonical URL (Updated by JavaScript) -->
+    <link rel="canonical" id="canonical" href="https://clipfy.store/streamtape/player">
+
+    <!-- Open Graph Tags (Dynamic update via JS) -->
+    <meta property="og:type" content="video.other">
+    <meta property="og:site_name" content="Clipfy.store">
+    <meta property="og:url" id="ogUrl" content="">
+    <meta property="og:title" id="ogTitle" content="">
+    <meta property="og:description" id="ogDesc" content="">
+    <meta property="og:image" id="ogImage" content="">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="player">
+    <meta name="twitter:site" content="@clipfystore">
+
+    <!-- Video Schema (Dynamic - Updated by JavaScript) -->
+    <script type="application/ld+json" id="videoSchema">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "Video",
+      "description": "Watch video on Clipfy",
+      "thumbnailUrl": "",
+      "uploadDate": "2024-12-01",
+      "contentUrl": "",
+      "embedUrl": ""
+    }
+    </script>
+
+    <!-- Breadcrumb Schema (Dynamic - Updated by JavaScript) -->
+    <script type="application/ld+json" id="breadcrumbSchema">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": []
+    }
+    </script>
+
+    <!-- ExoClick Ad Provider -->
+    <script async src="https://a.magsrv.com/ad-provider.js"></script>
+    <script async src="https://a.pemsrv.com/ad-provider.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css">
+    <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
 
 
 
 
 
-<style>
-:root{
-  --bg:#0f141a;
-  --card:#12182e;
-  --text:#fff;
-  --muted:#8b93b0;
-  --accent:#ff2f5b;
-  --hover:#1a2139;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Arial,sans-serif;line-height:1.6;overflow-x:hidden}
+    <style>
+        :root {
+            --bg: #0f141a;
+            --card: #12182e;
+            --text: #fff;
+            --muted: #8b93b0;
+            --accent: #ff2f5b;
+            --hover: #1a2139;
+        }
 
-/* Header */
-header{position:sticky;top:0;z-index:1000;background:rgba(15,20,26,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05);box-shadow:0 4px 20px rgba(0,0,0,.3)}
-.nav{max-width:1200px;margin:auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-weight:900;font-size:22px;display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit}
-.logo span{color:var(--accent)}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
 
-/* Video Box */
-.video-container {
-    z-index: 900;
-    background: #000;
-    width: 100%;
-}
-.video-box{
-    position: relative;
-    width:100%;
-    aspect-ratio: 16/9;
-    max-height: 60vh;
-    background:#000;
-}
-.video-box video{width:100%;height:100%;border:0;object-fit:contain}
-#adContainer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;display:none;background:#000;pointer-events:auto !important}
-#adContainer.active{display:block;pointer-events:auto}
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, Arial, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden
+        }
 
-/* Content */
-.content-wrapper{max-width:1200px;margin:auto;padding:0 20px; position: relative; z-index: 100;}
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(15, 20, 26, .95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .3)
+        }
 
-/* AD Containers */
-.ad-728-player{margin:20px auto;text-align:center;max-width:728px;min-height:90px}
-.ad-300-player{margin:20px auto;text-align:center;width:300px;height:250px;justify-self:center;display:grid;place-items:center}
-.ad-native-player{margin:30px auto;width:100%;max-width:1200px}
+        .nav {
+            max-width: 1200px;
+            margin: auto;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
 
-.post{padding:14px 0;display:flex;gap:10px;border-bottom:1px solid rgba(255,255,255,.05)}
-.dp{width:42px;height:42px;border-radius:50%;background:var(--card);background-size:cover;background-position:center}
-#creatorName{font-weight:600}
-#timeAgo{font-size:12px;color:var(--muted)}
-.stats{display:flex;gap:20px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px;color:var(--muted)}
-.blog-content{padding:14px 0}
-#mainTitle{font-size:22px;font-weight:700;margin-bottom:10px}
-.suggestions-header{padding:20px 0 10px 0;font-size:20px;font-weight:700;color:var(--text)}
-#suggestions{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding-bottom:20px}
-.suggestion-item{background:var(--card);border-radius:12px;overflow:hidden;cursor:pointer;transition:.3s}
-.suggestion-item:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(255,47,91,.2)}
-.suggestion-thumbnail{width:100%;aspect-ratio:16/9;overflow:hidden}
-.suggestion-thumbnail img{width:100%;height:100%;object-fit:cover}
-.suggestion-title{padding:10px 12px;font-size:15px;line-height:1.4;font-weight:600}
+        .logo {
+            font-weight: 900;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit
+        }
 
-.ad-item {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    border: 1px solid rgba(255, 47, 91, 0.3) !important;
-    position: relative;
-}
+        .logo span {
+            color: var(--accent)
+        }
 
-.ad-item::before {
-    content: "Sponsored";
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: rgba(255, 47, 91, 0.9);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 700;
-    z-index: 10;
-}
+        /* Video Box */
+        .video-container {
+            z-index: 900;
+            background: #000;
+            width: 100%;
+        }
 
-.ad-item ins {
-    display: block;
-    min-height: 180px;
-}
+        .video-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            max-height: 60vh;
+            background: #000;
+        }
 
-.ad-item .ad-close-btn {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 20px;
-    height: 20px;
-    background: rgba(0,0,0,.6);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-}
+        .video-box video {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            object-fit: contain
+        }
 
-.ad-item .ad-close-btn:hover {
-    opacity: 1;
-    background: rgba(255, 47, 91, 0.8);
-}
+        /* Content */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 100;
+        }
 
-/* Interstitial Ad Close Button */
-.interstitial-close-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 47, 91, 0.9);
-    color: #fff;
-    border: 3px solid #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 24px;
-    font-weight: bold;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
+        /* AD Containers */
+        .ad-728-player {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 728px;
+            min-height: 90px
+        }
 
-.interstitial-close-btn.show {
-    opacity: 1;
-    transform: scale(1);
-}
+        .ad-300-player {
+            margin: 20px auto;
+            text-align: center;
+            width: 300px;
+            height: 250px;
+            justify-self: center;
+            display: grid;
+            place-items: center
+        }
 
-.interstitial-close-btn:hover {
-    background: #ff2f5b;
-    transform: scale(1.1);
-    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
-}
+        .ad-native-player {
+            margin: 30px auto;
+            width: 100%;
+            max-width: 1200px
+        }
 
-.interstitial-close-btn:active {
-    transform: scale(0.95);
-}
+        .post {
+            padding: 14px 0;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, .05)
+        }
 
-/* Interstitial Overlay */
-.interstitial-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9); /* Kaala parda */
-    z-index: 99999; /* Sabse upar */
-    display: none;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
+        .dp {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--card);
+            background-size: cover;
+            background-position: center
+        }
 
-.interstitial-overlay.active {
-    display: flex !important;
-    opacity: 1;
-    pointer-events: auto;
-    align-items: center;
-    justify-content: center;
-}
+        #creatorName {
+            font-weight: 600
+        }
 
-.interstitial-ad-container {
-    position: relative;
-    max-width: 90vw;
-    max-height: 90vh;
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
+        #timeAgo {
+            font-size: 12px;
+            color: var(--muted)
+        }
 
-/* Footer */
-footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding:40px 20px;margin-top:40px; position: relative; z-index: 1000;}
+        .stats {
+            display: flex;
+            gap: 20px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            font-size: 14px;
+            color: var(--muted)
+        }
+
+        .blog-content {
+            padding: 14px 0
+        }
+
+        #mainTitle {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px
+        }
+
+        .suggestions-header {
+            padding: 20px 0 10px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        #suggestions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding-bottom: 20px
+        }
+
+        .suggestion-item {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: .3s
+        }
+
+        .suggestion-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(255, 47, 91, .2)
+        }
+
+        .suggestion-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden
+        }
+
+        .suggestion-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .suggestion-title {
+            padding: 10px 12px;
+            font-size: 15px;
+            line-height: 1.4;
+            font-weight: 600
+        }
+
+        .ad-item {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 1px solid rgba(255, 47, 91, 0.3) !important;
+            position: relative;
+        }
+
+        .ad-item::before {
+            content: "Sponsored";
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 47, 91, 0.9);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 10;
+        }
+
+        .ad-item ins {
+            display: block;
+            min-height: 180px;
+        }
+
+        .ad-item .ad-close-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, .6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .ad-item .ad-close-btn:hover {
+            opacity: 1;
+            background: rgba(255, 47, 91, 0.8);
+        }
+
+        /* Interstitial Ad Close Button */
+        .interstitial-close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 47, 91, 0.9);
+            color: #fff;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .interstitial-close-btn.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .interstitial-close-btn:hover {
+            background: #ff2f5b;
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .interstitial-close-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Interstitial Overlay */
+        .interstitial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            /* Kaala parda */
+            z-index: 99999;
+            /* Sabse upar */
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .interstitial-overlay.active {
+            display: flex !important;
+            opacity: 1;
+            pointer-events: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .interstitial-ad-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card);
+            border-top: 1px solid rgba(255, 255, 255, .05);
+            padding: 40px 20px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1000;
+        }
 
 
 
-@media(max-width:768px){
-    .ad-728-player{display:none}
-    .ad-300-player{width:100%;max-width:300px}
-}
+        @media(max-width:768px) {
+            .ad-728-player {
+                display: none
+            }
 
-/* Fullscreen mode mein ad ko video ke upar lane ke liye */
-:fullscreen #adContainer,
-:-webkit-full-screen #adContainer,
-:-moz-full-screen #adContainer {
-    z-index: 2147483647 !important;
-    display: block;
-}
+            .ad-300-player {
+                width: 100%;
+                max-width: 300px
+            }
+        }
 
-.video-box:fullscreen video {
-    width: 100%;
-    height: 100%;
-}
-</style>
+        .video-box:fullscreen video {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
 
-<header>
-  <nav class="nav">
-    <a href="/" class="logo">▶ <span>clipfy.store</span></a>
-  </nav>
-</header>
+    <header>
+        <nav class="nav">
+            <a href="/" class="logo">▶ <span>clipfy.store</span></a>
+        </nav>
+    </header>
 
-<div class="video-container">
-    <div class="video-box">
-        <div id="adContainer"></div>
-        <video id="player" controls muted preload="metadata" controlsList="nodownload"></video>
-    </div>
-</div>
-
-<!-- Social Bar (placed directly below video to increase CTR) -->
-<div id="socialBar" style="max-width:1200px;margin:10px auto;text-align:center;">
-    <div style="display:inline-flex;gap:8px;align-items:center;">
-        <a href="#" onclick="window.open('https://t.me/+626MQDOX5iAxMmJh')" style="background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:700">Join Telegram</a>
-        <a href="#" onclick="navigator.share && navigator.share({title:document.title,url:location.href})" style="background:#222;color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:700">Share</a>
-    </div>
-</div>
-
-<!-- Ad Slot -->
-<div class="ad-728-player">
-    <ins class="eas6a97888e42" data-zoneid="5832056"></ins>
-    <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
-</div>
-
-
-
-
-
-
-
-<div class="content-wrapper">
-    <div class="blog-content">
-        <h2 id="mainTitle"></h2>
-    </div>
-    
-    <div class="post">
-        <div class="dp" id="creatorDp"></div>
-        <div>
-            <div id="creatorName"></div>
-            <div id="timeAgo"></div>
+    <div class="video-container">
+        <div class="video-box">
+            <video id="player" controls preload="metadata" controlsList="nodownload" playsinline></video>
         </div>
     </div>
 
-    <div class="stats">
-        <div><span id="views">0</span> views</div>
-        <div><span id="likes">0</span> likes</div>
-        <div style="margin-left:auto">
-            <button id="reportBtn" style="padding:8px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🚩 Report Video</button>
+    <!-- Social Bar (placed directly below video to increase CTR) -->
+    <div id="socialBar" style="max-width:1200px;margin:10px auto;text-align:center;">
+        <div style="display:inline-flex;gap:8px;align-items:center;">
+            <a href="#" onclick="window.open('https://t.me/+626MQDOX5iAxMmJh')"
+                style="background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:700">Join
+                Telegram</a>
+            <a href="#" onclick="navigator.share && navigator.share({title:document.title,url:location.href})"
+                style="background:#222;color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:700">Share</a>
         </div>
     </div>
 
-    <div class="suggestions-header">More Videos 🔥</div>
-    <div id="suggestions"></div>
-    <div style="text-align:center;margin:20px 0;">
-        <button id="loadMoreBtn" style="background:var(--accent);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;display:none;">Load More Videos</button>
+    <!-- 🔥 CHANGE #6: Banner Ad Video ke Neeche (High CTR Zone) -->
+    <div style="margin:15px auto;text-align:center;max-width:300px;">
+        <ins class="eas6a97888e37" data-zoneid="5829556"></ins>
+        <script>(window.AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
     </div>
 
-    <!-- Recommendation Widget -->
-    <div style="margin-top: 40px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,.05);">
-        <ins class="eas6a97888e20" data-zoneid="5829434"></ins>
-        <script>(window.AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+    <!-- Ad Slot -->
+    <div class="ad-728-player">
+        <ins class="eas6a97888e42" data-zoneid="5832056"></ins>
+        <script>(window.AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
     </div>
 
-</div>
-
-<footer>
-  <div class="footer-content">
-      <div class="footer-section"><h4>About Clipfy</h4><ul><li><a href="#">About Us</a></li></ul></div>
-      <div class="footer-section"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li></ul></div>
-  </div>
-  <div class="footer-bottom">© 2024 Clipfy.store. All rights reserved.</div>
-</footer>
 
 
 
-// MAINTENANCE MODE CHECK
-<script>
-    // Check maintenance mode on page load
-    fetch('https://clipfy.store/api/status')
-        .then(r => r.json())
-        .then(data => {
-            if (data.site_disabled) {
-                document.body.innerHTML = `
+
+
+
+    <div class="content-wrapper">
+        <div class="blog-content">
+            <h2 id="mainTitle"></h2>
+        </div>
+
+        <div class="post">
+            <div class="dp" id="creatorDp"></div>
+            <div>
+                <div id="creatorName"></div>
+                <div id="timeAgo"></div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div><span id="views">0</span> views</div>
+            <div><span id="likes">0</span> likes</div>
+            <div style="margin-left:auto">
+                <button id="reportBtn"
+                    style="padding:8px 14px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s"
+                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🚩 Report Video</button>
+            </div>
+        </div>
+
+        <!-- 🔥 PREMIUM TELEGRAM BANNER (SIMPLE) -->
+        <div style="
+            background: #12182e;
+            border: 1px solid #ff2f5b;
+            border-radius: 12px;
+            padding: 24px 20px;
+            margin: 20px 0;
+            text-align: center;
+        ">
+            <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">
+                🔥 PREMIUM ACCESS
+            </div>
+            <div style="margin-bottom:20px;color:#8b93b0;font-size:14px;">
+                No Ads • Full HD • Direct Download
+            </div>
+
+            <div style="display:flex;justify-content:center;gap:15px;margin-bottom:20px;flex-wrap:wrap;">
+                <div
+                    style="background:#1a2139;padding:15px 30px;border-radius:10px;border:1px solid #333;min-width:120px;">
+                    <div style="font-size:24px;font-weight:900;color:#ff2f5b;">₹49</div>
+                    <div style="font-size:12px;color:#888;margin-top:4px;">Monthly</div>
+                </div>
+                <div
+                    style="background:#1a2139;padding:15px 30px;border-radius:10px;border:1px solid #333;min-width:120px;">
+                    <div style="font-size:24px;font-weight:900;color:#ff2f5b;">₹199</div>
+                    <div style="font-size:12px;color:#888;margin-top:4px;">Lifetime</div>
+                </div>
+            </div>
+
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank" style="
+                display:inline-block;
+                background:#ff2f5b;
+                color:#fff;
+                padding:12px 30px;
+                border-radius:50px;
+                text-decoration:none;
+                font-weight:700;
+                font-size:15px;
+                box-shadow: 0 4px 15px rgba(255, 47, 91, 0.3);
+            ">
+                Contact @Clipfy_support
+            </a>
+
+            <div style="color:#555;font-size:12px;margin-top:16px;">
+                💳 UPI accepted via Support
+            </div>
+        </div>
+
+        <div class="suggestions-header">More Videos 🔥</div>
+        <div id="suggestions"></div>
+        <div style="text-align:center;margin:20px 0;">
+            <button id="loadMoreBtn"
+                style="background:var(--accent);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;display:none;">Load
+                More Videos</button>
+        </div>
+
+        <!-- Recommendation Widget -->
+        <div style="margin-top: 40px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,.05);">
+            <ins class="eas6a97888e20" data-zoneid="5829434"></ins>
+            <script>(window.AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About Clipfy</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2024 Clipfy.store. All rights reserved.</div>
+    </footer>
+
+
+
+    <!-- // MAINTENANCE MODE CHECK -->
+    <script>
+        // Check maintenance mode on page load
+        fetch('https://clipfy.store/api/status')
+            .then(r => r.json())
+            .then(data => {
+                if (data.site_disabled) {
+                    document.body.innerHTML = `
                     <div style="
                         display: flex;
                         flex-direction: column;
@@ -341,643 +613,688 @@ footer{background:var(--card);border-top:1px solid rgba(255,255,255,.05);padding
                         ">© 2024 Clipfy.store</div>
                     </div>
                 `;
-            } else {
-                initPlayer();
-            }
-        })
-        .catch(() => {
-            // If API fails, assume normal operation
-            initPlayer();
-        });
-
-    function initPlayer() {
-        // Push Notification Delay for Player (10 sec)
-        setTimeout(function() {
-            var pushScript = document.createElement('script');
-            pushScript.src = "https://s.magsrv.com/v1/push.php?idzone=5838230";
-            pushScript.async = true;
-            document.head.appendChild(pushScript);
-            console.log("Push Notification loaded after 10s");
-        }, 10000);
-
-        // ---- CONFIG ----
-        const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json";
-        const R2_STREAM_BASE = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/";
-
-        // Aapke saare Ad Zones ka array
-        const AD_ZONES = [
-          "5825550", "5829428", "5830146", "5825492", "5825490"
-        ];
-
-        const player = document.getElementById("player");
-        const adContainer = document.getElementById("adContainer");
-        const mainTitle = document.getElementById("mainTitle");
-        const creatorNameEl = document.getElementById("creatorName");
-        const timeAgoEl = document.getElementById("timeAgo");
-        const viewsEl = document.getElementById("views");
-        const likesEl = document.getElementById("likes");
-        const creatorDp = document.getElementById("creatorDp");
-        const suggestions = document.getElementById("suggestions");
-
-        const adConfigs = [
-            { class: 'eas6a97888e37', zoneid: '5829556' },
-            { class: 'eas6a97888e38', zoneid: '5829557' },
-            { class: 'eas6a97888e39', zoneid: '5829558' }
-        ];
-
-        let videos = {};
-        let currentVideoId = null;
-        let allSuggestionIds = [];
-        let suggestionsLoaded = 0;
-        let isInitialLoad = true;
-
-        let adsLoader, adsManager, adDisplayContainer;
-        let currentZoneIndex = 0;
-        let adSlots = [];
-        let retryInterval = null;
-        let isAdPlaying = false;
-        let hasUserInteracted = false;
-        let initialized = false;
-
-        function initIMA() {
-  if (adDisplayContainer) return;
-  adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, player);
-  adsLoader = new google.ima.AdsLoader(adDisplayContainer);
-
-  adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, (e) => {
-    adsManager = e.getAdsManager(player);
-
-    adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
-      isAdPlaying = true;
-      adContainer.classList.add('active');
-
-      // 🔥 FIX: Agar video fullscreen hai, toh ad container ko bhi fullscreen layout mein bhejo
-      if (document.fullscreenElement || document.webkitFullscreenElement) {
-        adContainer.style.width = '100vw';
-        adContainer.style.height = '100vh';
-      }
-      player.pause();
-    });
-
-    adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
-      resetAdSystem();
-    });
-
-    adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, (e) => {
-      console.log("IMA Ad Error:", e.getError());
-      document.getElementById('adContainer').style.display = 'none'; // Force hide
-      player.play(); // Resume video
-      tryNextZone();
-    });
-
-    // 🔥 AD CLICK PE AUTO-RESUME
-    adsManager.addEventListener(google.ima.AdEvent.Type.CLICK, () => {
-      setTimeout(() => {
-        if (adsManager && isAdPlaying) {
-          adsManager.resume();
-        }
-      }, 100);
-    });
-
-    adsManager.init(player.clientWidth, player.clientHeight, google.ima.ViewMode.NORMAL);
-    adsManager.start();
-  });
-
-  adsLoader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, () => tryNextZone());
-}
-
-function resetAdSystem() {
-  isAdPlaying = false;
-  adContainer.classList.remove('active');
-  player.play();
-  clearInterval(retryInterval);
-  currentZoneIndex = 0; // Agle slot ke liye shuruat se check karein
-}
-
-// Waterfall Logic: Ek zone fail toh dusra try karo
-function tryNextZone() {
-  currentZoneIndex++;
-  if (currentZoneIndex < AD_ZONES.length) {
-    console.log("Switching to Ad Zone: " + AD_ZONES[currentZoneIndex]);
-    requestAd();
-  } else {
-    console.log("All zones empty. Waiting for next retry cycle...");
-    clearInterval(retryInterval);
-    isAdPlaying = false;
-    adContainer.classList.remove('active');
-    player.play();
-  }
-}
-
-function requestAd() {
-  if (typeof google === 'undefined') return;
-  const req = new google.ima.AdsRequest();
-  // Dynamic Zone Selection
-  const zoneId = AD_ZONES[currentZoneIndex];
-  console.log(`🎯 REQUESTING AD: Zone ${currentZoneIndex + 1}/${AD_ZONES.length} - ID: ${zoneId}`);
-
-  // Rotate between two best VAST zones for in-stream
-  var vastZones = [
-    'https://syndication.exoclick.com/splash.php?idzone=5829428&type=vast',
-    'https://syndication.exoclick.com/splash.php?idzone=5830146&type=vast'
-  ];
-
-  if (zoneId === '5829428' || zoneId === '5830146') {
-    var selectedVastZone = vastZones[Math.floor(Math.random() * vastZones.length)];
-    req.adTagUrl = selectedVastZone;
-    console.log('🎬 Using VAST zone:', selectedVastZone);
-  } else {
-    req.adTagUrl = `https://s.magsrv.com/v1/vast.php?idzone=${zoneId}&cb=${Date.now()}`;
-  }
-
-  adsLoader.requestAds(req);
-}
-
-// SMART TRIGGER LOGIC
-player.onloadedmetadata = () => {
-  const dur = player.duration;
-  adSlots = []; // Purane slots clear karein
-
-  if (dur <= 300) {
-    // 5 min se kam: 10% par aur khatam hone se 10s pehle
-    adSlots.push(Math.floor(dur * 0.1));
-    adSlots.push(Math.floor(dur - 10));
-  }
-  else if (dur > 300 && dur <= 600) {
-    // 5 se 10 min: 50%, aur 90%
-    adSlots.push(Math.floor(dur * 0.5), Math.floor(dur * 0.9));
-  }
-  else {
-    // 10 min se badi: 30%, 60%, aur 90%
-    adSlots.push(Math.floor(dur * 0.3), Math.floor(dur * 0.6), Math.floor(dur * 0.9));
-  }
-};
-
-player.ontimeupdate = () => {
-  if (isAdPlaying) return;
-  let cur = Math.floor(player.currentTime);
-  
-  if (adSlots.includes(cur)) {
-    adSlots = adSlots.filter(s => s !== cur);
-    startAdCycle();
-  }
-};
-
-function startAdCycle() {
-  if (AD_ZONES.length === 0) return;
-  currentZoneIndex = 0;
-  requestAd();
-
-  // Retry loop: Har 45s mein phir koshish karein agar ad nahi mila
-  clearInterval(retryInterval);
-  retryInterval = setInterval(() => {
-    if (!isAdPlaying) {
-      // Continue from current zone, don't reset to 0
-      if (currentZoneIndex >= AD_ZONES.length) {
-        currentZoneIndex = 0; // Reset only if we've exhausted all zones
-      }
-      requestAd();
-    }
-  }, 45000);
-}
-
-function setupAdMarkers() {
-  // Setup ad slots for mid-roll and post-roll without starting pre-roll
-  const dur = player.duration;
-  adSlots = []; // Purane slots clear karein
-
-  if (dur <= 300) {
-    // 5 min se kam: 10% par aur khatam hone se 10s pehle
-    adSlots.push(Math.floor(dur * 0.1));
-    adSlots.push(Math.floor(dur - 10));
-  }
-  else if (dur > 300 && dur <= 600) {
-    // 5 se 10 min: 50%, aur 90%
-    adSlots.push(Math.floor(dur * 0.5), Math.floor(dur * 0.9));
-  }
-  else {
-    // 10 min se badi: 30%, 60%, aur 90%
-    adSlots.push(Math.floor(dur * 0.3), Math.floor(dur * 0.6), Math.floor(dur * 0.9));
-  }
-}
-
-// Disable right-click
-player.addEventListener('contextmenu', e => e.preventDefault());
-
-// User interaction for ads
-player.addEventListener('play', () => {
-  if (!hasUserInteracted) {
-    hasUserInteracted = true;
-    if (!initialized) {
-      adDisplayContainer.initialize();
-      initialized = true;
-    }
-
-    // Naya Logic:
-    if (player.duration > 300) {
-        // 5 MIN SE BADI VIDEO: Turant ad engine start karo (Pre-roll aayega)
-        startAdCycle();
-    } else if (player.duration > 3) {
-        // 5 MIN SE CHOTI VIDEO: Pre-roll skip karo, sirf markers setup karo
-        // Isse sirf 10% aur end wala ad chalega
-        setupAdMarkers();
-        console.log("Short video detected: Skipping Pre-roll, markers set.");
-    }
-  }
-});
-
-/* --------- Meta Update --------- */
-function updateMeta(v){
-    document.querySelectorAll('meta[property="og:image"],meta[name="twitter:image"],meta[name="twitter:card"]').forEach(m=>m.remove());
-    const head = document.head;
-    const ogImg = document.createElement("meta");
-    ogImg.setAttribute("property","og:image");
-    ogImg.setAttribute("content", v.thumb);
-    head.appendChild(ogImg);
-}
-
-/* --------- Helpers --------- */
-function shuffleArray(arr){
-    for(let i=arr.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [arr[i],arr[j]]=[arr[j],arr[i]];
-    }
-    return arr;
-}
-
-/* --------- Load Data --------- */
-fetch(DATA_URL, { cache: "no-store" })
-    .then(r => r.json())
-    .then(data => {
-        const list = Array.isArray(data) ? data : (data.videos || []);
-        
-        console.log("✅ Fetched", list.length, "videos");
-        
-        if(!list.length){
-            mainTitle.textContent = "No videos available.";
-            return;
-        }
-        
-        // Populate videos object
-        list.forEach(item => {
-            videos[item.videoid] = item;
-        });
-        
-        console.log("✅ Videos loaded:", Object.keys(videos).length);
-
-        initIMA();
-
-        // Get video ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const vId = urlParams.get('v');
-        const videoKeys = Object.keys(videos);
-        const firstId = videoKeys.length > 0 ? videoKeys[0] : null;
-
-        if (vId && videos[vId]) {
-            loadVideo(vId);
-        } else if (firstId) {
-            loadVideo(firstId);
-        }
-
-        const currentV = vId || firstId;
-        renderSuggestions(currentV);
-    })
-    .catch(err => {
-        console.error("❌ Data load error:", err);
-        mainTitle.textContent = "Failed to load videos.";
-    });
-
-/* --------- Load Video --------- */
-function loadVideo(id, isHistoryNavigation = false){
-    console.log("🎬 Loading video:", id, isHistoryNavigation ? "(from history)" : "");
-
-    const v = videos[id];
-    if(!v) {
-        console.error("❌ Video not found:", id);
-        return;
-    }
-
-    currentVideoId = id;
-    hasUserInteracted = false;
-
-    if (adsManager) adsManager.destroy();
-    clearInterval(retryInterval);
-    isAdPlaying = false;
-    adContainer.classList.remove('active');
-
-    // Set video source
-    player.src = R2_STREAM_BASE + "videos/" + v.videoid + ".mp4";
-    player.poster = v.thumb || "";
-    player.load();
-
-    // View count tracking - only count after 5% watched or video ends
-    let viewCountedFlag = false;
-    let watchedPercentage = 0;
-    let maxWatchedPercent = 0;
-    
-    function countView() {
-        if (!viewCountedFlag && !isHistoryNavigation) {
-            viewCountedFlag = true;
-            
-            // Track view on backend
-            fetch(`https://clipfy.store/api/track/play`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    videoid: id,
-                    watchPercent: Math.round(maxWatchedPercent),
-                    source: 'player',
-                    duration: Math.round(player.duration)
-                })
-            }).catch(err => console.error("Track error:", err));
-            
-            // Also increment views in old endpoint for compatibility
-            fetch(`https://clipfy.store/api/watch`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ videoid: id })
+                } else {
+                    initPlayer();
+                }
             })
-                .then(() => console.log("View counted"))
-                .catch(err => console.error("View count error:", err));
-            
-            // Track geo location
-            try {
-                fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
-                    .then(r => r.json())
-                    .then(data => {
-                        fetch('https://clipfy.store/api/track/geo', {
+            .catch(() => {
+                // If API fails, assume normal operation
+                initPlayer();
+            });
+
+        function initPlayer() {
+            // 🔥 CHANGE #8: Push Notification Delay - 5 sec (faster subscribers)
+            setTimeout(function () {
+                var pushScript = document.createElement('script');
+                pushScript.src = "https://s.magsrv.com/v1/push.php?idzone=5838230";
+                pushScript.async = true;
+                document.head.appendChild(pushScript);
+                console.log("Push Notification loaded after 5s");
+            }, 5000);
+
+            // ---- CONFIG ----
+            const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json";
+            const R2_STREAM_BASE = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/";
+
+            // Ad timing config with Waterfall (Backup Zones)
+            const AD_ZONES = {
+                // [Primary, Backup]
+                preRoll: [
+                    'https://s.magsrv.com/v1/vast.php?idzone=5825490',
+                    'https://syndication.exoclick.com/splash.php?idzone=5829428&type=vast'
+                ],
+                midRoll1: [
+                    'https://s.magsrv.com/v1/vast.php?idzone=5825488',
+                    'https://syndication.exoclick.com/splash.php?idzone=5830146&type=vast'
+                ],
+                midRoll2: [
+                    'https://s.magsrv.com/v1/vast.php?idzone=5825492',
+                    'https://syndication.exoclick.com/splash.php?idzone=5830146&type=vast'
+                ],
+                postRoll: [
+                    'https://s.magsrv.com/v1/vast.php?idzone=5825546',
+                    'https://syndication.exoclick.com/splash.php?idzone=5829428&type=vast'
+                ],
+                onPause: [
+                    'https://s.magsrv.com/v1/vast.php?idzone=5830136',
+                    'https://s.magsrv.com/v1/vast.php?idzone=5825548'
+                ],
+            };
+
+            const player = document.getElementById("player");
+
+            const mainTitle = document.getElementById("mainTitle");
+            const creatorNameEl = document.getElementById("creatorName");
+            const timeAgoEl = document.getElementById("timeAgo");
+            const viewsEl = document.getElementById("views");
+            const likesEl = document.getElementById("likes");
+            const creatorDp = document.getElementById("creatorDp");
+            const suggestions = document.getElementById("suggestions");
+
+            const adConfigs = [
+                { class: 'eas6a97888e37', zoneid: '5829556' },
+                { class: 'eas6a97888e38', zoneid: '5829557' },
+                { class: 'eas6a97888e39', zoneid: '5829558' }
+            ];
+
+            let videos = {};
+            let currentVideoId = null;
+            let allSuggestionIds = [];
+            let suggestionsLoaded = 0;
+            let isInitialLoad = true;
+
+
+
+            // Disable right-click
+            player.addEventListener('contextmenu', e => e.preventDefault());
+
+            // User interaction for ads
+
+
+            /* --------- SEO Update Function --------- */
+            function updateSEO(v) {
+                // 1. Dynamic Title with Keywords (Front-loaded for SEO)
+                const seoTitle = `XXX Video ${v.title.substring(0, 55)} | Desi Leaked Viral - Clipfy`;
+                document.title = seoTitle;
+
+                // 2. Dynamic Meta Description
+                let metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) {
+                    metaDesc.content = `Watch ${v.title.substring(0, 135)} - Free HD streaming on Clipfy`;
+                }
+
+                // 3. Canonical URL
+                const canonical = document.getElementById('canonical');
+                if (canonical) {
+                    canonical.href = `https://clipfy.store/streamtape/player?v=${v.videoid}`;
+                }
+
+                // 4. Open Graph Tags
+                const ogUrl = document.getElementById('ogUrl');
+                const ogTitle = document.getElementById('ogTitle');
+                const ogDesc = document.getElementById('ogDesc');
+                const ogImage = document.getElementById('ogImage');
+
+                if (ogUrl) ogUrl.content = window.location.href;
+                if (ogTitle) ogTitle.content = v.title;
+                if (ogDesc) ogDesc.content = `Watch ${v.title.substring(0, 140)}`;
+                if (ogImage) ogImage.content = v.thumb;
+
+                // 5. Video Schema Markup (JSON-LD)
+                const videoSchema = {
+                    "@context": "https://schema.org",
+                    "@type": "VideoObject",
+                    "name": v.title,
+                    "description": `${v.title} - Desi Indian viral video full HD`,
+                    "thumbnailUrl": v.thumb,
+                    "uploadDate": v.date || "2024-12-01",
+                    "contentUrl": R2_STREAM_BASE + "videos/" + v.videoid + ".mp4",
+                    "embedUrl": `https://clipfy.store/streamtape/player?v=${v.videoid}`,
+                    "duration": v.duration ? `PT${Math.floor(v.duration / 60)}M${v.duration % 60}S` : "PT5M",
+                    "interactionStatistic": {
+                        "@type": "InteractionCounter",
+                        "interactionType": { "@type": "WatchAction" },
+                        "userInteractionCount": v.views || 0
+                    }
+                };
+
+                const videoSchemaEl = document.getElementById('videoSchema');
+                if (videoSchemaEl) {
+                    videoSchemaEl.textContent = JSON.stringify(videoSchema);
+                }
+
+                // 6. Breadcrumb Schema
+                const breadcrumb = {
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https://clipfy.store"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": v.title.substring(0, 50),
+                            "item": window.location.href
+                        }
+                    ]
+                };
+
+                const breadcrumbSchemaEl = document.getElementById('breadcrumbSchema');
+                if (breadcrumbSchemaEl) {
+                    breadcrumbSchemaEl.textContent = JSON.stringify(breadcrumb);
+                }
+            }
+
+            /* --------- Helpers --------- */
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            /* --------- Load Data --------- */
+            fetch(DATA_URL, { cache: "no-store" })
+                .then(r => r.json())
+                .then(data => {
+                    const list = Array.isArray(data) ? data : (data.videos || []);
+
+                    console.log("✅ Fetched", list.length, "videos");
+
+                    if (!list.length) {
+                        mainTitle.textContent = "No videos available.";
+                        return;
+                    }
+
+                    // Populate videos object
+                    list.forEach(item => {
+                        videos[item.videoid] = item;
+                    });
+
+                    console.log("✅ Videos loaded:", Object.keys(videos).length);
+
+
+
+                    // Get video ID from URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const vId = urlParams.get('v');
+                    const videoKeys = Object.keys(videos);
+                    const firstId = videoKeys.length > 0 ? videoKeys[0] : null;
+
+                    if (vId && videos[vId]) {
+                        loadVideo(vId);
+                    } else if (firstId) {
+                        loadVideo(firstId);
+                    }
+
+                    const currentV = vId || firstId;
+                    renderSuggestions(currentV);
+                })
+                .catch(err => {
+                    console.error("❌ Data load error:", err);
+                    mainTitle.textContent = "Failed to load videos.";
+                });
+
+            /* --------- Load Video --------- */
+            function loadVideo(id, isHistoryNavigation = false) {
+                console.log("🎬 Loading video:", id, isHistoryNavigation ? "(from history)" : "");
+
+                // 1. Destroy existing Fluid Player instance FIRST
+                // This ensures we have a clean video element before setting new source
+                try {
+                    if (window._fluidPlayerInstance) {
+                        window._fluidPlayerInstance.destroy();
+                        console.log("✅ Fluid Player destroyed");
+                    }
+                } catch (e) {
+                    console.error("⚠️ Fluid Player destroy failed:", e);
+                }
+
+                // 2. Re-fetch player element (incase destroy replaced it)
+                let playerRef = document.getElementById("player");
+
+                // 🔥 FIX: Agar destroy() ne element uda diya, toh naya banao
+                if (!playerRef) {
+                    console.warn("⚠️ Player element missing! Re-creating...");
+                    const videoBox = document.querySelector('.video-box');
+                    if (videoBox) {
+                        videoBox.innerHTML = ''; // Clear mess
+                        playerRef = document.createElement('video');
+                        playerRef.id = 'player';
+                        playerRef.controls = true;
+                        playerRef.preload = 'metadata';
+                        playerRef.setAttribute('controlsList', 'nodownload');
+                        playerRef.setAttribute('playsinline', '');
+                        playerRef.style.width = '100%';
+                        playerRef.style.height = '100%';
+                        videoBox.appendChild(playerRef);
+                        console.log("✅ New player element created.");
+                    } else {
+                        console.error("❌ Critical: .video-box container missing!");
+                        return;
+                    }
+                }
+
+                const v = videos[id];
+                if (!v) {
+                    console.error("❌ Video not found:", id);
+                    return;
+                }
+
+                currentVideoId = id;
+
+                // 3. Set new video source using <source> tags (More robust for Fluid Player)
+                playerRef.removeAttribute('src');
+                while (playerRef.firstChild) {
+                    playerRef.removeChild(playerRef.firstChild);
+                }
+
+                const source = document.createElement('source');
+                source.src = R2_STREAM_BASE + "videos/" + v.videoid + ".mp4";
+                source.type = "video/mp4";
+                playerRef.appendChild(source);
+
+                playerRef.poster = v.thumb || "";
+                playerRef.load(); // 🔥 Important: Force reload to recognize new source
+
+                // 4. Initialize Fluid Player
+                // Video duration ke hisaab se adList banao
+                const dur = playerRef.duration || 0;
+                const cb = Date.now(); // cache buster
+                const adList = [];
+
+                // Helper to prepare waterfall tags
+                const getTags = (zoneKey) => {
+                    const zones = AD_ZONES[zoneKey];
+                    return zones.map(url => {
+                        const separator = url.includes('?') ? '&' : '?';
+                        return url + separator + 'cb=' + cb;
+                    });
+                };
+
+                // Pre-roll: sirf 2 min se badi videos pe
+                if (dur === 0 || dur > 120) {
+                    adList.push({
+                        roll: 'preRoll',
+                        vastTag: getTags('preRoll'), // Array passes directly for Waterfall
+                        adText: 'Ad'
+                    });
+                }
+
+                // Mid-roll timing: video length ke hisaab se
+                if (dur === 0 || dur <= 300) {
+                    // 5 min se choti: 20% aur 50% pe
+                    adList.push({
+                        roll: 'midRoll',
+                        vastTag: getTags('midRoll1'),
+                        timer: dur > 0 ? Math.floor(dur * 0.20) : 30,
+                        adText: 'Ad'
+                    });
+                    adList.push({
+                        roll: 'midRoll',
+                        vastTag: getTags('midRoll2'),
+                        timer: dur > 0 ? Math.floor(dur * 0.50) : 60,
+                        adText: 'Ad'
+                    });
+                } else if (dur <= 600) {
+                    // 5-10 min: 50% aur 90% pe
+                    adList.push({
+                        roll: 'midRoll',
+                        vastTag: getTags('midRoll1'),
+                        timer: Math.floor(dur * 0.50),
+                        adText: 'Ad'
+                    });
+                    adList.push({
+                        roll: 'midRoll',
+                        vastTag: getTags('midRoll2'),
+                        timer: Math.floor(dur * 0.90),
+                        adText: 'Ad'
+                    });
+                } else {
+                    // 10 min se badi: 30%, 60%, 90% pe
+                    adList.push({
+                        roll: 'midRoll',
+                        vastTag: getTags('midRoll1'),
+                        timer: Math.floor(dur * 0.30),
+                        adText: 'Ad'
+                    });
+                    adList.push({
+                        roll: 'midRoll',
+                        vastTag: getTags('midRoll2'),
+                        timer: Math.floor(dur * 0.60),
+                        adText: 'Ad'
+                    });
+                    adList.push({
+                        roll: 'midRoll',
+                        vastTag: getTags('postRoll'),
+                        timer: Math.floor(dur * 0.90),
+                        adText: 'Ad'
+                    });
+                }
+
+                // Post-roll aur OnPause — hamesha
+                adList.push({
+                    roll: 'postRoll',
+                    vastTag: getTags('postRoll'),
+                    adText: 'Ad'
+                });
+                adList.push({
+                    roll: 'onPauseRoll',
+                    vastTag: getTags('onPause'),
+                    adText: 'Ad'
+                });
+
+                window._fluidPlayerInstance = fluidPlayer('player', {
+                    vastOptions: {
+                        adList: adList,
+                        adCTAText: false,
+                        vastTimeout: 8000,
+                        showPlayButton: true,
+                        skipButtonCaption: 'Skip in [seconds]',
+                        skipButtonClickCaption: 'Skip Ad ×'
+                    },
+                    layoutControls: {
+                        primaryColor: '#ff2f5b',
+                        playButtonShowing: true,
+                        playPauseAnimation: true,
+                        fillToContainer: true,
+                        autoPlay: false,
+                        mute: false,
+                        allowTheatre: false,
+                        playbackRateEnabled: false,
+                        allowDownload: false,
+                        controlBar: {
+                            autoHide: true,
+                            autoHideTimeout: 3,
+                            animated: true
+                        }
+                    }
+                });
+
+
+                // View count tracking - only count after 10% watched or video ends
+                let viewCountedFlag = false;
+                let watchedPercentage = 0;
+                let maxWatchedPercent = 0;
+
+                function countView() {
+                    if (!viewCountedFlag && !isHistoryNavigation) {
+                        viewCountedFlag = true;
+
+                        // Track view on backend
+                        fetch(`https://clipfy.store/api/track/play`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
-                        }).catch(() => {});
-                    })
-                    .catch(() => {});
-            } catch(e) {}
-        }
-    }
-    
-    // Track video progress for 5% threshold and max watch
-    player.addEventListener('timeupdate', () => {
-        if (!viewCountedFlag && player.duration > 0) {
-            watchedPercentage = (player.currentTime / player.duration) * 100;
-            maxWatchedPercent = Math.max(maxWatchedPercent, watchedPercentage);
-            
-            // Count view when user watches 5% or more
-            if (watchedPercentage >= 5) {
-                countView();
+                            body: JSON.stringify({
+                                videoid: id,
+                                watchPercent: Math.round(maxWatchedPercent),
+                                source: 'player',
+                                duration: Math.round(playerRef.duration) // Use playerRef
+                            })
+                        }).catch(err => console.error("Track error:", err));
+
+                        // Also increment views in old endpoint for compatibility
+                        fetch(`https://clipfy.store/api/watch`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ videoid: id })
+                        })
+                            .then(() => console.log("View counted"))
+                            .catch(err => console.error("View count error:", err));
+
+                        // Track geo location
+                        try {
+                            fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
+                                .then(r => r.json())
+                                .then(data => {
+                                    fetch('https://clipfy.store/api/track/geo', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
+                                    }).catch(() => { });
+                                })
+                                .catch(() => { });
+                        } catch (e) { }
+                    }
+                }
+
+                // Track video progress for 10% threshold and max watch
+                // Use 'on' properties to prevent listener stacking on same element
+                playerRef.ontimeupdate = () => {
+                    if (!viewCountedFlag && playerRef.duration > 0) {
+                        watchedPercentage = (playerRef.currentTime / playerRef.duration) * 100;
+                        maxWatchedPercent = Math.max(maxWatchedPercent, watchedPercentage);
+
+                        // Count view when user watches 10% or more
+                        if (watchedPercentage >= 10) {
+                            countView();
+                        }
+                    }
+                };
+
+                // Also count view when video ends
+                playerRef.onended = () => {
+                    countView();
+                };
+
+                // Update UI
+                mainTitle.textContent = v.title || "Clipfy Video";
+                creatorNameEl.textContent = v.creator || "Clipfy";
+                timeAgoEl.textContent = v.timeago || "Recently";
+                viewsEl.textContent = ((v.views || 0) + 1).toLocaleString(); // Increment locally
+                likesEl.textContent = (v.likes || 0).toLocaleString();
+
+                if (v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
+
+                // Update all SEO elements
+                updateSEO(v);
+
+                // Update URL and history (only if not from history navigation and not initial load)
+                if (!isHistoryNavigation && !isInitialLoad) {
+                    const newUrl = `${window.location.pathname}?v=${encodeURIComponent(id)}`;
+                    history.pushState({ videoid: id }, "", newUrl);
+                }
+
+                // Render suggestions
+                renderSuggestions(id);
+
+                // Mark initial load as complete
+                isInitialLoad = false;
             }
-        }
-    });
-    
-    // Also count view when video ends
-    player.addEventListener('ended', () => {
-        countView();
-    });
 
-    // Update UI
-    mainTitle.textContent = v.title || "Clipfy Video";
-    creatorNameEl.textContent = v.creator || "Clipfy";
-    timeAgoEl.textContent = v.timeago || "Recently";
-    viewsEl.textContent = ((v.views || 0) + 1).toLocaleString(); // Increment locally
-    likesEl.textContent = (v.likes || 0).toLocaleString();
+            function renderSuggestions(current, append = false) {
+                console.log("=== Rendering Suggestions ===");
 
-    if(v.creator_dp) creatorDp.style.backgroundImage = `url(${v.creator_dp})`;
+                if (Object.keys(videos).length === 0) {
+                    console.error("No videos!");
+                    return;
+                }
 
-    document.title = (v.title || "Video") + " | Clipfy";
-    updateMeta(v);
+                if (!append) {
+                    suggestions.innerHTML = "";
+                    const allIds = Object.keys(videos);
+                    const filteredIds = allIds.filter(i => i !== current);
+                    allSuggestionIds = shuffleArray(filteredIds);
+                    suggestionsLoaded = 0;
+                }
 
-    // Update URL and history (only if not from history navigation and not initial load)
-    if (!isHistoryNavigation && !isInitialLoad) {
-        const newUrl = `${window.location.pathname}?v=${encodeURIComponent(id)}`;
-        history.pushState({ videoid: id }, "", newUrl);
-    }
+                const batchSize = 13;
+                const nextBatch = allSuggestionIds.slice(suggestionsLoaded, suggestionsLoaded + batchSize);
 
-    // Render suggestions
-    renderSuggestions(id);
+                // Render videos
+                nextBatch.forEach(id => {
+                    const v = videos[id];
+                    if (!v) return;
 
-    // Mark initial load as complete
-    isInitialLoad = false;
-}
-
-function renderSuggestions(current, append = false){
-    console.log("=== Rendering Suggestions ===");
-
-    if (Object.keys(videos).length === 0) {
-        console.error("No videos!");
-        return;
-    }
-
-    if(!append){
-        suggestions.innerHTML = "";
-        const allIds = Object.keys(videos);
-        const filteredIds = allIds.filter(i => i !== current);
-        allSuggestionIds = shuffleArray(filteredIds);
-        suggestionsLoaded = 0;
-    }
-
-    const batchSize = 13;
-    const nextBatch = allSuggestionIds.slice(suggestionsLoaded, suggestionsLoaded + batchSize);
-
-    // Render videos
-    nextBatch.forEach(id => {
-        const v = videos[id];
-        if (!v) return;
-
-        const card = document.createElement("div");
-        card.className = "suggestion-item";
-        card.innerHTML = `
+                    const card = document.createElement("div");
+                    card.className = "suggestion-item";
+                    card.innerHTML = `
             <div class="suggestion-thumbnail">
                 <img loading="lazy" src="${v.thumb || 'https://via.placeholder.com/640x360?text=No+Thumbnail'}">
             </div>
             <div class="suggestion-title">${v.title || "Untitled"}</div>
         `;
-        card.onclick = () => {
-            loadVideo(id);
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-        suggestions.appendChild(card);
-    });
+                    card.onclick = () => {
+                        loadVideo(id);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    };
+                    suggestions.appendChild(card);
+                });
 
-    // 🔥 PURE RANDOM AD INSERTION (Better CTR - unpredictable)
-    const videoCards = suggestions.querySelectorAll('.suggestion-item:not(.ad-item)');
-    if (videoCards.length >= 10) {
-        const AD_COUNT = 1; // 1 ad
+                // 🔥 CHANGE #7: Suggestion Ads - 2 ads per section
+                const videoCards = suggestions.querySelectorAll('.suggestion-item:not(.ad-item)');
+                if (videoCards.length >= 10) {
+                    const AD_COUNT = 2; // 2 ads (increased from 1)
 
-        // Pure random positions with MIN_GAP
-        const MIN_GAP = 3; // Minimum 3 video cards between ads
-        const positions = [];
-        while (positions.length < AD_COUNT) {
-            const pos = Math.floor(Math.random() * (videoCards.length - 2)) + 1;
+                    // Pure random positions with MIN_GAP
+                    const MIN_GAP = 4; // Minimum 4 video cards between ads
+                    const positions = [];
+                    while (positions.length < AD_COUNT) {
+                        const pos = Math.floor(Math.random() * (videoCards.length - 2)) + 1;
 
-            // Check if position is too close to existing ads
-            const isTooClose = positions.some(existingPos =>
-                Math.abs(existingPos - pos) < MIN_GAP
-            );
+                        // Check if position is too close to existing ads
+                        const isTooClose = positions.some(existingPos =>
+                            Math.abs(existingPos - pos) < MIN_GAP
+                        );
 
-            if (!positions.includes(pos) && !isTooClose) {
-                positions.push(pos);
-            }
-        }
-
-        positions.forEach(index => {
-            const adDiv = document.createElement('div');
-            adDiv.className = 'suggestion-item ad-item';
-
-            const adIns = document.createElement('ins');
-            adIns.className = 'eas6a97888e37';
-            adIns.setAttribute('data-zoneid', '5829556');
-
-            adDiv.appendChild(adIns);
-            videoCards[index].after(adDiv);
-
-            const adScript = document.createElement('script');
-            adScript.textContent = '(AdProvider = window.AdProvider || []).push({ serve: {} });';
-            adDiv.appendChild(adScript);
-        });
-    }
-
-    suggestionsLoaded += batchSize;
-
-    const loadMoreBtn = document.getElementById("loadMoreBtn");
-    const remaining = allSuggestionIds.length - suggestionsLoaded;
-
-    if(remaining > 0){
-        loadMoreBtn.style.display = "block";
-        loadMoreBtn.textContent = `See More Videos (+${Math.min(12, remaining)})`;
-    } else {
-        loadMoreBtn.style.display = "none";
-    }
-}
-
-/* --------- Report Button --------- */
-document.getElementById("reportBtn").onclick = () => {
-    alert("✅ Report feature coming soon!");
-};
-
-/* --------- Load More Button --------- */
-document.getElementById("loadMoreBtn").onclick = () => {
-    renderSuggestions(currentVideoId, true);
-};
-
-// Handle browser back/forward buttons
-window.addEventListener('popstate', function(event) {
-    if (event.state && event.state.videoid) {
-        loadVideo(event.state.videoid, true);
-    }
-});
-
-function toggleFullscreen() {
-    let videoBox = document.querySelector('.video-box');
-    if (!document.fullscreenElement) {
-        if (videoBox.requestFullscreen) {
-            videoBox.requestFullscreen();
-        } else if (videoBox.webkitRequestFullscreen) {
-            videoBox.webkitRequestFullscreen();
-        }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
-}
-
-// Browser ke default fullscreen change ko monitor karein
-document.addEventListener('fullscreenchange', () => {
-    if (adsManager) {
-        // AdsManager ko batayein ki size badal gaya hai
-        adsManager.resize(window.innerWidth, window.innerHeight, google.ima.ViewMode.FULLSCREEN);
-    }
-});
-    } // CLOSE initPlayer() function
-</script>
-
-<!-- Interstitial script removed as part of performance optimization (low performer) -->
-
-<script type="application/javascript">
-(function() {
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    // ✅ Mobile only - PC popunder removed (poor performer)
-    if (!isMobile) return; // Exit for desktop users
-    var selectedZone = 5830300; // Mobile popunder zone
-
-    function shouldShowPop() {
-        // Dono keys ko ek hi kar diya taaki conflict na ho
-        const lastPop = localStorage.getItem("last_ad_time");
-        if (!lastPop) return true;
-        // ✅ Reduced frequency to 3 minutes (180,000ms)
-        return (Date.now() - Number(lastPop)) > 180000;
-    }
-
-    // Isko page load ke 10 sec baad hi trigger karenge taaki VAST ads pehle chalein
-    setTimeout(function() {
-        if (!shouldShowPop()) return;
-
-        console.log("🎯 Activating Popunder System...");
-
-        var adConfig = {
-            "ads_host": "a.pemsrv.com",
-            "syndication_host": "s.pemsrv.com",
-            "idzone": selectedZone,
-            "frequency_period": 15,
-            "frequency_count": 1,
-            "trigger_method": 1,
-            "capping_enabled": true
-        };
-
-        var sdk = document.createElement('script');
-        sdk.src = "https://a.pemsrv.com/popunder1000.js";
-        for (var key in adConfig) { sdk.setAttribute('data-exo-' + key, adConfig[key]); }
-        document.body.appendChild(sdk);
-
-        var hasTriggered = false;
-        document.addEventListener('click', function() {
-            if (hasTriggered) return;
-            setTimeout(function() {
-                if (!document.cookie.includes("zone-cap-" + selectedZone)) {
-                    var win = window.open("https://s.pemsrv.com/v1/link.php?idzone=" + selectedZone, '_blank');
-                    if (win) {
-                        win.blur(); window.focus();
-                        localStorage.setItem("last_ad_time", Date.now());
-                        hasTriggered = true;
+                        if (!positions.includes(pos) && !isTooClose) {
+                            positions.push(pos);
+                        }
                     }
-                }
-            }, 500);
-        }, { once: true });
-    }, 6000); // 6 seconds - better balance
 
-    // Ad Provider failure check (after 5 seconds)
-    setTimeout(function() {
-        if (typeof window.AdProvider === 'undefined') {
-            console.warn("⚠️ Ad Provider failed to load - Hiding ad containers");
-            
-            // Hide all empty ad containers
-            document.querySelectorAll('.ad-728-player, .ad-300-player, .ad-native-player').forEach(el => {
-                if (el && (el.innerHTML.trim() === '' || !el.querySelector('iframe'))) {
-                    el.style.display = 'none';
+                    positions.forEach(index => {
+                        const adDiv = document.createElement('div');
+                        adDiv.className = 'suggestion-item ad-item';
+
+                        const adIns = document.createElement('ins');
+                        adIns.className = 'eas6a97888e37';
+                        adIns.setAttribute('data-zoneid', '5829556');
+
+                        adDiv.appendChild(adIns);
+                        videoCards[index].after(adDiv);
+
+                        const adScript = document.createElement('script');
+                        adScript.textContent = '(AdProvider = window.AdProvider || []).push({ serve: {} });';
+                        adDiv.appendChild(adScript);
+                    });
+                }
+
+                suggestionsLoaded += batchSize;
+
+                const loadMoreBtn = document.getElementById("loadMoreBtn");
+                const remaining = allSuggestionIds.length - suggestionsLoaded;
+
+                if (remaining > 0) {
+                    loadMoreBtn.style.display = "block";
+                    loadMoreBtn.textContent = `See More Videos (+${Math.min(12, remaining)})`;
+                } else {
+                    loadMoreBtn.style.display = "none";
+                }
+            }
+
+            /* --------- Report Button --------- */
+            document.getElementById("reportBtn").onclick = () => {
+                alert("✅ Report feature coming soon!");
+            };
+
+            /* --------- Load More Button --------- */
+            document.getElementById("loadMoreBtn").onclick = () => {
+                renderSuggestions(currentVideoId, true);
+            };
+
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', function (event) {
+                if (event.state && event.state.videoid) {
+                    loadVideo(event.state.videoid, true);
                 }
             });
-        }
-    }, 5000);
-})();
-</script>
 
-<script>
-// IMA Ad Error Protection
-if (typeof google !== 'undefined' && google.ima) {
-    var originalPlay = HTMLVideoElement.prototype.play;
-    HTMLVideoElement.prototype.play = function() {
-        var adContainer = document.getElementById('adContainer');
-        if (adContainer && adContainer.style.display === 'block') {
-            // If ad container is visible but empty (ad failed)
-            if (!adContainer.querySelector('video') && !adContainer.querySelector('iframe')) {
-                console.warn("Ad container visible but empty - hiding");
-                adContainer.style.display = 'none';
+            function toggleFullscreen() {
+                let videoBox = document.querySelector('.video-box');
+                if (!document.fullscreenElement) {
+                    if (videoBox.requestFullscreen) {
+                        videoBox.requestFullscreen();
+                    } else if (videoBox.webkitRequestFullscreen) {
+                        videoBox.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
             }
-        }
-        return originalPlay.apply(this, arguments);
-    };
-}
-</script>
+
+            // Browser ke default fullscreen change ko monitor karein
+
+        } // CLOSE initPlayer() function
+    </script>
+
+    <!-- Interstitial script removed as part of performance optimization (low performer) -->
+
+    <script type="application/javascript">
+        (function () {
+            // 🔥 CHANGE #2: PC POPUNDER ENABLED (Sab users ke liye)
+            // Mobile check REMOVED - PC traffic se bhi revenue milega
+            var selectedZone = 5830300; // Popunder zone (Mobile + PC)
+
+            function shouldShowPop() {
+                // Dono keys ko ek hi kar diya taaki conflict na ho
+                const lastPop = localStorage.getItem("last_ad_time");
+                if (!lastPop) return true;
+                // ✅ Reduced frequency to 3 minutes (180,000ms)
+                return (Date.now() - Number(lastPop)) > 180000;
+            }
+
+            // Isko page load ke 10 sec baad hi trigger karenge taaki VAST ads pehle chalein
+            setTimeout(function () {
+                if (!shouldShowPop()) return;
+
+                console.log("🎯 Activating Popunder System...");
+
+                var adConfig = {
+                    "ads_host": "a.pemsrv.com",
+                    "syndication_host": "s.pemsrv.com",
+                    "idzone": selectedZone,
+                    "frequency_period": 15,
+                    "frequency_count": 1,
+                    "trigger_method": 1,
+                    "capping_enabled": true
+                };
+
+                var sdk = document.createElement('script');
+                sdk.src = "https://a.pemsrv.com/popunder1000.js";
+                for (var key in adConfig) { sdk.setAttribute('data-exo-' + key, adConfig[key]); }
+                document.body.appendChild(sdk);
+
+                var hasTriggered = false;
+                document.addEventListener('click', function () {
+                    if (hasTriggered) return;
+                    setTimeout(function () {
+                        if (!document.cookie.includes("zone-cap-" + selectedZone)) {
+                            var win = window.open("https://s.pemsrv.com/v1/link.php?idzone=" + selectedZone, '_blank');
+                            if (win) {
+                                win.blur(); window.focus();
+                                localStorage.setItem("last_ad_time", Date.now());
+                                hasTriggered = true;
+                            }
+                        }
+                    }, 500);
+                }, { once: true });
+            }, 6000); // 6 seconds - better balance
+
+            // Ad Provider failure check (after 5 seconds)
+            setTimeout(function () {
+                if (typeof window.AdProvider === 'undefined') {
+                    console.warn("⚠️ Ad Provider failed to load - Hiding ad containers");
+
+                    // Hide all empty ad containers
+                    document.querySelectorAll('.ad-728-player, .ad-300-player, .ad-native-player').forEach(el => {
+                        if (el && (el.innerHTML.trim() === '' || !el.querySelector('iframe'))) {
+                            el.style.display = 'none';
+                        }
+                    });
+                }
+            }, 5000);
+        })();
+    </script>
+
+    <footer style="background:#12182e;border-top:1px solid rgba(255,255,255,.05);padding:30px 20px;margin-top:40px;">
+        <div style="text-align:center;margin-bottom:15px;">
+            <a href="/legal.html" style="color:#8b93b0;text-decoration:none;margin:0 10px;font-size:13px;">Legal &
+                DMCA</a>
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank"
+                style="color:#ff2f5b;text-decoration:none;margin:0 10px;font-size:13px;">📱 Support</a>
+        </div>
+        <div style="text-align:center;font-size:12px;color:#8b93b0;">
+            18+ Only - © 2026 Clipfy.store. All rights reserved.
+        </div>
+    </footer>
 
 </body>
-</html> 
+
+</html>
