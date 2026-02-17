@@ -1,67 +1,1453 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interstitial Ad Test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- Title -->
+    <title>Desi Hindi Viral Videos - Hot Indian Clips | Clipfy.store</title>
+
+    <!-- Meta Description -->
+    <meta name="description"
+        content="Watch viral desi Hindi videos, hot Indian clips aur trending entertainment collection. Best desi viral reels aur Hindi clips high quality mein Clipfy.store pe dekho.">
+
+    <!-- Robots -->
+    <meta name="robots" content="index,follow">
+
+    <!-- Canonical -->
+    <link rel="canonical" id="canonical" href="https://clipfy.store">
+
+    <!-- Adult Rating -->
+    <meta name="rating" content="adult">
+
+    <!-- Keywords -->
+    <meta name="keywords"
+        content="desi hindi videos, viral indian clips, hot desi entertainment, hindi viral videos, indian trending clips">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Desi Hindi Viral Videos - Hot Clips | Clipfy.store">
+    <meta name="twitter:description" content="Viral desi Hindi videos aur hot Indian entertainment.">
+    <meta name="twitter:image" content="https://clipfy.store/assets/preview.jpg">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Desi Hindi Viral Videos - Hot Indian Clips | Clipfy.store">
+    <meta property="og:description" content="Explore trending desi Hindi clips, viral videos aur hot entertainment.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://clipfy.store">
+    <meta property="og:image" content="https://clipfy.store/assets/preview.jpg">
+
+    <meta name="google" content="notranslate">
+
+    <!-- Ad Scripts -->
+    <script async src="https://a.magsrv.com/ad-provider.js"></script>
+    <script async src="https://a.pemsrv.com/ad-provider.js"></script>
+
+
+
+
     <style>
+        :root {
+            --bg: #0f141a;
+            --card: #12182e;
+            --text: #fff;
+            --muted: #8b93b0;
+            --accent: #ff2f5b;
+            --hover: #1a2139;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(15, 20, 26, .95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: auto;
+            padding: 16px 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 40px 10px 16px;
+            background: var(--hover);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 25px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: .3s;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 47, 91, .15);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a2139 0%, #0f141a 100%);
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats {
+            display: flex;
             justify-content: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            gap: 40px;
+            padding: 30px 20px;
+            background: rgba(18, 24, 46, .4);
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+        }
+
+        .stat {
             text-align: center;
         }
-        .test-box {
-            padding: 50px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            cursor: pointer;
+
+        .stat-num {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent);
+            display: block;
         }
-        h1 { color: #ff2f5b; }
-        p { color: #666; }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filter-bar {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 20px;
+            color: var(--text);
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: .3s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, .1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: .3s;
+            border: 1px solid rgba(255, 255, 255, .05);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(255, 47, 91, .2);
+            border-color: var(--accent);
+        }
+
+        .card.pinned {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(255, 47, 91, .3);
+        }
+
+        .card.pinned::before {
+            content: "📌 PINNED";
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 47, 91, 0.9);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 10;
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            transition: .3s;
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 47, 91, .9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: .3s;
+        }
+
+        .card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 18px solid white;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 4px;
+        }
+
+        .duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, .85);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .meta {
+            padding: 14px;
+        }
+
+        .meta h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .meta-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* PAGINATION */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 40px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 10px 16px;
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            transition: .3s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .page-btn:hover {
+            background: var(--hover);
+            border-color: var(--accent);
+        }
+
+        .page-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* AD STYLES */
+        .ad-728 {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 728px;
+        }
+
+        .ad-300 {
+            grid-column: span 1;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        .ad-native-container {
+            margin: 30px auto;
+            text-align: center;
+            width: 100%;
+        }
+
+        .social-bar-container {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .ad-mobile-top {
+            display: none;
+        }
+
+        @media(max-width:768px) {
+            .ad-728 {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .search-bar {
+                flex: 1;
+                min-width: 200px;
+                max-width: none;
+                margin: 0;
+                order: 3;
+                width: 100%;
+            }
+
+            .logo {
+                order: 1;
+            }
+
+            .stats {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 16px;
+            }
+
+            .ad-mobile-top {
+                display: block;
+                position: sticky;
+                top: 0;
+                z-index: 90;
+                width: 100%;
+                background: #000;
+                text-align: center;
+            }
+        }
+
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            padding: 20px;
+            background: #070b10;
+            color: var(--muted);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            font-size: 13px;
+        }
+
+        .footer-section a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .ad-slot {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .ad-card {
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ad-card::after {
+            content: "Sponsored";
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            font-size: 11px;
+            padding: 2px 6px;
+            background: rgba(0, 0, 0, .6);
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .ad-card .ad-close-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, .6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .ad-card .ad-close-btn:hover {
+            opacity: 1;
+            background: rgba(255, 47, 91, 0.8);
+        }
+
+        /* Interstitial Ad Close Button */
+        .interstitial-close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 47, 91, 0.9);
+            color: #fff;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .interstitial-close-btn.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .interstitial-close-btn:hover {
+            background: #ff2f5b;
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .interstitial-close-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Interstitial Overlay */
+        .interstitial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            /* Kaala parda */
+            z-index: 99999;
+            /* Sabse upar */
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .interstitial-overlay.active {
+            display: flex !important;
+            opacity: 1;
+            pointer-events: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .interstitial-ad-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-container {
+            text-align: center;
+        }
+
+        .video-container iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
-<body>
 
-    <div class="test-box" id="clickArea">
-        <h1>Ad Test Page</h1>
-        <p>Screen par kahin bhi <b>CLICK</b> karein.</p>
-        <p>Full-screen ad aana chahiye.</p>
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo"><span>clipfy</span>.store</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search videos..." id="searchInput">
+                <span class="search-icon">🔍</span>
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- 🔥 CHANGE #5: Mobile Sticky Banner (High Visibility) -->
+    <div class="ad-mobile-top">
+        <ins class="eas6a97888e37" data-zoneid="5843052"></ins>
+        <script>(window.AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
     </div>
 
-    <script type="application/javascript">
-    (function() {
-        // Detect Device
-        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        var zoneId = isMobile ? "5829432" : "5831970"; 
+    <!-- Top banner removed as part of optimization (low performer) -->
 
-        console.log("Testing Zone ID: " + zoneId);
+    <section class="hero">
+        <h1>Watch Trending Videos</h1>
+        <p>Discover and enjoy the best video content from around the web</p>
+    </section>
 
-        // 1. Load the main ad provider script
-        var adScript = document.createElement('script');
-        adScript.src = 'https://a.magsrv.com/ad-provider.js';
-        adScript.type = 'application/javascript';
-        adScript.async = true;
-        document.head.appendChild(adScript);
 
-        // 2. Create the Interstitial element
-        var ins = document.createElement('ins');
-        ins.className = 'eas6a97888e'; // Standard interstitial class
-        ins.setAttribute('data-zoneid', zoneId);
-        document.body.appendChild(ins);
 
-        // 3. Trigger the ad push
-        adScript.onload = function() {
-            (window.AdProvider = window.AdProvider || []).push({"serve": {}});
-            console.log("AdProvider Pushed");
+    <section class="stats">
+        <div class="stat"><span class="stat-num" id="videoCount">0</span><span class="stat-label">Videos</span></div>
+        <div class="stat"><span class="stat-num">HD</span><span class="stat-label">Quality</span></div>
+        <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Available</span></div>
+    </section>
+
+    <!-- 🔥 PREMIUM TOP BAR -->
+    <!-- 🔥 PREMIUM TOP BAR -->
+    <div style="
+        background: #12182e;
+        border-bottom:1px solid #ff2f5b;
+        padding:12px 20px;
+        text-align:center;
+    ">
+        <span style="color:#fff;font-size:14px;">
+            🔥 <strong>PREMIUM:</strong> ₹49 & ₹199 Plans Available •
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank"
+                style="color:#ff2f5b;font-weight:700;text-decoration:none;margin-left:5px;">
+                Message @Clipfy_support →
+            </a>
+        </span>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Videos</button>
+        <button class="filter-btn" data-filter="trending">Trending</button>
+        <button class="filter-btn" data-filter="best">Best (Most Watched)</button>
+        <button class="filter-btn" data-filter="popular">Popular</button>
+    </div>
+
+    <main class="container">
+        <h2 class="section-title">Featured Videos</h2>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading videos...</p>
+        </div>
+
+        <!-- 🔥 CHANGE #9: Native Widget UPAR bhi (Above-the-fold = 3x CPM) -->
+        <div style="margin: 20px 0; text-align:center;">
+            <ins class="eas6a97888e20" data-zoneid="5829434"></ins>
+            <script>(window.AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+        <!-- Recommendation Widget -->
+        <div style="margin-top: 40px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,.05);">
+            <ins class="eas6a97888e20" data-zoneid="5829434"></ins>
+            <script>(window.AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination" id="pagination"></div>
+
+
+    </main>
+
+    <footer>
+        <div style="text-align:center; margin-bottom:15px;">
+            <a href="/legal.html" style="color:var(--muted);text-decoration:none;margin:0 10px;font-size:13px;">Legal &
+                DMCA</a>
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank"
+                style="color:var(--accent);text-decoration:none;margin:0 10px;font-size:13px;">📱 Support</a>
+        </div>
+        <div class="footer-bottom">18+ Only - © 2026 Clipfy.store. All rights reserved.</div>
+    </footer>
+
+
+
+    <!-- MAINTENANCE MODE CHECK -->
+    <script>
+        // Check maintenance mode on page load
+        fetch('https://clipfy.store/api/status')
+            .then(r => r.json())
+            .then(data => {
+                if (data.site_disabled) {
+                    document.body.innerHTML = `
+                        <div style="
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            min-height: 100vh;
+                            background: #0f141a;
+                            color: #fff;
+                            text-align: center;
+                            padding: 20px;
+                            font-family: system-ui, -apple-system, Arial, sans-serif;
+                        ">
+                            <div style="
+                                font-size: 48px;
+                                margin-bottom: 20px;
+                            ">🔧</div>
+                            <h1 style="
+                                font-size: 32px;
+                                margin-bottom: 16px;
+                                color: #ff2f5b;
+                            ">Under Maintenance</h1>
+                            <p style="
+                                font-size: 18px;
+                                color: #8b93b0;
+                                max-width: 500px;
+                                margin-bottom: 30px;
+                            ">We're currently performing maintenance to improve your experience. Please check back soon!</p>
+                            <div style="
+                                font-size: 14px;
+                                color: #8b93b0;
+                            ">© 2024 Clipfy.store</div>
+                        </div>
+                    `;
+                } else {
+                    initPage();
+                }
+            })
+            .catch(() => {
+                // If API fails, assume normal operation
+                initPage();
+            });
+
+        function initPage() {
+            // 🔥 CHANGE #7: Push Notification Delay - 5 sec (faster subscribers)
+            setTimeout(function () {
+                var pushScript = document.createElement('script');
+                pushScript.src = "https://s.magsrv.com/v1/push.php?idzone=5838230";
+                pushScript.async = true;
+                document.head.appendChild(pushScript);
+                console.log("Push Notification loaded after 5s");
+            }, 5000);
+
+            const DATA_URL = 'https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json';
+            const grid = document.getElementById('grid');
+            const loading = document.getElementById('loading');
+            const searchInput = document.getElementById('searchInput');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const videoCount = document.getElementById('videoCount');
+            const paginationDiv = document.getElementById('pagination');
+
+            let allVideos = [];
+            let filteredVideos = [];
+            let currentFilter = 'all';
+            let currentPage = 1;
+            const VIDEOS_PER_PAGE = 25;
+
+            // TRACKING: Track page view on load
+            function trackPageView() {
+                fetch('https://clipfy.store/api/track/pageview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source: 'homepage',
+                        referrer: document.referrer
+                    })
+                }).catch(() => { });
+
+                // Track geo location
+                try {
+                    fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
+                        .then(r => r.json())
+                        .then(data => {
+                            fetch('https://clipfy.store/api/track/geo', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
+                            }).catch(() => { });
+                        })
+                        .catch(() => { });
+                } catch (e) { }
+            }
+
+            // Call on page load
+            trackPageView();
+
+            // SEO: Update URL and canonical on page change
+            function updatePageSEO(pageNum) {
+                history.pushState({ page: pageNum }, "", `?page=${pageNum}`);
+                const canonical = document.getElementById("canonical");
+                if (canonical) {
+                    canonical.href = `https://clipfy.store/?page=${pageNum}`;
+                }
+            }
+
+            function formatDuration(seconds) {
+                if (!seconds) return 'HD';
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            function formatViews(views) {
+                if (!views) return 'New';
+                if (views >= 1000000) return (views / 1000000).toFixed(1) + 'M';
+                if (views >= 1000) return (views / 1000).toFixed(1) + 'K';
+                return views.toString();
+            }
+
+            function renderVideos() {
+                grid.innerHTML = '';
+
+                // Sort pinned videos first
+                const sortedVideos = [...filteredVideos].sort((a, b) => {
+                    if (a.pinned && !b.pinned) return -1;
+                    if (!a.pinned && b.pinned) return 1;
+                    return 0; // Keep original order for non-pinned
+                });
+
+                const start = (currentPage - 1) * VIDEOS_PER_PAGE;
+                const end = start + VIDEOS_PER_PAGE;
+                const pageVideos = sortedVideos.slice(start, end);
+
+                pageVideos.forEach((v, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card' + (v.pinned ? ' pinned' : '');
+                    card.innerHTML = `
+                    <div class="card-img-wrapper">
+                        <div class="card-thumb-wrap">
+                            <div class="card-thumb-bg" style="background-image:url('${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}')"></div>
+                            <img loading="lazy" src="${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}" alt="${v.title || 'Video'}" class="card-thumb-img" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
+                        </div>
+                        <div class="play-overlay"><div class="play-icon"></div></div>
+                        <span class="duration">${formatDuration(v.duration)}</span>
+                    </div>
+                    <div class="meta">
+                        <h3>${v.title || 'Untitled Video'}</h3>
+                        <div class="meta-info">
+                            <span class="views">${formatViews(Math.floor(Math.random() * 100000))}</span>
+                            <span class="date">${v.date || 'Recently'}</span>
+                        </div>
+                    </div>
+                `;
+
+                    card.onclick = () => {
+                        // Track video play from homepage
+                        fetch('https://clipfy.store/api/track/play', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                videoid: v.videoid,
+                                source: 'homepage',
+                                watchPercent: 0
+                            })
+                        }).catch(() => { });
+
+                        // Ab direct player par jayega (without .html for SEO consistency)
+                        location.href = `/streamtape/player?v=${encodeURIComponent(v.videoid)}`;
+                    };
+
+                    grid.appendChild(card);
+                });
+
+                // Random ad insertion
+                const videoCards = grid.querySelectorAll('.card');
+                if (videoCards.length >= 10) {
+                    const AD_COUNT = 3; // 🔥 CHANGE #6: Increased from 2 to 3 ads
+
+                    // Pure random positions - NO MIN_GAP
+                    const positions = [];
+                    while (positions.length < AD_COUNT) {
+                        const pos = Math.floor(Math.random() * (videoCards.length - 2)) + 1; // 1 se (length-1) tak
+                        if (!positions.includes(pos)) {
+                            positions.push(pos);
+                        }
+                    }
+
+                    positions.forEach(index => {
+                        const adDiv = document.createElement('div');
+                        adDiv.className = 'card ad-card';
+
+                        const adIns = document.createElement('ins');
+                        adIns.className = 'eas6a97888e37';
+                        adIns.setAttribute('data-zoneid', '5843052');
+
+                        const adScript = document.createElement('script');
+                        adScript.textContent = '(AdProvider = window.AdProvider || []).push({"serve": {}});';
+
+                        adDiv.appendChild(adIns);
+                        adDiv.appendChild(adScript);
+
+                        // Add close button
+                        const closeBtn = document.createElement('button');
+                        closeBtn.className = 'ad-close-btn';
+                        closeBtn.innerHTML = '×';
+                        closeBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            adDiv.style.display = 'none';
+                        };
+                        adDiv.appendChild(closeBtn);
+
+                        videoCards[index].after(adDiv);
+                    });
+                }
+
+                videoCount.textContent = filteredVideos.length;
+                renderPagination();
+                window.scrollTo(0, 0);
+            }
+
+            function renderPagination() {
+                const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
+                paginationDiv.innerHTML = '';
+
+                if (totalPages <= 1) return;
+
+                // PREV BUTTON
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = '« Prev';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updatePageSEO(currentPage);
+                        renderVideos();
+                    }
+                };
+                paginationDiv.appendChild(prevBtn);
+
+                // PAGE NUMBERS (show max 5)
+                const maxButtons = 5;
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+                if (endPage - startPage < maxButtons - 1) {
+                    startPage = Math.max(1, endPage - maxButtons + 1);
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => {
+                        currentPage = i;
+                        updatePageSEO(currentPage);
+                        renderVideos();
+                    };
+                    paginationDiv.appendChild(pageBtn);
+                }
+
+                // NEXT BUTTON
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Next »';
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updatePageSEO(currentPage);
+                        renderVideos();
+                    }
+                };
+                paginationDiv.appendChild(nextBtn);
+            }
+
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', function (event) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const pageFromUrl = parseInt(urlParams.get('page')) || 1;
+                currentPage = pageFromUrl;
+                renderVideos();
+            });
+
+            function filterVideos() {
+                currentPage = 1; // Reset to page 1 on filter change
+                let filtered = [...allVideos];
+                const searchTerm = searchInput.value.toLowerCase();
+
+                if (searchTerm) {
+                    filtered = filtered.filter(v => (v.title || '').toLowerCase().includes(searchTerm));
+                }
+
+                if (currentFilter === 'trending') {
+                    // Trending = Last 24 hours most viewed
+                    const oneDayAgo = new Date();
+                    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+
+                    filtered = filtered
+                        .filter(v => {
+                            if (!v.date) return false; // Only videos with date
+                            const videoDate = new Date(v.date);
+                            return videoDate >= oneDayAgo;
+                        })
+                        .slice() // copy
+                        .sort((a, b) => (b.views || 0) - (a.views || 0)); // Sort by views
+                } else if (currentFilter === 'best') {
+                    // Best = All time most watched
+                    filtered = filtered
+                        .slice()
+                        .sort((a, b) => (b.views || 0) - (a.views || 0));
+                } else if (currentFilter === 'popular') {
+                    // Popular = Random videos for discovery
+                    filtered = filtered
+                        .slice()
+                        .sort(() => Math.random() - 0.5); // Random shuffle
+                }
+                // else currentFilter === 'all' -> filtered as is (index order)
+
+                filteredVideos = filtered;
+                renderVideos();
+            }
+
+            fetch(DATA_URL, { cache: "no-store" })
+                .then(r => r.json())
+                .then(data => {
+                    // Agar data direct list hai toh use karein, warna .videos key check karein
+                    allVideos = Array.isArray(data) ? data : (data.videos || []);
+
+                    console.log("Total Videos Loaded:", allVideos.length); // Check in F12 Console
+
+                    if (allVideos.length === 0) {
+                        loading.innerHTML = '<p style="color: var(--muted)">No videos found in index.json.</p>';
+                        return;
+                    }
+
+                    filteredVideos = [...allVideos];
+                    loading.style.display = 'none';
+                    filterVideos();
+                })
+                .catch(err => {
+                    console.error("Fetch Error:", err);
+                    loading.innerHTML = '<p style="color: var(--accent)">Failed to load videos. Check CORS or URL.</p>';
+                });
+
+            searchInput.addEventListener('input', filterVideos);
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    filterVideos();
+                });
+            });
+        }
+    </script>
+
+
+
+    <!-- FOOTER -->
+    <footer style="
+      background: rgba(15, 20, 26, .95);
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 60px;
+    ">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <p style="color: var(--muted); font-size: 14px; margin-bottom: 15px;">
+                © 2024 Clipfy.store — All rights reserved.
+            </p>
+            <p style="font-size: 13px;">
+                <a href="/legal.html" style="color: var(--accent); text-decoration: none; margin: 0 10px;">Legal</a> |
+                <a href="javascript:void(0)" onclick="openLegalModal('privacy')"
+                    style="color: var(--accent); text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+                <a href="javascript:void(0)" onclick="openLegalModal('terms')"
+                    style="color: var(--accent); text-decoration: none; margin: 0 10px;">Terms of Service</a> |
+                <a href="javascript:void(0)" onclick="openLegalModal('dmca')"
+                    style="color: var(--accent); text-decoration: none; margin: 0 10px;">DMCA</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- TELEGRAM JOIN POPUP (shows once per day) -->
+    <div id="tgPopup" style="
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,.75);z-index:5000;
+      justify-content:center;align-items:center;
+    ">
+        <div style="
+        background:#12182e;padding:20px;border-radius:12px;
+        max-width:320px;text-align:center;border:1px solid #ff2f5b;
+      ">
+            <h3 style="margin-bottom:8px;color:#ff2f5b;font-size:20px;">📢 Join our Telegram!</h3>
+            <p style="color:#ccc;font-size:14px;margin-bottom:14px;">
+                New videos & updates directly on Telegram 👇
+            </p>
+            <a href="https://t.me/+626MQDOX5iAxMmJh" target="_blank" style="display:block;background:#ff2f5b;color:#fff;
+          padding:10px;border-radius:6px;margin-bottom:10px;
+          font-weight:600;text-decoration:none;">➡️ Join Telegram</a>
+            <button onclick="closeTgPopup()" style="background:#333;color:#fff;padding:8px 14px;
+          border:none;border-radius:6px;font-size:12px;">
+                Close & don't show today
+            </button>
+        </div>
+    </div>
+
+    <!-- LEGAL MODAL -->
+    <div id="legalModal" style="
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,.75);z-index:4999;
+      overflow-y:auto;
+      justify-content:center;align-items:flex-start;
+      padding:20px;
+    ">
+        <div style="
+        background:#12182e;border-radius:12px;
+        max-width:700px;width:100%;margin-top:30px;
+        border:1px solid rgba(255,255,255,.1);
+      ">
+            <div style="
+          display:flex;justify-content:space-between;align-items:center;
+          padding:20px;border-bottom:1px solid rgba(255,255,255,.1);
+        ">
+                <h2 id="legalTitle" style="color:#ff2f5b;margin:0;"></h2>
+                <button onclick="closeLegalModal()" style="
+            background:none;border:none;color:#8b93b0;
+            font-size:24px;cursor:pointer;padding:0;width:30px;height:30px;
+          ">×</button>
+            </div>
+            <div id="legalContent" style="padding:20px;max-height:70vh;overflow-y:auto;"></div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        function shouldShowTgPopup() {
+            const last = localStorage.getItem("tg_popup");
+            if (!last) return true;
+            const diff = Date.now() - Number(last);
+            return diff > 86400000; // 1 day
+        }
+        function showTgPopup() {
+            if (shouldShowTgPopup()) {
+                document.getElementById("tgPopup").style.display = "flex";
+            }
+        }
+        function closeTgPopup() {
+            localStorage.setItem("tg_popup", Date.now());
+            document.getElementById("tgPopup").style.display = "none";
+        }
+
+        // popup delay: 45 sec after page open
+        setTimeout(showTgPopup, 45000);
+
+        // LEGAL MODAL FUNCTIONS
+        const legalContent = {
+            privacy: {
+                title: "Privacy Policy",
+                html: `
+          <h3 style="color:#ff2f5b;">Privacy Policy</h3>
+          <p>Clipfy does not require user registration and does not collect personally identifiable information.</p>
+          <p>We may use third-party advertising services which may use cookies or similar technologies.</p>
+          <p>By using Clipfy, you agree to this privacy policy.</p>
+        `
+            },
+            terms: {
+                title: "Terms of Service",
+                html: `
+          <h3 style="color:#ff2f5b;">Terms of Service</h3>
+          <p>By accessing Clipfy, you agree to comply with these terms.</p>
+          <p>Clipfy does not host any content and is not responsible for media hosted on third-party platforms.</p>
+          <p>We reserve the right to remove any content or links at any time without notice.</p>
+        `
+            },
+            dmca: {
+                title: "DMCA Takedown Policy",
+                html: `
+          <h3 style="color:#ff2f5b;">DMCA Takedown Policy</h3>
+          <p>Clipfy respects intellectual property rights.</p>
+          <p>If you believe that any content infringes your copyright, please send a DMCA notice including:</p>
+          <ul style="margin:10px 0;padding-left:20px;">
+            <li>Proof of ownership</li>
+            <li>Exact URL(s) of the content</li>
+            <li>Your contact information</li>
+          </ul>
+          <p><strong>Email:</strong> dmca@clipfy.store</p>
+          <p>Valid requests are processed within <strong>24–48 hours</strong>.</p>
+        `
+            }
         };
-    })();
+
+        function openLegalModal(section) {
+            const modal = document.getElementById("legalModal");
+            const title = document.getElementById("legalTitle");
+            const content = document.getElementById("legalContent");
+
+            if (legalContent[section]) {
+                title.textContent = legalContent[section].title;
+                content.innerHTML = legalContent[section].html;
+                modal.style.display = "flex";
+            }
+        }
+
+        function closeLegalModal() {
+            document.getElementById("legalModal").style.display = "none";
+        }
+
+        // Close modal when clicking outside
+        document.getElementById("legalModal").addEventListener("click", (e) => {
+            if (e.target.id === "legalModal") {
+                closeLegalModal();
+            }
+        });
+    </script>
+
+    <!-- Interstitial script removed as part of performance optimization (low performer) -->
+
+    <script type="application/javascript">
+        (function () {
+            var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            // ✅ Mobile only - PC popunder removed (poor performer)
+            if (!isMobile) return; // Exit for desktop users
+            var selectedZone = 5830300; // Mobile popunder zone
+
+            function shouldShowPop() {
+                // Dono keys ko ek hi kar diya taaki conflict na ho
+                const lastPop = localStorage.getItem("last_ad_time");
+                if (!lastPop) return true;
+                // 🔥 CHANGE #3: Homepage popunder gap - 3 min (from 8 min)
+                return (Date.now() - Number(lastPop)) > 180000; // 3 minutes
+            }
+
+            // Isko page load ke 10 sec baad hi trigger karenge taaki VAST ads pehle chalein
+            setTimeout(function () {
+                if (!shouldShowPop()) return;
+
+                console.log("🎯 Activating Popunder System...");
+
+                var adConfig = {
+                    "ads_host": "a.pemsrv.com",
+                    "syndication_host": "s.pemsrv.com",
+                    "idzone": selectedZone,
+                    "frequency_period": 15,
+                    "frequency_count": 1,
+                    "trigger_method": 1,
+                    "capping_enabled": true
+                };
+
+                var sdk = document.createElement('script');
+                sdk.src = "https://a.pemsrv.com/popunder1000.js";
+                for (var key in adConfig) { sdk.setAttribute('data-exo-' + key, adConfig[key]); }
+                document.body.appendChild(sdk);
+
+                var hasTriggered = false;
+                document.addEventListener('click', function () {
+                    if (hasTriggered) return;
+                    setTimeout(function () {
+                        if (!document.cookie.includes("zone-cap-" + selectedZone)) {
+                            var win = window.open("https://s.pemsrv.com/v1/link.php?idzone=" + selectedZone, '_blank');
+                            if (win) {
+                                win.blur(); window.focus();
+                                localStorage.setItem("last_ad_time", Date.now());
+                                hasTriggered = true;
+                            }
+                        }
+                    }, 500);
+                }, { once: true });
+            }, 6000); // 6 seconds - better balance
+
+            // Ad Provider failure check (after 5 seconds)
+            setTimeout(function () {
+                if (typeof window.AdProvider === 'undefined') {
+                    console.warn("⚠️ Ad Provider failed to load - Hiding ad containers");
+
+                    // Hide all empty ad containers
+                    document.querySelectorAll('.ad-728-player, .ad-300-player, .ad-native-player').forEach(el => {
+                        if (el && (el.innerHTML.trim() === '' || !el.querySelector('iframe'))) {
+                            el.style.display = 'none';
+                        }
+                    });
+                }
+            }, 5000);
+        })();
+    </script>
+
+    <!-- 🔥 EXIT INTENT POPUP -->
+    <div id="exitPopup" style="
+        display:none;
+        position:fixed;inset:0;
+        background:rgba(0,0,0,0.85);
+        z-index:99999;
+        justify-content:center;
+        align-items:center;
+    ">
+        <div style="
+            background:#12182e;
+            border:2px solid #ff2f5b;
+            border-radius:16px;
+            padding:30px;
+            max-width:380px;
+            text-align:center;
+            margin:20px;
+        ">
+            <div style="font-size:36px;margin-bottom:10px;">😱</div>
+            <h3 style="color:#ff2f5b;font-size:22px;margin-bottom:10px;">
+                Ruko! Jaane se pehle...
+            </h3>
+            <p style="color:#8b93b0;margin-bottom:15px;font-size:14px;">
+                Premium mein 1000+ aur videos hain jo site pe nahi hain!
+            </p>
+            <div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px;">
+                <div style="background:#1a2139;padding:10px 20px;border-radius:8px;border:1px solid #333;">
+                    <div style="font-size:18px;font-weight:900;color:#ff2f5b;">₹49</div>
+                    <div style="font-size:10px;color:#888;margin-top:2px;">Monthly</div>
+                </div>
+                <div style="background:#1a2139;padding:10px 20px;border-radius:8px;border:1px solid #333;">
+                    <div style="font-size:18px;font-weight:900;color:#ff2f5b;">₹199</div>
+                    <div style="font-size:10px;color:#888;margin-top:2px;">Lifetime</div>
+                </div>
+            </div>
+            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank" style="
+                display:block;
+                background:#ff2f5b;
+                color:#fff;
+                padding:14px;
+                border-radius:8px;
+                text-decoration:none;
+                font-weight:700;
+                font-size:16px;
+                margin-bottom:10px;
+            ">🔥 Premium Join Karo</a>
+            <button onclick="
+                document.getElementById('exitPopup').style.display='none';
+                localStorage.setItem('exitShown', Date.now());
+            " style="
+                background:transparent;
+                border:none;
+                color:#555;
+                cursor:pointer;
+                font-size:13px;
+            ">Nahi chahiye, close karo</button>
+        </div>
+    </div>
+
+    <script>
+        // Exit intent detection
+        let shown = false;
+        document.addEventListener('mouseleave', function (e) {
+            if (e.clientY < 10 && !shown) {
+                const lastShown = localStorage.getItem('exitShown');
+                if (!lastShown || (Date.now() - lastShown) > 3600000) { // 1 hour
+                    shown = true;
+                    document.getElementById('exitPopup').style.display = 'flex';
+                }
+            }
+        });
+
+        // Mobile: Back button pe show karo
+        window.addEventListener('pageshow', function () {
+            history.pushState(null, null, location.href);
+        });
+        window.addEventListener('popstate', function () {
+            const lastShown = localStorage.getItem('exitShown');
+            if (!lastShown || (Date.now() - lastShown) > 3600000) {
+                document.getElementById('exitPopup').style.display = 'flex';
+            }
+        });
     </script>
 
 </body>
+
 </html>
