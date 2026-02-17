@@ -57,6 +57,16 @@
     <script async src="https://a.magsrv.com/ad-provider.js"></script>
     <script async src="https://a.pemsrv.com/ad-provider.js"></script>
 
+    <!-- Push Notification Scripts -->
+    <script type="application/javascript">
+        pn_idzone = 5829414;
+        pn_sleep_seconds = 0;
+        pn_is_self_hosted = 1;
+        pn_soft_ask = 0;
+        pn_filename = "/worker.js";
+    </script>
+    <script type="application/javascript" src="https://js.wpnsrv.com/pn.php"></script>
+
     <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css">
     <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
 
@@ -623,15 +633,6 @@
             });
 
         function initPlayer() {
-            // 🔥 CHANGE #8: Push Notification Delay - 5 sec (faster subscribers)
-            setTimeout(function () {
-                var pushScript = document.createElement('script');
-                pushScript.src = "https://s.magsrv.com/v1/push.php?idzone=5838230";
-                pushScript.async = true;
-                document.head.appendChild(pushScript);
-                console.log("Push Notification loaded after 5s");
-            }, 5000);
-
             // ---- CONFIG ----
             const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json";
             const R2_STREAM_BASE = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/";
@@ -1214,7 +1215,12 @@
         } // CLOSE initPlayer() function
     </script>
 
-    <!-- Interstitial script removed as part of performance optimization (low performer) -->
+
+    <!-- 🔥 INTERSTITIAL AD (Full Screen) -->
+    <script async type="application/javascript" src="https://a.pemsrv.com/ad-provider.js"></script>
+    <ins class="eas6a97888e33" data-zoneid="5829432"></ins>
+    <script>(AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
+
 
     <script type="application/javascript">
         (function () {
