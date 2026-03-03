@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anika Bot — Reward Verify</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 40px 32px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+    }
+
+    .icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .sub {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .reward-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f7971e, #ffd200);
+      color: #1a1a2e;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 10px 24px;
+      border-radius: 50px;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-telegram {
+      background: linear-gradient(135deg, #0088cc, #00b4ff);
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    /* Countdown timer */
+    .countdown-bar-wrap {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      height: 6px;
+      margin: 16px 0 8px;
+      overflow: hidden;
+    }
+
+    .countdown-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4ade80, #22d3ee);
+      border-radius: 50px;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    .countdown-text {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 16px;
+    }
+
+    /* Status states */
+    #status-verifying .icon {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .status-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Success / Error colors */
+    .text-success {
+      color: #4ade80;
+    }
+
+    .text-error {
+      color: #f87171;
+    }
+
+    .text-warning {
+      color: #fbbf24;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+
+    <!-- VERIFYING STATE -->
+    <div id="state-verifying">
+      <div class="icon">&#x23F3;</div>
+      <h1>Reward Verify Ho Raha Hai...</h1>
+      <p class="sub">Please wait, ad verify kar rahe hain.</p>
+      <div class="status-box">&#x1F504; Token check ho raha hai...</div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="state-success" class="hidden">
+      <div class="icon">&#x1F389;</div>
+      <h1 class="text-success">Reward Mila!</h1>
+      <p class="sub">Ad dekha, reward aa gaya! Ab Anika se baat karte raho &#x1F60A;</p>
+      <div class="reward-badge" id="reward-text">+10 Messages</div>
+      <br />
+      <!-- Countdown -->
+      <div class="countdown-bar-wrap">
+        <div class="countdown-bar" id="countdown-bar"></div>
+      </div>
+      <p class="countdown-text" id="countdown-text">3 seconds mein bot khul jayega...</p>
+      <a id="telegram-link" href="#" class="btn btn-telegram">
+        &#x1F4F1; Abhi Kholo &#x2192; Anika
+      </a>
+      <div class="status-box" style="margin-top:12px">
+        &#x2705; Reward automatically add ho gaya<br />
+        &#x1F504; Agle reward ke liye 30 min wait karo
+      </div>
+    </div>
+
+    <!-- ALREADY USED STATE -->
+    <div id="state-already-used" class="hidden">
+      <div class="icon">&#x1F501;</div>
+      <h1 class="text-warning">Pehle Se Use Kiya!</h1>
+      <p class="sub">Yeh link pehle hi use ho gaya hai.</p>
+      <div class="status-box">&#x23F0; 30 min baad naya link try karo</div>
+      <a id="telegram-link-2" href="#" class="btn btn-telegram">
+        &#x1F4F1; Anika Pe Wapas Jao
+      </a>
+    </div>
+
+    <!-- EXPIRED STATE -->
+    <div id="state-expired" class="hidden">
+      <div class="icon">&#x231B;</div>
+      <h1 class="text-warning">Link Expire Ho Gaya</h1>
+      <p class="sub">This link has expired (60 min ka validity tha).</p>
+      <div class="status-box">&#x1F4A1; /earnmsgs se naya link lo</div>
+      <a id="telegram-link-3" href="#" class="btn btn-telegram">
+        &#x1F4F1; Anika Pe Wapas Jao
+      </a>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="state-error" class="hidden">
+      <div class="icon">&#x274C;</div>
+      <h1 class="text-error">Kuch Gadbad Hai</h1>
+      <p class="sub" id="error-msg">Token invalid ya server down hai. Dobara try karo.</p>
+      <a id="telegram-link-4" href="#" class="btn btn-telegram">
+        &#x1F4F1; Anika Pe Wapas Jao
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    // --- CONFIG: Ye 2 cheezein apni change karo -----------
+    const BOT_USERNAME = 'AnikaXbot';           // apna bot username
+    const VERIFY_API_URL = 'https://clipfy.store/api/verify';  // Cloudflare Worker route
+    // ------------------------------------------------------
+
+    const TELEGRAM_URL = `https://t.me/${BOT_USERNAME}`;
+
+    // Sab telegram links set karo
+    document.querySelectorAll('[id^="telegram-link"]').forEach(el => {
+      el.href = TELEGRAM_URL;
+    });
+
+    function showState(name) {
+      ['verifying', 'success', 'already-used', 'expired', 'error'].forEach(s => {
+        const el = document.getElementById('state-' + s);
+        if (el) el.classList.toggle('hidden', s !== name);
+      });
+    }
+
+    let countdownTimer = null;
+
+    function startCountdown(url, seconds) {
+      const bar = document.getElementById('countdown-bar');
+      const text = document.getElementById('countdown-text');
+      let left = seconds;
+
+      bar.style.width = '100%';
+      text.textContent = `${left} seconds mein bot khul jayega...`;
+
+      countdownTimer = setInterval(() => {
+        left--;
+        const pct = (left / seconds) * 100;
+        bar.style.width = pct + '%';
+
+        if (left <= 0) {
+          clearInterval(countdownTimer);
+          text.textContent = 'Bot khul raha hai...';
+          window.location.href = url;
+        } else {
+          text.textContent = `${left} second${left > 1 ? 's' : ''} mein bot khul jayega...`;
+        }
+      }, 1000);
+    }
+
+    async function verifyToken(token) {
+      showState('verifying');
+      try {
+        const resp = await fetch(VERIFY_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+        const data = await resp.json();
+        console.log('[verify] Response:', data);
+
+        if (data.status === 'ok') {
+          document.getElementById('reward-text').textContent =
+            `+${data.reward} Messages`;
+          showState('success');
+          startCountdown(TELEGRAM_URL, 3);
+        } else if (data.status === 'already_used') {
+          showState('already-used');
+        } else if (data.status === 'expired') {
+          showState('expired');
+        } else {
+          document.getElementById('error-msg').textContent =
+            `Token status: ${data.status || 'invalid'}`;
+          showState('error');
+        }
+      } catch (err) {
+        console.error('[verify] Error:', err);
+        document.getElementById('error-msg').textContent =
+          'Server se connect nahi ho pa raha. Baad mein try karo.';
+        showState('error');
+      }
+    }
+
+    // URL se token nikalo aur verify karo
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (token) {
+      verifyToken(token);
+    } else {
+      document.getElementById('error-msg').textContent = 'Token missing in URL.';
+      showState('error');
+    }
+  </script>
+</body>
+
+</html>
