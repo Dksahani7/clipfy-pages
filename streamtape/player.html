@@ -76,12 +76,14 @@
 
     <style>
         :root {
-            --bg: #0f141a;
-            --card: #12182e;
-            --text: #fff;
-            --muted: #8b93b0;
+            --bg: #05080c;
+            --card: #101622;
+            --text: #ffffff;
+            --muted: #94a3b8;
             --accent: #ff2f5b;
-            --hover: #1a2139;
+            --accent-glow: rgba(255, 47, 91, 0.4);
+            --hover: #1a2235;
+            --glass: rgba(15, 20, 26, 0.8);
         }
 
         * {
@@ -103,10 +105,11 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            background: rgba(15, 20, 26, .95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, .05);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .3)
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.9);
         }
 
         .nav {
@@ -254,8 +257,9 @@
         }
 
         .suggestion-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(255, 47, 91, .2)
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
+            border-color: var(--accent);
         }
 
         .suggestion-thumbnail {
@@ -498,53 +502,7 @@
             </div>
         </div>
 
-        <!-- 🔥 PREMIUM TELEGRAM BANNER (SIMPLE) -->
-        <div style="
-            background: #12182e;
-            border: 1px solid #ff2f5b;
-            border-radius: 12px;
-            padding: 24px 20px;
-            margin: 20px 0;
-            text-align: center;
-        ">
-            <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">
-                🔥 PREMIUM ACCESS
-            </div>
-            <div style="margin-bottom:20px;color:#8b93b0;font-size:14px;">
-                No Ads • Full HD • Direct Download
-            </div>
-
-            <div style="display:flex;justify-content:center;gap:15px;margin-bottom:20px;flex-wrap:wrap;">
-                <div
-                    style="background:#1a2139;padding:15px 30px;border-radius:10px;border:1px solid #333;min-width:120px;">
-                    <div style="font-size:24px;font-weight:900;color:#ff2f5b;">₹49</div>
-                    <div style="font-size:12px;color:#888;margin-top:4px;">Monthly</div>
-                </div>
-                <div
-                    style="background:#1a2139;padding:15px 30px;border-radius:10px;border:1px solid #333;min-width:120px;">
-                    <div style="font-size:24px;font-weight:900;color:#ff2f5b;">₹199</div>
-                    <div style="font-size:12px;color:#888;margin-top:4px;">Lifetime</div>
-                </div>
-            </div>
-
-            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank" style="
-                display:inline-block;
-                background:#ff2f5b;
-                color:#fff;
-                padding:12px 30px;
-                border-radius:50px;
-                text-decoration:none;
-                font-weight:700;
-                font-size:15px;
-                box-shadow: 0 4px 15px rgba(255, 47, 91, 0.3);
-            ">
-                Contact @Clipfy_support
-            </a>
-
-            <div style="color:#555;font-size:12px;margin-top:16px;">
-                💳 UPI accepted via Support
-            </div>
-        </div>
+        <!-- Premium banner removed -->
 
         <div class="suggestions-header">More Videos 🔥</div>
         <div id="suggestions"></div>
@@ -585,7 +543,7 @@
     <!-- // MAINTENANCE MODE CHECK -->
     <script>
         // Check maintenance mode on page load
-        fetch('https://clipfy.store/api/status')
+        fetch('/api/status')
             .then(r => r.json())
             .then(data => {
                 if (data.site_disabled) {
@@ -876,7 +834,16 @@
                 }
 
                 const source = document.createElement('source');
-                source.src = R2_STREAM_BASE + "videos/" + v.videoid + ".mp4";
+                
+                // Logic to support both R2 and external MP4 links
+                if (v.source_url && v.source_url.startsWith('http')) {
+                    source.src = v.source_url;
+                } else if (v.stream_id && v.stream_id.startsWith('http')) {
+                    source.src = v.stream_id;
+                } else {
+                    source.src = R2_STREAM_BASE + "videos/" + (v.stream_id || v.videoid) + ".mp4";
+                }
+                
                 source.type = "video/mp4";
                 playerRef.appendChild(source);
 
@@ -1008,7 +975,7 @@
                         viewCountedFlag = true;
 
                         // Track view on backend
-                        fetch(`https://clipfy.store/api/track/play`, {
+                        fetch(`/api/track/play`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -1020,7 +987,7 @@
                         }).catch(err => console.error("Track error:", err));
 
                         // Also increment views in old endpoint for compatibility
-                        fetch(`https://clipfy.store/api/watch`, {
+                        fetch(`/api/watch`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ videoid: id })
@@ -1033,7 +1000,7 @@
                             fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
                                 .then(r => r.json())
                                 .then(data => {
-                                    fetch('https://clipfy.store/api/track/geo', {
+                                    fetch('/api/track/geo', {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
@@ -1098,9 +1065,27 @@
 
                 if (!append) {
                     suggestions.innerHTML = "";
+                    const currentV = videos[current];
                     const allIds = Object.keys(videos);
-                    const filteredIds = allIds.filter(i => i !== current);
-                    allSuggestionIds = shuffleArray(filteredIds);
+                    
+                    // Filter out current video
+                    let filteredIds = allIds.filter(i => i !== current);
+                    
+                    // SMART RANKING: Boost videos with similar title words
+                    const currentTitleWords = (currentV.title || "").toLowerCase().split(/\s+/).filter(w => w.length > 2);
+                    
+                    filteredIds.sort((a, b) => {
+                        const titleA = (videos[a].title || "").toLowerCase();
+                        const titleB = (videos[b].title || "").toLowerCase();
+                        
+                        let scoreA = currentTitleWords.filter(w => titleA.includes(w)).length;
+                        let scoreB = currentTitleWords.filter(w => titleB.includes(w)).length;
+                        
+                        // Add some randomness so it's not always the same
+                        return (scoreB + Math.random()) - (scoreA + Math.random());
+                    });
+
+                    allSuggestionIds = filteredIds;
                     suggestionsLoaded = 0;
                 }
 
@@ -1115,8 +1100,9 @@
                     const card = document.createElement("div");
                     card.className = "suggestion-item";
                     card.innerHTML = `
-            <div class="suggestion-thumbnail">
+            <div class="suggestion-thumbnail" style="position:relative;">
                 <img loading="lazy" src="${v.thumb || 'https://via.placeholder.com/640x360?text=No+Thumbnail'}">
+                ${index < 4 ? '<span style="position:absolute;top:5px;left:5px;background:var(--accent);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,0.5);">🔥 TRENDING</span>' : ''}
             </div>
             <div class="suggestion-title">${v.title || "Untitled"}</div>
         `;
