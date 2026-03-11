@@ -779,14 +779,6 @@ tr:hover{background:var(--hover)}
       <button class="btn btn-small btn-warning" onclick="clearCache()">Clear Cache</button>
     </div>
 
-    <div class="settings-section">
-      <h4>API Configuration</h4>
-      <div class="setting-row">
-        <span>Byse API Key</span>
-        <input type="password" id="byseKey" placeholder="API Key (local only)" style="width:200px;margin:0">
-      </div>
-      <button class="btn btn-small btn-success" onclick="saveAPIConfig()">Save Config</button>
-    </div>
 
     <div class="settings-section">
       <h4>Backup & Restore</h4>
@@ -940,15 +932,8 @@ https://example.com/video2.mp4
 
     <textarea id="multiUploadInput" placeholder="Paste video URLs with titles (format shown above)" style="min-height:180px;margin:10px 0"></textarea>
 
-    <div style="display:flex;gap:10px;margin:10px 0">
-      <label style="display:flex;align-items:center;gap:6px">
-        <input type="checkbox" id="autoThumb" checked>
-        Auto extract thumbnail
-      </label>
-      <label style="display:flex;align-items:center;gap:6px">
-        <input type="checkbox" id="autoLetterbox" checked>
-        Auto letterbox (1280x720)
-      </label>
+    <div style="display:flex;gap:10px;margin:10px 0; color:var(--success); font-weight:600; font-size:12px">
+      ✨ AI-SEO & Auto-Thumbnail enabled (Processed on VPS)
     </div>
 
     <div id="multiUploadProgress" style="display:none;background:var(--hover);padding:12px;border-radius:6px;margin:10px 0">
@@ -978,7 +963,7 @@ https://example.com/video2.mp4
 </div>
 
 <script>
-const API = "https://clipfy.store/api";
+const API = "/api";
 
 let ADMIN_TOKEN = localStorage.getItem("clipfy_admin_token");
 let CURRENT_USER = localStorage.getItem("clipfy_admin_user") || "Guest";
@@ -1948,11 +1933,6 @@ async function clearCache(){
   alert("Cache cleared");
 }
 
-function saveAPIConfig(){
-  const key = document.getElementById("byseKey").value.trim();
-  localStorage.setItem("clipfy_byse_key",key);
-  alert("Saved locally (use server env for real key)");
-}
 
 async function backupData(){
   if (!ADMIN_TOKEN) return alert("Login first");
@@ -2089,8 +2069,6 @@ function init(){
   loadLogs();
   updateDashboard();
 
-  const savedKey = localStorage.getItem("clipfy_byse_key");
-  if (savedKey) document.getElementById("byseKey").value = savedKey;
 }
 
 window.addEventListener("click",e=>{
@@ -2267,128 +2245,35 @@ async function startMultiUpload() {
   const rawInput = document.getElementById("multiUploadInput").value.trim();
   if (!rawInput) return alert("Paste video URLs first");
 
-  const videos = parseMultiVideoInput(rawInput);
-  if (!videos.length) return alert("No valid video blocks found");
-
-  const autoThumb = document.getElementById("autoThumb").checked;
-  const autoLetterbox = document.getElementById("autoLetterbox").checked;
+  const videosToUpload = parseMultiVideoInput(rawInput);
+  if (!videosToUpload.length) return alert("No valid video blocks found");
 
   document.getElementById("multiUploadProgress").style.display = "block";
   document.getElementById("multiUploadResult").style.display = "none";
   document.getElementById("multiProgressLogs").innerHTML = "";
-  addProgressLog(`🔄 Starting upload of ${videos.length} videos...`);
+  addProgressLog(`🔄 Starting server-side upload of ${videosToUpload.length} videos...`);
 
   const results = [];
   let completed = 0;
 
-  for (let i = 0; i < videos.length; i++) {
-    const video = videos[i];
-    const progressPercent = Math.round((i / videos.length) * 100);
+  for (let i = 0; i < videosToUpload.length; i++) {
+    const video = videosToUpload[i];
+    const progressPercent = Math.round((i / videosToUpload.length) * 100);
     document.getElementById("multiProgressFill").style.width = progressPercent + "%";
-    document.getElementById("multiProgressText").textContent = `${completed}/${videos.length} completed`;
+    document.getElementById("multiProgressText").textContent = `${completed}/${videosToUpload.length} completed`;
 
     try {
-      addProgressLog(`[${i + 1}/${videos.length}] Processing: "${video.title}"`);
-
-      // Check if URL is already an R2 direct link
-      const isR2DirectLink = video.url.includes('/videos/') && video.url.includes('.mp4');
-      let stream_id = "";
-
-      if (isR2DirectLink) {
-        // Extract file_code from R2 URL without re-uploading
-        // Example: https://r2.example.com/videos/tg_abc123.mp4 → tg_abc123
-        const fileCodeMatch = video.url.match(/\/videos\/(.+?)(\.mp4)?$/);
-        if (fileCodeMatch) {
-          stream_id = fileCodeMatch[1]; // Just the file code without .mp4
-          addProgressLog(`  ✅ R2 direct link detected (no re-upload): ${stream_id}`);
-        } else {
-          throw new Error("Could not extract file code from R2 URL");
-        }
-      } else {
-        // Remote Upload to R2
-        addProgressLog(`  ⬆️ Uploading to R2...`);
-        const r2Response = await remoteUploadToR2(video.url);
-
-        if (!r2Response || !r2Response.file_code) {
-          throw new Error("R2 upload failed or no file_code");
-        }
-
-        stream_id = r2Response.file_code;
-        addProgressLog(`  ✅ R2 stream_id: ${stream_id}`);
-      }
-
-      // Step 2: Extract Frame & Create Thumbnail (browser-side)
-      let thumb_url = "";
-      if (autoThumb) {
-        try {
-          addProgressLog(`  🎬 Extracting frame in browser...`);
-
-          // Extract frame canvas in browser (may fail on CORS)
-          const frameCanvas = await extractFrameFromVideo(video.url);
-
-          if (frameCanvas && autoLetterbox) {
-            addProgressLog(`  🎨 Processing letterbox (1280x720)...`);
-
-            // Ensure we have an image to pass into letterbox helper
-            const frameBlob = await new Promise(res => frameCanvas.toBlob(res, 'image/jpeg', 0.9));
-            if (!frameBlob) throw new Error('Canvas to blob failed');
-
-            const img = new Image();
-            await new Promise((resolve, reject) => {
-              img.onload = async () => {
-                try {
-                  const letterboxCanvas = await resizeToLetterbox(img);
-                  thumb_url = await uploadThumbnailToR2(letterboxCanvas, `by_${stream_id}`);
-                  addProgressLog(`  ✅ Thumbnail saved to R2 (1280x720)`);
-                  resolve();
-                } catch (e) { reject(e); }
-              };
-              img.onerror = () => reject(new Error('Image processing failed'));
-              img.src = URL.createObjectURL(frameBlob);
-            });
-
-          } else if (frameCanvas) {
-            // Upload raw extracted frame
-            thumb_url = await uploadThumbnailToR2(frameCanvas, `by_${stream_id}`);
-            addProgressLog(`  ✅ Raw frame uploaded`);
-          }
-        } catch (e) {
-          addProgressLog(`  ⚠️ Thumbnail extraction failed: ${e.message}`, 'error');
-        }
-      }
-
-      // Step 3: Create Video Entry
-      const videoid = `by_${stream_id}`;
-      const videoEntry = {
-        videoid: videoid,
-        title: video.title,
-        thumb: thumb_url || "",
-        stream_id: stream_id,
-        views: 0,
-        offline: false
-      };
-
-      addProgressLog(`  💾 Creating video entry...`);
-      const saveResponse = await fetch(API + "/admin/videos", {
-        method: "POST",
-        headers: {
-          Authorization: ADMIN_TOKEN,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(videoEntry)
-      });
-
-      const savedData = await saveResponse.json();
-      if (savedData.error) throw new Error(savedData.error);
-
+      addProgressLog(`[${i + 1}/${videosToUpload.length}] Processing: "${video.title}"`);
+      
+      const res = await remoteUploadToR2(video.url, video.title);
+      
       results.push({
         title: video.title,
-        videoid: videoid,
-        success: true,
-        stream_id: stream_id
+        videoid: res.videoid,
+        success: true
       });
 
-      addProgressLog(`  ✅ Video "${video.title}" saved!`);
+      addProgressLog(`  ✅ Video processed & added! ID: ${res.videoid}`);
       completed++;
 
     } catch (error) {
@@ -2403,7 +2288,7 @@ async function startMultiUpload() {
 
   // Finalize
   document.getElementById("multiProgressFill").style.width = "100%";
-  document.getElementById("multiProgressText").textContent = `${completed}/${videos.length} completed`;
+  document.getElementById("multiProgressText").textContent = `${completed}/${videosToUpload.length} completed`;
 
   // Show results
   const successful = results.filter(r => r.success);
@@ -2412,7 +2297,7 @@ async function startMultiUpload() {
   document.getElementById("multiUploadProgress").style.display = "none";
   document.getElementById("multiUploadResult").style.display = "block";
   document.getElementById("multiUploadResultText").innerHTML = `
-    <p><strong>${successful.length}/${results.length} videos uploaded successfully</strong></p>
+    <p><strong>${successful.length}/${results.length} processed successfully</strong></p>
     ${successful.length > 0 ? `<p style="color:var(--success);margin:8px 0">✅ Added videos:</p>` : ""}
     <ul style="margin:4px 0 12px 20px;font-size:11px">
       ${successful.map(r => `<li>${r.title} (ID: ${r.videoid})</li>`).join("")}
@@ -2424,12 +2309,11 @@ async function startMultiUpload() {
   `;
 
   addProgressLog(`✅ Process Complete! ${successful.length}/${results.length} success`);
-  addLog("save", `Multi-upload: ${successful.length}/${videos.length} videos added`);
+  addLog("save", `Multi-upload complete: ${successful.length}/${videosToUpload.length} videos`);
 
-  setTimeout(() => {
-    loadVideos();
-  }, 2000);
+  setTimeout(() => { loadVideos(); }, 2000);
 }
+
 
 function addProgressLog(message, type = 'info') {
   const logsDiv = document.getElementById("multiProgressLogs");
@@ -2443,8 +2327,8 @@ function addProgressLog(message, type = 'info') {
   logsDiv.scrollTop = logsDiv.scrollHeight;
 }
 
-async function remoteUploadToR2(videoUrl) {
-  // Call backend /api/admin/remoteupload to upload to R2
+async function remoteUploadToR2(videoUrl, title = "Clipfy Video") {
+  // Call backend /api/admin/remoteupload to handle everything
   try {
     const response = await fetch(API + "/admin/remoteupload", {
       method: "POST",
@@ -2452,110 +2336,21 @@ async function remoteUploadToR2(videoUrl) {
         Authorization: ADMIN_TOKEN,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ url: videoUrl })
+      body: JSON.stringify({ video_url: videoUrl, title: title })
     });
 
     const data = await response.json();
-    if (!data.ok || !data.file_code) {
-      throw new Error(data.error || "Remote upload failed");
+    if (!data.ok) {
+      throw new Error(data.detail || data.error || "Remote upload failed");
     }
 
-    return { file_code: data.file_code };
+    return data; // Returns {ok, videoid, video}
   } catch (error) {
     throw new Error(`Remote upload failed: ${error.message}`);
   }
 }
 
-async function extractFrameFromVideo(videoUrl) {
-  return new Promise((resolve, reject) => {
-    addProgressLog(`  📹 Loading video in browser...`);
-
-    const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
-    video.preload = 'metadata';
-    video.src = videoUrl;
-
-    const onError = (e) => {
-      const msg = (e && e.message) || 'CORS/Network error';
-      reject(new Error(`Video load failed: ${msg}`));
-    };
-
-    let settled = false;
-
-    const cleanup = () => {
-      video.removeAttribute('src');
-      video.load && video.load();
-      video.onloadedmetadata = null;
-      video.onseeked = null;
-      video.onerror = null;
-      if (video.parentNode) video.parentNode.removeChild(video);
-    };
-
-    video.addEventListener('loadedmetadata', () => {
-      try {
-        // Seek to 25% (or 2s fallback)
-        const target = (video.duration && video.duration * 0.25) || 2;
-        video.currentTime = Math.min(target, video.duration || target);
-      } catch (e) {
-        onError(e);
-      }
-    });
-
-    video.addEventListener('seeked', () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 1280;
-        canvas.height = video.videoHeight || 720;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0);
-        if (!settled) {
-          settled = true;
-          cleanup();
-          addProgressLog(`  ✅ Frame extracted (${canvas.width}x${canvas.height})`);
-          resolve(canvas);
-        }
-      } catch (e) {
-        cleanup();
-        reject(new Error(`Canvas draw failed: ${e.message}`));
-      }
-    });
-
-    video.addEventListener('error', onError);
-
-    // Timeout
-    const to = setTimeout(() => {
-      if (!settled) {
-        settled = true;
-        cleanup();
-        reject(new Error('Video load timeout (15s)'));
-      }
-    }, 15000);
-  });
-}
-
-async function uploadThumbnailToR2(canvas, videoid) {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(async (blob) => {
-      if (!blob) return reject(new Error('Canvas to blob conversion failed'));
-
-      const fd = new FormData();
-      fd.append("videoid", videoid);
-      fd.append("image", blob, "thumbnail.jpg");
-      try {
-        const r = await fetch(API + "/admin/thumbnail", {
-          method: "POST",
-          headers: { Authorization: ADMIN_TOKEN },
-          body: fd
-        });
-        const data = await r.json();
-        if (!data.ok) {
-          throw new Error(data.error || 'Upload failed');
-        }
-        resolve(data.thumb);
-      } catch(e) { reject(e); }
-    }, "image/jpeg", 0.85);
-  });
-}
+// Browser-side video processing removed - now handled on VPS
 
 async function uploadThumbnailFile(file, videoid) {
   return new Promise((resolve, reject) => {
