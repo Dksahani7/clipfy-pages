@@ -55,12 +55,14 @@
 
     <style>
         :root {
-            --bg: #0f141a;
-            --card: #12182e;
-            --text: #fff;
-            --muted: #8b93b0;
+            --bg: #05080c;
+            --card: #101622;
+            --text: #ffffff;
+            --muted: #94a3b8;
             --accent: #ff2f5b;
-            --hover: #1a2139;
+            --accent-glow: rgba(255, 47, 91, 0.4);
+            --hover: #1a2235;
+            --glass: rgba(15, 20, 26, 0.8);
         }
 
         * {
@@ -77,10 +79,14 @@
         }
 
         header {
-            background: rgba(15, 20, 26, .95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, .05);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         .nav {
@@ -265,14 +271,15 @@
         }
 
         .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(255, 47, 91, .2);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--accent-glow);
             border-color: var(--accent);
+            z-index: 2;
         }
 
         .card.pinned {
             border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(255, 47, 91, .3);
+            box-shadow: 0 0 25px rgba(255, 47, 91, 0.3);
         }
 
         .card.pinned::before {
@@ -287,6 +294,20 @@
             font-size: 10px;
             font-weight: 700;
             z-index: 10;
+        }
+
+        .trending-tag {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: linear-gradient(90deg, #ff2f5b, #ff8c00);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 900;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .card-img-wrapper {
@@ -472,12 +493,28 @@
 
             .ad-mobile-top {
                 display: block;
-                position: sticky;
-                top: 0;
-                z-index: 90;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                z-index: 2000;
                 width: 100%;
-                background: #000;
+                background: rgba(0, 0, 0, 0.9);
                 text-align: center;
+                padding-top: 5px;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+                border-top: 1px solid var(--accent);
+            }
+            .ad-close-top {
+                position: absolute;
+                top: -25px;
+                right: 0;
+                background: var(--accent);
+                color: #fff;
+                border: none;
+                padding: 2px 10px;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 5px 0 0 0;
             }
         }
 
@@ -693,7 +730,8 @@
     </header>
 
     <!-- 🔥 CHANGE #5: Mobile Sticky Banner (High Visibility) -->
-    <div class="ad-mobile-top">
+    <div class="ad-mobile-top" id="mobileStickyAd">
+        <button class="ad-close-top" onclick="document.getElementById('mobileStickyAd').style.display='none'">×</button>
         <ins class="eas6a97888e37" data-zoneid="5843052"></ins>
         <script>(window.AdProvider = window.AdProvider || []).push({ "serve": {} });</script>
     </div>
@@ -708,27 +746,12 @@
 
 
     <section class="stats">
-        <div class="stat"><span class="stat-num" id="videoCount">0</span><span class="stat-label">Videos</span></div>
+        <div class="stat"><span class="stat-num">10k+</span><span class="stat-label">Premium</span></div>
         <div class="stat"><span class="stat-num">HD</span><span class="stat-label">Quality</span></div>
         <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Available</span></div>
     </section>
 
-    <!-- 🔥 PREMIUM TOP BAR -->
-    <!-- 🔥 PREMIUM TOP BAR -->
-    <div style="
-        background: #12182e;
-        border-bottom:1px solid #ff2f5b;
-        padding:12px 20px;
-        text-align:center;
-    ">
-        <span style="color:#fff;font-size:14px;">
-            🔥 <strong>PREMIUM:</strong> ₹49 & ₹199 Plans Available •
-            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank"
-                style="color:#ff2f5b;font-weight:700;text-decoration:none;margin-left:5px;">
-                Message @Clipfy_support →
-            </a>
-        </span>
-    </div>
+    <!-- Premium top bar removed -->
 
     <div class="filter-bar">
         <button class="filter-btn active" data-filter="all">All Videos</button>
@@ -780,7 +803,7 @@
     <!-- MAINTENANCE MODE CHECK -->
     <script>
         // Check maintenance mode on page load
-        fetch('https://clipfy.store/api/status')
+        fetch('/api/status')
             .then(r => r.json())
             .then(data => {
                 if (data.site_disabled) {
@@ -853,7 +876,7 @@
 
             // TRACKING: Track page view on load
             function trackPageView() {
-                fetch('https://clipfy.store/api/track/pageview', {
+                fetch('/api/track/pageview', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -867,7 +890,7 @@
                     fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
                         .then(r => r.json())
                         .then(data => {
-                            fetch('https://clipfy.store/api/track/geo', {
+                            fetch('/api/track/geo', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
@@ -923,24 +946,24 @@
                     card.innerHTML = `
                     <div class="card-img-wrapper">
                         <div class="card-thumb-wrap">
-                            <div class="card-thumb-bg" style="background-image:url('${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}')"></div>
                             <img loading="lazy" src="${v.thumb || `https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail`}" alt="${v.title || 'Video'}" class="card-thumb-img" onerror="this.src='https://via.placeholder.com/640x360/12182e/8b93b0?text=No+Thumbnail'">
                         </div>
                         <div class="play-overlay"><div class="play-icon"></div></div>
                         <span class="duration">${formatDuration(v.duration)}</span>
+                        ${v.pinned ? '' : (index < 5 ? '<span class="trending-tag">🔥 TRENDING</span>' : '')}
                     </div>
                     <div class="meta">
                         <h3>${v.title || 'Untitled Video'}</h3>
                         <div class="meta-info">
-                            <span class="views">${formatViews(Math.floor(Math.random() * 100000))}</span>
-                            <span class="date">${v.date || 'Recently'}</span>
+                            <span class="views">👁️ ${formatViews(Math.floor(Math.random() * 100000))}</span>
+                            <span class="date">📅 ${v.date || 'Recently'}</span>
                         </div>
                     </div>
                 `;
 
                     card.onclick = () => {
                         // Track video play from homepage
-                        fetch('https://clipfy.store/api/track/play', {
+                        fetch('/api/track/play', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -999,7 +1022,7 @@
                     });
                 }
 
-                videoCount.textContent = filteredVideos.length;
+                // Removed exact video count update
                 renderPagination();
                 window.scrollTo(0, 0);
             }
@@ -1068,8 +1091,28 @@
                 renderVideos();
             });
 
+            // --- DAILY DETERMINISTIC SHUFFLE ---
+            function seededShuffle(array) {
+                const date = new Date();
+                const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
+                
+                let m = array.length, t, i;
+                const random = () => {
+                    const x = Math.sin(seed + m) * 10000;
+                    return x - Math.floor(x);
+                };
+
+                while (m) {
+                    i = Math.floor(random() * m--);
+                    t = array[m];
+                    array[m] = array[i];
+                    array[i] = t;
+                }
+                return array;
+            }
+
             function filterVideos() {
-                currentPage = 1; // Reset to page 1 on filter change
+                currentPage = 1; 
                 let filtered = [...allVideos];
                 const searchTerm = searchInput.value.toLowerCase();
 
@@ -1077,7 +1120,10 @@
                     filtered = filtered.filter(v => (v.title || '').toLowerCase().includes(searchTerm));
                 }
 
-                if (currentFilter === 'trending') {
+                if (currentFilter === 'all') {
+                    // APPLY DAILY SHUFFLE ONLY ON "ALL" TAB
+                    filtered = seededShuffle(filtered);
+                } else if (currentFilter === 'trending') {
                     // Trending = Last 24 hours most viewed
                     const oneDayAgo = new Date();
                     oneDayAgo.setDate(oneDayAgo.getDate() - 1);
@@ -1378,7 +1424,7 @@
         })();
     </script>
 
-    <!-- 🔥 EXIT INTENT POPUP -->
+    <!-- Exit intent popup simplified - no premium -->
     <div id="exitPopup" style="
         display:none;
         position:fixed;inset:0;
@@ -1396,24 +1442,14 @@
             text-align:center;
             margin:20px;
         ">
-            <div style="font-size:36px;margin-bottom:10px;">😱</div>
+            <div style="font-size:36px;margin-bottom:10px;">👋</div>
             <h3 style="color:#ff2f5b;font-size:22px;margin-bottom:10px;">
-                Ruko! Jaane se pehle...
+                Wait! Don't leave yet...
             </h3>
             <p style="color:#8b93b0;margin-bottom:15px;font-size:14px;">
-                Premium mein 1000+ aur videos hain jo site pe nahi hain!
+                Join our Telegram channel for daily viral video updates!
             </p>
-            <div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px;">
-                <div style="background:#1a2139;padding:10px 20px;border-radius:8px;border:1px solid #333;">
-                    <div style="font-size:18px;font-weight:900;color:#ff2f5b;">₹49</div>
-                    <div style="font-size:10px;color:#888;margin-top:2px;">Monthly</div>
-                </div>
-                <div style="background:#1a2139;padding:10px 20px;border-radius:8px;border:1px solid #333;">
-                    <div style="font-size:18px;font-weight:900;color:#ff2f5b;">₹199</div>
-                    <div style="font-size:10px;color:#888;margin-top:2px;">Lifetime</div>
-                </div>
-            </div>
-            <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank" style="
+            <a href="https://t.me/+626MQDOX5iAxMmJh" target="_blank" style="
                 display:block;
                 background:#ff2f5b;
                 color:#fff;
@@ -1423,7 +1459,7 @@
                 font-weight:700;
                 font-size:16px;
                 margin-bottom:10px;
-            ">🔥 Premium Join Karo</a>
+            ">📢 Join Free Telegram</a>
             <button onclick="
                 document.getElementById('exitPopup').style.display='none';
                 localStorage.setItem('exitShown', Date.now());
@@ -1433,7 +1469,7 @@
                 color:#555;
                 cursor:pointer;
                 font-size:13px;
-            ">Nahi chahiye, close karo</button>
+            ">Close</button>
         </div>
     </div>
 
