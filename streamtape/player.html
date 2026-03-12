@@ -1065,7 +1065,7 @@
 
                 if (!append) {
                     suggestions.innerHTML = "";
-                    const currentV = videos[current];
+                    const currentV = videos[current] || {};
                     const allIds = Object.keys(videos);
                     
                     // Filter out current video
@@ -1093,7 +1093,7 @@
                 const nextBatch = allSuggestionIds.slice(suggestionsLoaded, suggestionsLoaded + batchSize);
 
                 // Render videos
-                nextBatch.forEach(id => {
+                nextBatch.forEach((id, index) => {
                     const v = videos[id];
                     if (!v) return;
 
