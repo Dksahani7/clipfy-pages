@@ -955,7 +955,7 @@
                     <div class="meta">
                         <h3>${v.title || 'Untitled Video'}</h3>
                         <div class="meta-info">
-                            <span class="views">👁️ ${formatViews(Math.floor(Math.random() * 100000))}</span>
+                            <span class="views">👁️ ${formatViews(v.views || 0)}</span>
                             <span class="date">📅 ${v.date || 'Recently'}</span>
                         </div>
                     </div>
