@@ -1,18 +1,4 @@
 User-agent: *
 Allow: /
 
-# Allow important directories
-Allow: /streamtape/
-Allow: /videos/
-Allow: /thumbs/
-Allow: /assets/
-Allow: /*.js
-Allow: /*.css
-Allow: /*.jpg
-Allow: /*.png
-Allow: /*.mp4
-
-# Sitemap location
-Sitemap: https://clipfy.store/sitemap-video.xml
-Sitemap: https://clipfy.store/sitemap.xml
-Sitemap: https://clipfy.store/sitemap-video-index.xml
+Sitemap: https://clipfy.store/sitemap-index.xml
