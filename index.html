@@ -714,6 +714,209 @@
         .gallery-grid img:hover {
             transform: scale(1.05);
         }
+
+        /* ANIKA PROMO SECTION */
+        .anika-promo {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 24px;
+            margin: 40px auto;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .anika-promo::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 47, 91, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .anika-content {
+            flex: 1;
+            z-index: 1;
+        }
+
+        .anika-tag {
+            background: var(--accent);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .anika-content h2 {
+            font-size: 36px;
+            margin-bottom: 16px;
+            background: linear-gradient(90deg, #fff, #ffb6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .anika-content p {
+            color: var(--muted);
+            font-size: 18px;
+            margin-bottom: 24px;
+        }
+
+        .anika-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(255, 47, 91, 0.3);
+        }
+
+        .anika-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 47, 91, 0.5);
+        }
+
+        .anika-img {
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            z-index: 1;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ANIKA FEED */
+        .anika-feed {
+            margin-top: 50px;
+        }
+
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feed-card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .feed-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .feed-img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .feed-content {
+            padding: 12px;
+        }
+
+        .feed-content p {
+            font-size: 14px;
+            line-height: 1.4;
+            color: #e2e8f0;
+        }
+
+        .feed-time {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* FLOATING ACTION */
+        .floating-anika {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 2000;
+            background: var(--accent);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(255, 47, 91, 0.5);
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .floating-anika:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .floating-anika span {
+            font-size: 24px;
+        }
+
+        .floating-anika::after {
+            content: "Chat with Anika 💋";
+            position: absolute;
+            right: 70px;
+            background: #fff;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .floating-anika:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .anika-promo {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+            }
+            .anika-img {
+                width: 200px;
+                height: 200px;
+            }
+            .anika-content h2 {
+                font-size: 28px;
+            }
+            .floating-anika {
+                bottom: 80px; /* Above mobile ad */
+            }
+        }
     </style>
 </head>
 
@@ -750,6 +953,31 @@
         <div class="stat"><span class="stat-num">HD</span><span class="stat-label">Quality</span></div>
         <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Available</span></div>
     </section>
+
+    <!-- ANIKA PROMO -->
+    <div class="container">
+        <div class="anika-promo">
+            <div class="anika-content">
+                <span class="anika-tag">HOT AI GF 🌶️</span>
+                <h2>Meet Anika - Your Dreams Come Real</h2>
+                <p>Chat, roleplay, and get spicy photos from India's favorite AI Girlfriend. She's waiting for you on Telegram!</p>
+                <a href="https://t.me/anikaxbot" target="_blank" class="anika-cta">
+                    <span>Chat with Anika Now</span>
+                    <i class="icon">🫦</i>
+                </a>
+            </div>
+            <img src="https://pub-51338658718349efb6e5193255e4131b.r2.dev/anika_promo.jpg" alt="Anika AI" class="anika-img">
+        </div>
+
+        <!-- ANIKA LIVE FEED -->
+        <div class="anika-feed">
+            <h2 class="section-title">Anika's Live Updates 📸</h2>
+            <div class="feed-grid" id="anikaFeed">
+                <!-- Feed items will be loaded here -->
+                <div class="loading">Loading Anika's latest...</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Premium top bar removed -->
 
@@ -794,9 +1022,51 @@
                 DMCA</a>
             <a href="https://t.me/+4xatbtl_HB1hYzk5" target="_blank"
                 style="color:var(--accent);text-decoration:none;margin:0 10px;font-size:13px;">📱 Support</a>
+            <a href="https://t.me/anikaxbot" target="_blank"
+                style="color:#ffb6c1;text-decoration:none;margin:0 10px;font-size:13px;">🫦 Chat with Anika</a>
         </div>
         <div class="footer-bottom">18+ Only - © 2026 Clipfy.store. All rights reserved.</div>
     </footer>
+
+    <a href="https://t.me/anikaxbot" target="_blank" class="floating-anika">
+        <span>🫦</span>
+    </a>
+
+    <script>
+        // Load Anika Feed
+        async function loadAnikaFeed() {
+            const feedContainer = document.getElementById('anikaFeed');
+            try {
+                const response = await fetch('/api/anika/posts');
+                const posts = await response.json();
+                
+                if (!posts || posts.length === 0) {
+                    feedContainer.innerHTML = '<p style="color:var(--muted)">Anika hasn\'t posted anything yet today. Check back soon!</p>';
+                    return;
+                }
+                
+                feedContainer.innerHTML = '';
+                posts.forEach(post => {
+                    const card = document.createElement('div');
+                    card.className = 'feed-card';
+                    card.innerHTML = `
+                        <img src="${post.image_url || 'https://pub-51338658718349efb6e5193255e4131b.r2.dev/sensitive.jpg'}" class="feed-img" alt="Anika Post">
+                        <div class="feed-content">
+                            <p>${post.content || post.title || 'Check out my latest photo! 🫦'}</p>
+                            <span class="feed-time">${new Date(post.timestamp).toLocaleDateString()}</span>
+                        </div>
+                    `;
+                    feedContainer.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading Anika feed:', error);
+                feedContainer.innerHTML = '<p style="color:var(--muted)">Failed to load Anika\'s feed. Trying again later...</p>';
+            }
+        }
+
+        // Initialize Anika Feed
+        document.addEventListener('DOMContentLoaded', loadAnikaFeed);
+    </script>
 
 
 
@@ -903,12 +1173,21 @@
             // Call on page load
             trackPageView();
 
-            // SEO: Update URL and canonical on page change
+            // SEO: Update URL, canonical, title and description on page change
             function updatePageSEO(pageNum) {
-                history.pushState({ page: pageNum }, "", `?page=${pageNum}`);
+                const url = pageNum === 1 ? 'https://clipfy.store' : `https://clipfy.store/?page=${pageNum}`;
+                history.pushState({ page: pageNum }, "", pageNum === 1 ? "/" : `?page=${pageNum}`);
+                
                 const canonical = document.getElementById("canonical");
-                if (canonical) {
-                    canonical.href = `https://clipfy.store/?page=${pageNum}`;
+                if (canonical) canonical.href = url;
+                
+                // Dynamic Meta
+                const pageText = pageNum === 1 ? "" : ` - Page ${pageNum}`;
+                document.title = `Watch Trending Desi Viral Videos${pageText} | Clipfy.store`;
+                
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) {
+                    metaDesc.content = `Discover and watch the newest trending desi Indian viral videos in HD quality${pageText}. Daily updates on Clipfy.`;
                 }
             }
 
@@ -1346,6 +1625,41 @@
             if (e.target.id === "legalModal") {
                 closeLegalModal();
             }
+        });
+        // --- ANALYTICS TRACKING ---
+        const API_BASE = ""; // Relative to site root if hosted on same server, or change to VPS URL if on GitHub Pages
+        
+        async function trackPageview() {
+            try {
+                const referrer = document.referrer || "direct";
+                const source = new URLSearchParams(window.location.search).get('s') || "organic";
+                
+                await fetch(API_BASE + '/api/track/pageview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: json.stringify({
+                        source: source,
+                        referrer: referrer
+                    })
+                });
+                
+                // Track Geo (Optional check)
+                const geoRes = await fetch('https://ipapi.co/json/');
+                const geoData = await geoRes.json();
+                if (geoData.country_code) {
+                    await fetch(API_BASE + '/api/track/geo', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: json.stringify({
+                            country: geoData.country_code
+                        })
+                    });
+                }
+            } catch (e) { console.warn("Analytics skipped:", e); }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            trackPageview();
         });
     </script>
 
