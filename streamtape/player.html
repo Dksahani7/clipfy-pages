@@ -652,20 +652,23 @@
 
             /* --------- SEO Update Function --------- */
             function updateSEO(v) {
-                // 1. Dynamic Title with Keywords (Front-loaded for SEO)
-                const seoTitle = `XXX Video ${v.title.substring(0, 55)} | Desi Leaked Viral - Clipfy`;
+                // 1. Dynamic Title (Varied prefixes to avoid duplicate patterns)
+                const prefixes = ["Watch", "Viral", "Desi", "Trending", "New"];
+                const prefix = prefixes[v.videoid.charCodeAt(v.videoid.length - 1) % prefixes.length];
+                const seoTitle = `${prefix}: ${v.title.substring(0, 50)} | Clipfy`;
                 document.title = seoTitle;
-
+                
                 // 2. Dynamic Meta Description
                 let metaDesc = document.querySelector('meta[name="description"]');
                 if (metaDesc) {
-                    metaDesc.content = `Watch ${v.title.substring(0, 135)} - Free HD streaming on Clipfy`;
+                    metaDesc.content = `${v.title.substring(0, 140)}... Watch this viral desi leak online in high quality on Clipfy player.`;
                 }
 
                 // 3. Canonical URL
                 const canonical = document.getElementById('canonical');
                 if (canonical) {
-                    canonical.href = `https://clipfy.store/streamtape/player?v=${v.videoid}`;
+                    // Canonical should ALWAYS be the watch page, not the player, for better results
+                    canonical.href = `https://clipfy.store/watch/${v.videoid}`;
                 }
 
                 // 4. Open Graph Tags
@@ -1178,6 +1181,41 @@
             window.addEventListener('popstate', function (event) {
                 if (event.state && event.state.videoid) {
                     loadVideo(event.state.videoid, true);
+                }
+            });
+
+            // --- ANALYTICS TRACKING ---
+            let trackingStarted = false;
+            let lastPercent = 0;
+
+            function trackPlay(videoid, percent = 0) {
+                const source = new URLSearchParams(window.location.search).get('s') || "organic";
+                fetch('/api/track/play', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        videoid: videoid,
+                        watchPercent: percent,
+                        source: source
+                    })
+                }).catch(() => {});
+            }
+
+            player.addEventListener('play', () => {
+                if (!trackingStarted) {
+                    trackPlay(currentVideoId, 0);
+                    trackingStarted = true;
+                    console.log("📊 Tracking: Video Started");
+                }
+            });
+
+            player.addEventListener('timeupdate', () => {
+                const percent = Math.floor((player.currentTime / player.duration) * 100);
+                // Track every 25% to avoid too many requests
+                if (percent > lastPercent + 24) {
+                    lastPercent = percent;
+                    trackPlay(currentVideoId, percent);
+                    console.log(`📊 Tracking: ${percent}% Watched`);
                 }
             });
 
