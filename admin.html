@@ -1915,7 +1915,8 @@
   </div>
 
   <script>
-    const API = "/api";
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://api.clipfy.store';
+    const API = API_BASE + "/api";
 
     let ADMIN_TOKEN = localStorage.getItem("clipfy_admin_token");
     let CURRENT_USER = localStorage.getItem("clipfy_admin_user") || "Guest";
