@@ -1,1111 +1,2063 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Clipfy Admin Panel Pro</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Clipfy Admin Panel Pro</title>
 
-<style>
-:root{
-  --bg:#0f141a;--card:#12182e;--text:#fff;--muted:#8b93b0;
-  --accent:#ff2f5b;--success:#10b981;--warning:#f59e0b;
-  --danger:#ef4444;--hover:#1a2139;--border:#2a3449;--blue:#3b82f6;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;font-size:14px}
-
-header{background:var(--card);padding:16px;border-bottom:2px solid var(--accent);position:sticky;top:0;z-index:100}
-@media(max-width:768px){
-  header{position:relative;top:auto}
-}
-.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.logo{font-size:22px;font-weight:900;color:var(--accent)}
-.user-info{font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center}
-.header-bottom{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:10px;
-  padding:10px;
-  align-items:center;
-} 
-
-.container{padding:16px;max-width:1200px;margin:auto}
-
-.btn{padding:8px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:500;transition:all .2s}
-.btn-small{padding:4px 10px;font-size:12px}
-.btn-success{background:var(--success);color:#fff}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-warning{background:var(--warning);color:#000}
-.btn-accent{background:var(--accent);color:#fff}
-.btn-blue{background:var(--blue);color:#fff}
-.btn:hover{opacity:.9;transform:translateY(-1px)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-table{width:100%;border-collapse:collapse;margin:16px 0}
-th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
-th{background:var(--hover);font-weight:600}
-tr:hover{background:var(--hover)}
-
-.status-live{color:var(--success);font-weight:500}
-.status-offline{color:var(--warning);font-weight:500}
-
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;align-items:center;justify-content:center;padding:20px}
-.modal-box{background:var(--card);padding:20px;border-radius:12px;width:min(90vw,500px);max-height:90vh;overflow-y:auto;border:1px solid var(--accent)}
-.modal-box h3{margin-bottom:12px;color:var(--accent)}
-.modal-box input,select,textarea{width:100%;padding:10px;margin:6px 0;border:1px solid var(--border);border-radius:6px;background:var(--hover);color:var(--text)}
-.modal-box textarea{min-height:100px;resize:vertical}
-
-.search-filter{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;align-items:center}
-.search-box{padding:8px;width:260px;border-radius:6px;border:1px solid var(--border);background:var(--hover);color:var(--text)}
-.filter-select{padding:8px;min-width:140px;border-radius:6px;border:1px solid var(--border);background:var(--hover);color:var(--text)}
-
-.pagination{display:flex;gap:6px;justify-content:center;margin:14px 0}
-.page-btn{padding:6px 10px}
-
-.bulk-actions{display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-
-.stats-grid{
-  grid-column:1/-1;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:10px;
-  margin-top:10px;
-}
-.stat-card{background:var(--hover);padding:10px 12px;border-radius:8px;text-align:left;border:1px solid var(--border)}
-.stat-number{font-size:18px;font-weight:800;color:var(--accent)}
-.stat-label{color:var(--muted);font-size:11px}
-
-.thumb-preview{width:70px;height:45px;object-fit:cover;border-radius:4px;cursor:pointer}
-
-.kill-badge{font-size:11px;padding:4px 8px;border-radius:20px;background:#3b1d1d;color:#ffb4b4;border:1px solid #ff4d4d}
-
-.tabs{display:flex;gap:4px;margin:16px 0;border-bottom:2px solid var(--border)}
-.tab{padding:10px 20px;cursor:pointer;border-radius:6px 6px 0 0;transition:all .2s}
-.tab.active{background:var(--accent);color:#fff}
-.tab:not(.active){color:var(--muted)}
-.tab:not(.active):hover{background:var(--hover)}
-
-.tab-content{display:none}
-.tab-content.active{display:block}
-
-.log-item{padding:8px;margin:4px 0;background:var(--hover);border-radius:4px;font-size:12px;display:flex;justify-content:space-between}
-.log-time{color:var(--muted)}
-
-.settings-section{background:var(--hover);padding:16px;border-radius:8px;margin:12px 0}
-.settings-section h4{color:var(--accent);margin-bottom:10px}
-.setting-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
-.setting-row:last-child{border-bottom:none}
-
-.badge{font-size:10px;padding:3px 8px;border-radius:12px;font-weight:600}
-.badge-success{background:var(--success);color:#000}
-.badge-danger{background:var(--danger);color:#fff}
-
-.analytics-card{background:var(--hover);padding:16px;border-radius:8px;margin:10px 0}
-.analytics-card h4{color:var(--accent);margin-bottom:8px}
-
-.top-video-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
-.top-video-item:last-child{border-bottom:none}
-
-.sync-progress{background:var(--hover);padding:20px;border-radius:8px;margin:20px 0;text-align:center}
-.sync-progress h3{color:var(--accent);margin-bottom:10px}
-
-/* ===== RESPONSIVE - MOBILE ===== */
-@media(max-width:1024px){
-  .stats-grid{margin-left:0;margin-top:10px}
-  table{font-size:13px}
-  th,td{padding:8px}
-  .btn-small{padding:3px 8px;font-size:11px}
-}
-
-@media(max-width:768px){
-  header{padding:8px;background:var(--card)}
-  .header-top{flex-direction:row;gap:8px;margin-bottom:0;justify-content:space-between;align-items:center}
-  .header-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:0}
-  .logo{font-size:14px}
-  .user-info{font-size:9px;flex-wrap:wrap;gap:2px}
-  .container{padding:10px}
-
-  .btn{padding:8px 10px;font-size:11px;min-height:38px;display:flex;align-items:center;justify-content:center;white-space:nowrap}
-  .btn-small{padding:6px 8px;font-size:10px;min-height:34px}
-
-  .stats-grid{grid-template-columns:repeat(2,1fr);margin-top:4px;gap:3px;padding:0}
-  .stat-card{padding:6px;font-size:11px}
-  .stat-number{font-size:12px}
-  .stat-label{font-size:8px}
-
-  .tabs{flex-wrap:wrap;gap:0;margin:10px 0;border-bottom:2px solid var(--border);overflow-x:auto}
-  .tab{padding:8px 10px;font-size:11px;white-space:nowrap;flex:1}
-
-  /* COMPACT VIDEO LIST */
-  table{font-size:10px;display:grid;width:100%;margin:0;gap:4px;grid-template-columns:1fr}
-  thead{display:none}
-  tbody{display:contents}
-  tr{
-    display:grid;
-    grid-template-columns:24px 56px 1fr 70px;
-    grid-template-rows:auto auto;
-    gap:8px;
-    padding:8px;
-    border:1px solid var(--border);
-    border-radius:6px;
-    background:var(--hover);
-    align-items:center;
-    margin-bottom:2px
-  }
-  td{padding:0;border:none;font-size:10px;display:flex;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  
-  /* Checkbox - grid 1/2, row 1/3 (spans both rows) */
-  td:nth-child(1){grid-column:1;grid-row:1/3;width:24px;height:24px;justify-content:center}
-  td:nth-child(1) input{width:18px;height:18px;cursor:pointer}
-  
-  /* Index - hide */
-  td:nth-child(2){display:none}
-  
-  /* Thumbnail - grid 2/3, row 1/3 */
-  td:nth-child(3){grid-column:2;grid-row:1/3;width:56px;height:56px;border-radius:4px;overflow:hidden}
-  td:nth-child(3) img{width:100%;height:100%;object-fit:cover}
-  
-  /* Title - grid 3/4, row 1 */
-  td:nth-child(4){grid-column:3;grid-row:1;font-weight:600;font-size:11px;color:var(--text)}
-  
-  /* Video ID - grid 3/4, row 2 */
-  td:nth-child(5){grid-column:3;grid-row:2;font-size:9px;color:var(--accent);padding-right:4px}
-  td:nth-child(5)::before{content:"ID: ";color:var(--muted)}
-  
-  /* Views - grid 3/4, row 2 (overlapping) */
-  td:nth-child(6){display:none}
-  
-  /* Status - grid 3/4, row 2 (overlapping) */
-  td:nth-child(7){display:none}
-  
-  /* Date and pinned - hide */
-  td:nth-child(8),
-  td:nth-child(9){display:none}
-  
-  /* Actions - grid 4/5, row 1/3 (spans both rows) */
-  td:nth-child(10){grid-column:4;grid-row:1/3;display:flex;gap:3px;flex-direction:column}
-  td:nth-child(10) .btn{padding:5px 4px;font-size:9px;min-height:24px;flex:1}
-  
-  .thumb-preview{width:56px;height:56px;object-fit:cover;border-radius:4px}
-  
-  /* MOBILE: Move buttons below details and make big */
-  @media(max-width:768px){
-    tr{grid-template-rows:auto auto auto}
-    
-    /* Actions move to row 3, span all width */
-    td:nth-child(10){
-      grid-column:1/5;
-      grid-row:3;
-      display:flex;
-      gap:4px;
-      flex-direction:row;
-      margin-top:4px
+  <style>
+    :root {
+      --bg: #0f141a;
+      --card: #12182e;
+      --text: #fff;
+      --muted: #8b93b0;
+      --accent: #ff2f5b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --hover: #1a2139;
+      --border: #2a3449;
+      --blue: #3b82f6;
     }
-    td:nth-child(10) .btn{
-      padding:10px 8px;
-      font-size:10px;
-      min-height:38px;
-      flex:1;
-      font-weight:600
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
     }
-  }
-  
-  /* Mobile: Make Edit/Delete buttons bigger */
-  @media(max-width:600px){
-    td:nth-child(9){display:flex;gap:8px;margin-top:8px !important}
-    td:nth-child(9) .btn-warning,
-    td:nth-child(9) .btn-danger{
-      padding:14px 10px !important;
-      font-size:13px !important;
-      min-height:48px !important;
-      flex:1;
-      font-weight:600;
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      font-size: 14px
     }
-  }
-  .thumb-preview{width:60px;height:40px;object-fit:cover;border-radius:4px}
 
-  .search-filter{flex-direction:column;gap:6px;margin:10px 0}
-  .search-box{width:100%;padding:8px;font-size:13px}
-  .filter-select{width:100%;padding:8px;font-size:13px}
+    header {
+      background: var(--card);
+      padding: 16px;
+      border-bottom: 2px solid var(--accent);
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
 
-  .bulk-actions{flex-direction:column;gap:6px;font-size:11px}
-  .bulk-actions button{width:100%}
-  .modal-box{width:95vw;padding:14px;max-height:90vh;border-radius:8px}
-  .modal-box h3{font-size:15px;margin-bottom:10px}
-  .modal-box input,select,textarea{width:100%;padding:10px;font-size:13px;margin:6px 0;min-height:40px}
+    @media(max-width:768px) {
+      header {
+        position: relative;
+        top: auto
+      }
+    }
 
-  .pagination{flex-wrap:wrap;gap:4px;font-size:11px}
-  .page-btn{padding:6px 8px;font-size:10px;min-height:36px}
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px
+    }
 
-  .search-filter .btn-small{width:100%;min-height:44px}
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--accent)
+    }
 
-  #tab-reports > div:first-of-type{display:flex;flex-direction:column;gap:6px}
-  #tab-reports .btn{width:100%;min-height:38px}
-}
+    .user-info {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
 
-@media(max-width:600px){
-  .header-bottom{grid-template-columns:repeat(2,1fr);gap:4px}
-  
-  .btn{padding:7px 8px;font-size:10px;min-height:36px}
-  .btn-small{padding:5px 6px;font-size:9px;min-height:32px}
-  
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  
-  .tabs{gap:0}
-  .tab{padding:6px;font-size:9px}
-  
-  #tab-reports > div:first-of-type{display:grid;grid-template-columns:1fr;gap:4px}
-  #tab-reports .btn{min-height:36px}
-  
-  table{margin:0;font-size:12px;display:grid;gap:8px;grid-template-columns:1fr}
-  tr{grid-template-columns:55px 1fr;padding:10px;gap:8px;margin-bottom:0}
-  td{font-size:11px}
-  td:nth-child(3){width:55px;height:38px}
-  td:nth-child(4){font-size:11px;font-weight:500}
-  td:nth-child(5){font-size:10px;color:var(--muted)}
-  td:nth-child(7){font-size:10px}
-  td:nth-child(9) .btn{padding:5px 6px;font-size:9px;min-height:30px}
-  .thumb-preview{width:55px;height:38px}
-}
+    .header-bottom {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      padding: 10px;
+      align-items: center;
+    }
 
-@media(max-width:480px){
-  body{font-size:11px}
-  header{padding:6px}
-  .header-top{gap:4px}
-  .logo{font-size:12px}
-  .user-info{font-size:8px;gap:2px}
-  .container{padding:8px}
+    .container {
+      padding: 16px;
+      max-width: 1200px;
+      margin: auto
+    }
 
-  .btn{padding:6px 7px;font-size:9px;min-height:34px}
-  .btn-small{padding:5px 6px;font-size:8px;min-height:30px}
+    .btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all .2s
+    }
 
-  .header-bottom{grid-template-columns:repeat(3,1fr);gap:3px}
-  .stats-grid{grid-template-columns:1fr;gap:4px;padding:0;margin:4px 0}
-  .stat-card{padding:6px;font-size:11px}
-  .stat-number{font-size:12px}
-  .stat-label{font-size:8px}
+    .btn-small {
+      padding: 4px 10px;
+      font-size: 12px
+    }
 
-  .tabs{gap:0;margin:6px 0}
-  .tab{padding:6px 8px;font-size:10px;flex:1;text-align:center}
+    .btn-success {
+      background: var(--success);
+      color: #fff
+    }
 
-  #tab-reports > div:first-of-type{display:grid;grid-template-columns:1fr;gap:3px}
-  #tab-reports .btn{min-height:34px;padding:6px}
+    .btn-danger {
+      background: var(--danger);
+      color: #fff
+    }
 
-  .modal{padding:10px}
-  .modal-box{width:98vw;padding:10px;max-height:95vh;border-radius:6px}
-  .modal-box h3{font-size:13px;margin-bottom:6px}
-  .modal-box input,select,textarea{padding:8px;font-size:12px;margin:4px 0;min-height:38px}
-  .modal-box textarea{min-height:80px}
+    .btn-warning {
+      background: var(--warning);
+      color: #000
+    }
 
-  /* Better video modal layout on mobile */
-  #videoModal .modal-box{
-    padding:10px;
-  }
-  #videoModal .modal-box input,
-  #videoModal .modal-box select,
-  #videoModal .modal-box textarea,
-  #videoModal .modal-box label{
-    min-height:44px;
-    padding:12px;
-    margin:8px 0;
-    font-size:13px;
-  }
-  #videoModal .modal-box label{
-    min-height:auto;
-    padding:8px 0;
-    margin-top:12px;
-    display:block;
-    font-weight:500;
-    color:var(--accent);
-  }
+    .btn-accent {
+      background: var(--accent);
+      color: #fff
+    }
 
-  .search-filter{gap:4px;margin:6px 0}
-  .search-box{width:100%;padding:7px;font-size:12px}
-  .filter-select{width:100%;padding:7px;font-size:12px}
+    .btn-blue {
+      background: var(--blue);
+      color: #fff
+    }
 
-  .bulk-actions{gap:4px;font-size:10px}
-  .bulk-actions button{width:100%}
-  .bulk-actions label{width:100%;margin:0}
+    .btn:hover {
+      opacity: .9;
+      transform: translateY(-1px)
+    }
 
-  table{font-size:11px;margin:0;display:grid;gap:8px;grid-template-columns:1fr}
-  tr{grid-template-columns:50px 1fr;padding:10px;gap:8px;margin-bottom:0}
-  td{font-size:10px;padding:0}
-  td:nth-child(3){width:50px;height:35px}
-  td:nth-child(4){font-size:11px;font-weight:500}
-  td:nth-child(5){font-size:9px;color:var(--muted)}
-  td:nth-child(7){font-size:9px}
-  td:nth-child(9) .btn{padding:8px 10px;font-size:9px;min-height:36px}
-  .thumb-preview{width:50px;height:35px}
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none
+    }
 
-  .pagination{gap:2px;margin:6px 0}
-  .page-btn{padding:4px 6px;font-size:9px;min-height:32px}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0
+    }
 
-  .settings-section{padding:10px;margin:6px 0}
-  .setting-row{padding:6px 0;font-size:11px;flex-direction:column;align-items:flex-start;gap:4px}
-  .setting-row input{width:100%}
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left
+    }
 
-  .analytics-card{padding:10px;margin:6px 0;font-size:11px}
-  .analytics-card h4{font-size:12px;margin-bottom:6px}
+    th {
+      background: var(--hover);
+      font-weight: 600
+    }
 
-  .thumb-preview{width:50px;height:32px;object-fit:cover;border-radius:3px}
-  .top-video-item{flex-direction:column;gap:2px;padding:4px 0;font-size:10px}
+    tr:hover {
+      background: var(--hover)
+    }
 
-  .log-item{padding:6px;font-size:9px;flex-direction:column;gap:3px}
-  .log-time{font-size:8px;color:var(--muted)}
-}
+    .status-live {
+      color: var(--success);
+      font-weight: 500
+    }
 
-@media(max-width:380px){
-  .header-top{gap:2px}
-  .logo{font-size:11px}
-  .user-info{font-size:7px}
-  
-  .btn{padding:5px 6px;font-size:8px;min-height:32px}
-  .btn-small{padding:4px 5px;font-size:7px;min-height:28px}
-  
-  .tabs{gap:0;margin:4px 0}
-  .tab{padding:5px 6px;font-size:9px}
-  
-  #tab-reports > div:first-of-type{display:grid;grid-template-columns:1fr;gap:3px}
-  #tab-reports .btn{min-height:32px;padding:5px;font-size:8px}
-  
-  .stats-grid{gap:2px;margin:2px 0}
-  .stat-card{padding:4px;font-size:10px}
-  .stat-number{font-size:11px}
-  .stat-label{font-size:7px}
-  
-  .modal-box{width:99vw;padding:8px}
-  .modal-box h3{font-size:12px}
-  .modal-box input,select,textarea{padding:6px;font-size:11px;margin:3px 0}
-  
-  .search-box{padding:6px;font-size:11px}
-  .filter-select{padding:6px;font-size:11px}
-  
-  table{font-size:10px;display:grid;gap:8px;grid-template-columns:1fr}
-  tr{grid-template-columns:48px 1fr;padding:10px;gap:8px;margin-bottom:0}
-  td{font-size:9px}
-  td:nth-child(3){width:48px;height:32px}
-  td:nth-child(4){font-size:10px}
-  td:nth-child(5){font-size:8px;color:var(--muted)}
-  td:nth-child(7){font-size:8px}
-  td:nth-child(9) .btn{padding:7px 8px;font-size:8px;min-height:34px}
-  .thumb-preview{width:48px;height:32px}
-}
+    .status-offline {
+      color: var(--warning);
+      font-weight: 500
+    }
 
-/* ===== MULTI-UPLOAD MODAL MOBILE FIX ===== */
-@media(max-width:768px){
-  #multiUploadModal .modal-box{
-    width:95vw !important;
-    padding:12px !important;
-    max-height:90vh !important;
-  }
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .9);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px
+    }
 
-  #multiUploadModal textarea{
-    min-height:120px !important;
-    font-size:12px !important;
-  }
+    .modal-box {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      width: min(90vw, 500px);
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--accent)
+    }
 
-  #multiUploadModal .btn{
-    font-size:11px !important;
-    padding:8px !important;
-    min-height:42px !important;
-  }
+    .modal-box h3 {
+      margin-bottom: 12px;
+      color: var(--accent)
+    }
 
-  #multiUploadModal .btn-small{
-    font-size:10px !important;
-    padding:6px !important;
-  }
+    .modal-box input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--hover);
+      color: var(--text)
+    }
 
-  #multiUploadModal pre,
-  #multiUploadModal code{
-    font-size:9px !important;
-    white-space:pre-wrap !important;
-    word-break:break-all !important;
-  }
+    .modal-box textarea {
+      min-height: 100px;
+      resize: vertical
+    }
 
-  #multiUploadProgress{
-    padding:8px !important;
-  }
+    .search-filter {
+      display: flex;
+      gap: 10px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+      align-items: center
+    }
 
-  #multiProgressLogs{
-    max-height:100px !important;
-    font-size:10px !important;
-  }
-}
+    .search-box {
+      padding: 8px;
+      width: 260px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--hover);
+      color: var(--text)
+    }
 
-@media(max-width:600px){
-  #multiUploadModal .modal-box{
-    width:97vw !important;
-    padding:10px !important;
-    max-height:92vh !important;
-  }
-  
-  #multiUploadModal .btn{
-    font-size:10px !important;
-    padding:8px !important;
-    min-height:40px !important;
-  }
-}
+    .filter-select {
+      padding: 8px;
+      min-width: 140px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--hover);
+      color: var(--text)
+    }
 
-@media(max-width:480px){
-  #multiUploadModal .modal-box{
-    width:98vw !important;
-    padding:8px !important;
-    max-height:95vh !important;
-  }
+    .pagination {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin: 14px 0
+    }
 
-  #multiUploadModal h3{
-    font-size:13px !important;
-    margin-bottom:6px !important;
-  }
+    .page-btn {
+      padding: 6px 10px
+    }
 
-  #multiUploadModal p,
-  #multiUploadModal label{
-    font-size:11px !important;
-  }
+    .bulk-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--muted)
+    }
 
-  #multiUploadModal textarea{
-    min-height:100px !important;
-    font-size:11px !important;
-    padding:8px !important;
-  }
+    .stats-grid {
+      grid-column: 1/-1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-  #multiUploadModal input[type="checkbox"]{
-    width:18px;
-    height:18px;
-    cursor:pointer;
-  }
+    .stat-card {
+      background: var(--hover);
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-align: left;
+      border: 1px solid var(--border)
+    }
 
-  #multiUploadModal .modal-box > div:nth-last-child(2) > div{
-    display:flex;
-    flex-direction:column !important;
-    gap:6px !important;
-  }
+    .stat-number {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent)
+    }
 
-  #multiUploadModal .btn{
-    width:100% !important;
-    font-size:10px !important;
-    padding:8px !important;
-    min-height:40px !important;
-  }
-  
-  #multiUploadModal .btn-small{
-    font-size:9px !important;
-  }
-}
+    .stat-label {
+      color: var(--muted);
+      font-size: 11px
+    }
 
-@media(max-width:380px){
-  #multiUploadModal .modal-box{
-    width:99vw !important;
-    padding:6px !important;
-  }
+    .thumb-preview {
+      width: 70px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer
+    }
 
-  #multiUploadModal h3{
-    font-size:12px !important;
-  }
+    .kill-badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      background: #3b1d1d;
+      color: #ffb4b4;
+      border: 1px solid #ff4d4d
+    }
 
-  #multiUploadModal .btn{
-    font-size:9px !important;
-    padding:6px !important;
-    min-height:36px !important;
-  }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin: 16px 0;
+      border-bottom: 2px solid var(--border)
+    }
 
-  #multiUploadModal textarea{
-    min-height:80px !important;
-    font-size:10px !important;
-  }
-}
-</style>
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 6px 6px 0 0;
+      transition: all .2s
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #fff
+    }
+
+    .tab:not(.active) {
+      color: var(--muted)
+    }
+
+    .tab:not(.active):hover {
+      background: var(--hover)
+    }
+
+    .tab-content {
+      display: none
+    }
+
+    .tab-content.active {
+      display: block
+    }
+
+    .log-item {
+      padding: 8px;
+      margin: 4px 0;
+      background: var(--hover);
+      border-radius: 4px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between
+    }
+
+    .log-time {
+      color: var(--muted)
+    }
+
+    .settings-section {
+      background: var(--hover);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 12px 0
+    }
+
+    .settings-section h4 {
+      color: var(--accent);
+      margin-bottom: 10px
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .setting-row:last-child {
+      border-bottom: none
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600
+    }
+
+    .badge-success {
+      background: var(--success);
+      color: #000
+    }
+
+    .badge-danger {
+      background: var(--danger);
+      color: #fff
+    }
+
+    .analytics-card {
+      background: var(--hover);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 10px 0
+    }
+
+    .analytics-card h4 {
+      color: var(--accent);
+      margin-bottom: 8px
+    }
+
+    .top-video-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .top-video-item:last-child {
+      border-bottom: none
+    }
+
+    .sync-progress {
+      background: var(--hover);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center
+    }
+
+    .sync-progress h3 {
+      color: var(--accent);
+      margin-bottom: 10px
+    }
+
+    /* ===== RESPONSIVE - MOBILE ===== */
+    @media(max-width:1024px) {
+      .stats-grid {
+        margin-left: 0;
+        margin-top: 10px
+      }
+
+      table {
+        font-size: 13px
+      }
+
+      th,
+      td {
+        padding: 8px
+      }
+
+      .btn-small {
+        padding: 3px 8px;
+        font-size: 11px
+      }
+    }
+
+    @media(max-width:768px) {
+      header {
+        padding: 8px;
+        background: var(--card)
+      }
+
+      .header-top {
+        flex-direction: row;
+        gap: 8px;
+        margin-bottom: 0;
+        justify-content: space-between;
+        align-items: center
+      }
+
+      .header-bottom {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 0
+      }
+
+      .logo {
+        font-size: 14px
+      }
+
+      .user-info {
+        font-size: 9px;
+        flex-wrap: wrap;
+        gap: 2px
+      }
+
+      .container {
+        padding: 10px
+      }
+
+      .btn {
+        padding: 8px 10px;
+        font-size: 11px;
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap
+      }
+
+      .btn-small {
+        padding: 6px 8px;
+        font-size: 10px;
+        min-height: 34px
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: 4px;
+        gap: 3px;
+        padding: 0
+      }
+
+      .stat-card {
+        padding: 6px;
+        font-size: 11px
+      }
+
+      .stat-number {
+        font-size: 12px
+      }
+
+      .stat-label {
+        font-size: 8px
+      }
+
+      .tabs {
+        flex-wrap: wrap;
+        gap: 0;
+        margin: 10px 0;
+        border-bottom: 2px solid var(--border);
+        overflow-x: auto
+      }
+
+      .tab {
+        padding: 8px 10px;
+        font-size: 11px;
+        white-space: nowrap;
+        flex: 1
+      }
+
+      /* COMPACT VIDEO LIST */
+      table {
+        font-size: 10px;
+        display: grid;
+        width: 100%;
+        margin: 0;
+        gap: 4px;
+        grid-template-columns: 1fr
+      }
+
+      thead {
+        display: none
+      }
+
+      tbody {
+        display: contents
+      }
+
+      tr {
+        display: grid;
+        grid-template-columns: 24px 56px 1fr 70px;
+        grid-template-rows: auto auto;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--hover);
+        align-items: center;
+        margin-bottom: 2px
+      }
+
+      td {
+        padding: 0;
+        border: none;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap
+      }
+
+      /* Checkbox - grid 1/2, row 1/3 (spans both rows) */
+      td:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1/3;
+        width: 24px;
+        height: 24px;
+        justify-content: center
+      }
+
+      td:nth-child(1) input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer
+      }
+
+      /* Index - hide */
+      td:nth-child(2) {
+        display: none
+      }
+
+      /* Thumbnail - grid 2/3, row 1/3 */
+      td:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1/3;
+        width: 56px;
+        height: 56px;
+        border-radius: 4px;
+        overflow: hidden
+      }
+
+      td:nth-child(3) img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover
+      }
+
+      /* Title - grid 3/4, row 1 */
+      td:nth-child(4) {
+        grid-column: 3;
+        grid-row: 1;
+        font-weight: 600;
+        font-size: 11px;
+        color: var(--text)
+      }
+
+      /* Video ID - grid 3/4, row 2 */
+      td:nth-child(5) {
+        grid-column: 3;
+        grid-row: 2;
+        font-size: 9px;
+        color: var(--accent);
+        padding-right: 4px
+      }
+
+      td:nth-child(5)::before {
+        content: "ID: ";
+        color: var(--muted)
+      }
+
+      /* Views - grid 3/4, row 2 (overlapping) */
+      td:nth-child(6) {
+        display: none
+      }
+
+      /* Status - grid 3/4, row 2 (overlapping) */
+      td:nth-child(7) {
+        display: none
+      }
+
+      /* Date and pinned - hide */
+      td:nth-child(8),
+      td:nth-child(9) {
+        display: none
+      }
+
+      /* Actions - grid 4/5, row 1/3 (spans both rows) */
+      td:nth-child(10) {
+        grid-column: 4;
+        grid-row: 1/3;
+        display: flex;
+        gap: 3px;
+        flex-direction: column
+      }
+
+      td:nth-child(10) .btn {
+        padding: 5px 4px;
+        font-size: 9px;
+        min-height: 24px;
+        flex: 1
+      }
+
+      .thumb-preview {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 4px
+      }
+
+      /* MOBILE: Move buttons below details and make big */
+      @media(max-width:768px) {
+        tr {
+          grid-template-rows: auto auto auto
+        }
+
+        /* Actions move to row 3, span all width */
+        td:nth-child(10) {
+          grid-column: 1/5;
+          grid-row: 3;
+          display: flex;
+          gap: 4px;
+          flex-direction: row;
+          margin-top: 4px
+        }
+
+        td:nth-child(10) .btn {
+          padding: 10px 8px;
+          font-size: 10px;
+          min-height: 38px;
+          flex: 1;
+          font-weight: 600
+        }
+      }
+
+      /* Mobile: Make Edit/Delete buttons bigger */
+      @media(max-width:600px) {
+        td:nth-child(9) {
+          display: flex;
+          gap: 8px;
+          margin-top: 8px !important
+        }
+
+        td:nth-child(9) .btn-warning,
+        td:nth-child(9) .btn-danger {
+          padding: 14px 10px !important;
+          font-size: 13px !important;
+          min-height: 48px !important;
+          flex: 1;
+          font-weight: 600;
+        }
+      }
+
+      .thumb-preview {
+        width: 60px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px
+      }
+
+      .search-filter {
+        flex-direction: column;
+        gap: 6px;
+        margin: 10px 0
+      }
+
+      .search-box {
+        width: 100%;
+        padding: 8px;
+        font-size: 13px
+      }
+
+      .filter-select {
+        width: 100%;
+        padding: 8px;
+        font-size: 13px
+      }
+
+      .bulk-actions {
+        flex-direction: column;
+        gap: 6px;
+        font-size: 11px
+      }
+
+      .bulk-actions button {
+        width: 100%
+      }
+
+      .modal-box {
+        width: 95vw;
+        padding: 14px;
+        max-height: 90vh;
+        border-radius: 8px
+      }
+
+      .modal-box h3 {
+        font-size: 15px;
+        margin-bottom: 10px
+      }
+
+      .modal-box input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 13px;
+        margin: 6px 0;
+        min-height: 40px
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+        gap: 4px;
+        font-size: 11px
+      }
+
+      .page-btn {
+        padding: 6px 8px;
+        font-size: 10px;
+        min-height: 36px
+      }
+
+      .search-filter .btn-small {
+        width: 100%;
+        min-height: 44px
+      }
+
+      #tab-reports>div:first-of-type {
+        display: flex;
+        flex-direction: column;
+        gap: 6px
+      }
+
+      #tab-reports .btn {
+        width: 100%;
+        min-height: 38px
+      }
+    }
+
+    @media(max-width:600px) {
+      .header-bottom {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px
+      }
+
+      .btn {
+        padding: 7px 8px;
+        font-size: 10px;
+        min-height: 36px
+      }
+
+      .btn-small {
+        padding: 5px 6px;
+        font-size: 9px;
+        min-height: 32px
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .tabs {
+        gap: 0
+      }
+
+      .tab {
+        padding: 6px;
+        font-size: 9px
+      }
+
+      #tab-reports>div:first-of-type {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px
+      }
+
+      #tab-reports .btn {
+        min-height: 36px
+      }
+
+      table {
+        margin: 0;
+        font-size: 12px;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr
+      }
+
+      tr {
+        grid-template-columns: 55px 1fr;
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 0
+      }
+
+      td {
+        font-size: 11px
+      }
+
+      td:nth-child(3) {
+        width: 55px;
+        height: 38px
+      }
+
+      td:nth-child(4) {
+        font-size: 11px;
+        font-weight: 500
+      }
+
+      td:nth-child(5) {
+        font-size: 10px;
+        color: var(--muted)
+      }
+
+      td:nth-child(7) {
+        font-size: 10px
+      }
+
+      td:nth-child(9) .btn {
+        padding: 5px 6px;
+        font-size: 9px;
+        min-height: 30px
+      }
+
+      .thumb-preview {
+        width: 55px;
+        height: 38px
+      }
+    }
+
+    @media(max-width:480px) {
+      body {
+        font-size: 11px
+      }
+
+      header {
+        padding: 6px
+      }
+
+      .header-top {
+        gap: 4px
+      }
+
+      .logo {
+        font-size: 12px
+      }
+
+      .user-info {
+        font-size: 8px;
+        gap: 2px
+      }
+
+      .container {
+        padding: 8px
+      }
+
+      .btn {
+        padding: 6px 7px;
+        font-size: 9px;
+        min-height: 34px
+      }
+
+      .btn-small {
+        padding: 5px 6px;
+        font-size: 8px;
+        min-height: 30px
+      }
+
+      .header-bottom {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3px
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 0;
+        margin: 4px 0
+      }
+
+      .stat-card {
+        padding: 6px;
+        font-size: 11px
+      }
+
+      .stat-number {
+        font-size: 12px
+      }
+
+      .stat-label {
+        font-size: 8px
+      }
+
+      .tabs {
+        gap: 0;
+        margin: 6px 0
+      }
+
+      .tab {
+        padding: 6px 8px;
+        font-size: 10px;
+        flex: 1;
+        text-align: center
+      }
+
+      #tab-reports>div:first-of-type {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3px
+      }
+
+      #tab-reports .btn {
+        min-height: 34px;
+        padding: 6px
+      }
+
+      .modal {
+        padding: 10px
+      }
+
+      .modal-box {
+        width: 98vw;
+        padding: 10px;
+        max-height: 95vh;
+        border-radius: 6px
+      }
+
+      .modal-box h3 {
+        font-size: 13px;
+        margin-bottom: 6px
+      }
+
+      .modal-box input,
+      select,
+      textarea {
+        padding: 8px;
+        font-size: 12px;
+        margin: 4px 0;
+        min-height: 38px
+      }
+
+      .modal-box textarea {
+        min-height: 80px
+      }
+
+      /* Better video modal layout on mobile */
+      #videoModal .modal-box {
+        padding: 10px;
+      }
+
+      #videoModal .modal-box input,
+      #videoModal .modal-box select,
+      #videoModal .modal-box textarea,
+      #videoModal .modal-box label {
+        min-height: 44px;
+        padding: 12px;
+        margin: 8px 0;
+        font-size: 13px;
+      }
+
+      #videoModal .modal-box label {
+        min-height: auto;
+        padding: 8px 0;
+        margin-top: 12px;
+        display: block;
+        font-weight: 500;
+        color: var(--accent);
+      }
+
+      .search-filter {
+        gap: 4px;
+        margin: 6px 0
+      }
+
+      .search-box {
+        width: 100%;
+        padding: 7px;
+        font-size: 12px
+      }
+
+      .filter-select {
+        width: 100%;
+        padding: 7px;
+        font-size: 12px
+      }
+
+      .bulk-actions {
+        gap: 4px;
+        font-size: 10px
+      }
+
+      .bulk-actions button {
+        width: 100%
+      }
+
+      .bulk-actions label {
+        width: 100%;
+        margin: 0
+      }
+
+      table {
+        font-size: 11px;
+        margin: 0;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr
+      }
+
+      tr {
+        grid-template-columns: 50px 1fr;
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 0
+      }
+
+      td {
+        font-size: 10px;
+        padding: 0
+      }
+
+      td:nth-child(3) {
+        width: 50px;
+        height: 35px
+      }
+
+      td:nth-child(4) {
+        font-size: 11px;
+        font-weight: 500
+      }
+
+      td:nth-child(5) {
+        font-size: 9px;
+        color: var(--muted)
+      }
+
+      td:nth-child(7) {
+        font-size: 9px
+      }
+
+      td:nth-child(9) .btn {
+        padding: 8px 10px;
+        font-size: 9px;
+        min-height: 36px
+      }
+
+      .thumb-preview {
+        width: 50px;
+        height: 35px
+      }
+
+      .pagination {
+        gap: 2px;
+        margin: 6px 0
+      }
+
+      .page-btn {
+        padding: 4px 6px;
+        font-size: 9px;
+        min-height: 32px
+      }
+
+      .settings-section {
+        padding: 10px;
+        margin: 6px 0
+      }
+
+      .setting-row {
+        padding: 6px 0;
+        font-size: 11px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px
+      }
+
+      .setting-row input {
+        width: 100%
+      }
+
+      .analytics-card {
+        padding: 10px;
+        margin: 6px 0;
+        font-size: 11px
+      }
+
+      .analytics-card h4 {
+        font-size: 12px;
+        margin-bottom: 6px
+      }
+
+      .thumb-preview {
+        width: 50px;
+        height: 32px;
+        object-fit: cover;
+        border-radius: 3px
+      }
+
+      .top-video-item {
+        flex-direction: column;
+        gap: 2px;
+        padding: 4px 0;
+        font-size: 10px
+      }
+
+      .log-item {
+        padding: 6px;
+        font-size: 9px;
+        flex-direction: column;
+        gap: 3px
+      }
+
+      .log-time {
+        font-size: 8px;
+        color: var(--muted)
+      }
+    }
+
+    @media(max-width:380px) {
+      .header-top {
+        gap: 2px
+      }
+
+      .logo {
+        font-size: 11px
+      }
+
+      .user-info {
+        font-size: 7px
+      }
+
+      .btn {
+        padding: 5px 6px;
+        font-size: 8px;
+        min-height: 32px
+      }
+
+      .btn-small {
+        padding: 4px 5px;
+        font-size: 7px;
+        min-height: 28px
+      }
+
+      .tabs {
+        gap: 0;
+        margin: 4px 0
+      }
+
+      .tab {
+        padding: 5px 6px;
+        font-size: 9px
+      }
+
+      #tab-reports>div:first-of-type {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3px
+      }
+
+      #tab-reports .btn {
+        min-height: 32px;
+        padding: 5px;
+        font-size: 8px
+      }
+
+      .stats-grid {
+        gap: 2px;
+        margin: 2px 0
+      }
+
+      .stat-card {
+        padding: 4px;
+        font-size: 10px
+      }
+
+      .stat-number {
+        font-size: 11px
+      }
+
+      .stat-label {
+        font-size: 7px
+      }
+
+      .modal-box {
+        width: 99vw;
+        padding: 8px
+      }
+
+      .modal-box h3 {
+        font-size: 12px
+      }
+
+      .modal-box input,
+      select,
+      textarea {
+        padding: 6px;
+        font-size: 11px;
+        margin: 3px 0
+      }
+
+      .search-box {
+        padding: 6px;
+        font-size: 11px
+      }
+
+      .filter-select {
+        padding: 6px;
+        font-size: 11px
+      }
+
+      table {
+        font-size: 10px;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr
+      }
+
+      tr {
+        grid-template-columns: 48px 1fr;
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 0
+      }
+
+      td {
+        font-size: 9px
+      }
+
+      td:nth-child(3) {
+        width: 48px;
+        height: 32px
+      }
+
+      td:nth-child(4) {
+        font-size: 10px
+      }
+
+      td:nth-child(5) {
+        font-size: 8px;
+        color: var(--muted)
+      }
+
+      td:nth-child(7) {
+        font-size: 8px
+      }
+
+      td:nth-child(9) .btn {
+        padding: 7px 8px;
+        font-size: 8px;
+        min-height: 34px
+      }
+
+      .thumb-preview {
+        width: 48px;
+        height: 32px
+      }
+    }
+
+    /* ===== MULTI-UPLOAD MODAL MOBILE FIX ===== */
+    @media(max-width:768px) {
+      #multiUploadModal .modal-box {
+        width: 95vw !important;
+        padding: 12px !important;
+        max-height: 90vh !important;
+      }
+
+      #multiUploadModal textarea {
+        min-height: 120px !important;
+        font-size: 12px !important;
+      }
+
+      #multiUploadModal .btn {
+        font-size: 11px !important;
+        padding: 8px !important;
+        min-height: 42px !important;
+      }
+
+      #multiUploadModal .btn-small {
+        font-size: 10px !important;
+        padding: 6px !important;
+      }
+
+      #multiUploadModal pre,
+      #multiUploadModal code {
+        font-size: 9px !important;
+        white-space: pre-wrap !important;
+        word-break: break-all !important;
+      }
+
+      #multiUploadProgress {
+        padding: 8px !important;
+      }
+
+      #multiProgressLogs {
+        max-height: 100px !important;
+        font-size: 10px !important;
+      }
+    }
+
+    @media(max-width:600px) {
+      #multiUploadModal .modal-box {
+        width: 97vw !important;
+        padding: 10px !important;
+        max-height: 92vh !important;
+      }
+
+      #multiUploadModal .btn {
+        font-size: 10px !important;
+        padding: 8px !important;
+        min-height: 40px !important;
+      }
+    }
+
+    @media(max-width:480px) {
+      #multiUploadModal .modal-box {
+        width: 98vw !important;
+        padding: 8px !important;
+        max-height: 95vh !important;
+      }
+
+      #multiUploadModal h3 {
+        font-size: 13px !important;
+        margin-bottom: 6px !important;
+      }
+
+      #multiUploadModal p,
+      #multiUploadModal label {
+        font-size: 11px !important;
+      }
+
+      #multiUploadModal textarea {
+        min-height: 100px !important;
+        font-size: 11px !important;
+        padding: 8px !important;
+      }
+
+      #multiUploadModal input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      #multiUploadModal .modal-box>div:nth-last-child(2)>div {
+        display: flex;
+        flex-direction: column !important;
+        gap: 6px !important;
+      }
+
+      #multiUploadModal .btn {
+        width: 100% !important;
+        font-size: 10px !important;
+        padding: 8px !important;
+        min-height: 40px !important;
+      }
+
+      #multiUploadModal .btn-small {
+        font-size: 9px !important;
+      }
+    }
+
+    @media(max-width:380px) {
+      #multiUploadModal .modal-box {
+        width: 99vw !important;
+        padding: 6px !important;
+      }
+
+      #multiUploadModal h3 {
+        font-size: 12px !important;
+      }
+
+      #multiUploadModal .btn {
+        font-size: 9px !important;
+        padding: 6px !important;
+        min-height: 36px !important;
+      }
+
+      #multiUploadModal textarea {
+        min-height: 80px !important;
+        font-size: 10px !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <div class="header-top">
-    <div class="logo">🔧 Clipfy Admin Pro</div>
-    <div class="user-info">
-      <span id="killStatus" class="kill-badge" style="display:none">MAINTENANCE MODE</span>
-      <span id="currentUser">Guest</span>
-      <button class="btn btn-small btn-accent" onclick="logout()">Logout</button>
-    </div>
-  </div>
-  <div class="header-bottom">
-    <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
-
-    <button class="btn btn-accent" onclick="openVideoModal('add')">➕ Add Video</button>
-    <button class="btn btn-warning" onclick="autoFillTitles()">📝 Auto Title</button>
-    <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
-    <button class="btn btn-accent" onclick="openMultiUploadModal()">🚀 Multi Upload</button>
-    <button class="btn btn-danger" onclick="toggleKillSwitch()">🚨 Maintenance</button>
-
-    <div class="stats-grid" id="stats"></div>
-  </div>
-</header>
-
-<div class="container" id="mainContainer">
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('videos',event)">🎬 Videos</div>
-    <div class="tab" onclick="switchTab('dashboard',event)">📊 Dashboard</div>
-    <div class="tab" onclick="switchTab('analytics',event)">📈 Analytics</div>
-    <div class="tab" onclick="switchTab('settings',event)">⚙️ Settings</div>
-    <div class="tab" onclick="switchTab('reports',event)">🚩 Reports</div>
-    <div class="tab" onclick="switchTab('logs',event)">📋 Logs</div>
-  </div>
-
-  <!-- VIDEOS TAB -->
-  <div class="tab-content active" id="tab-videos">
-    <div class="search-filter">
-      <input id="searchInput" class="search-box" placeholder="🔍 Search by title or ID..." oninput="applyFilters()">
-      <select id="statusFilter" class="filter-select" onchange="applyFilters()">
-        <option value="all">All Status</option>
-        <option value="live">Live only</option>
-        <option value="offline">Offline only</option>
-      </select>
-      <select id="sortFilter" class="filter-select" onchange="applyFilters()">
-        <option value="recent">Recent first</option>
-        <option value="title">Title A-Z</option>
-        <option value="views">Most views</option>
-      </select>
-      <button class="btn btn-small btn-blue" onclick="exportCSV()">📥 Export CSV</button>
-    </div>
-
-    <div class="bulk-actions" id="bulkBar" style="display:none">
-      <label><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"> Select all (page)</label>
-      <button class="btn btn-small btn-warning" onclick="bulkOffline()">Bulk Offline</button>
-      <button class="btn btn-small btn-success" onclick="bulkOnline()">Bulk Online</button>
-      <button class="btn btn-small btn-danger" onclick="bulkDelete()">Bulk Delete</button>
-      <span id="selectedCount">0 selected</span>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>#</th>
-          <th>Thumb</th>
-          <th>Title</th>
-          <th>ID</th>
-          <th>Views</th>
-          <th>Status</th>
-          <th>Date</th>
-          <th>Pin</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <tr><td colspan="9">Loading...</td></tr>
-      </tbody>
-    </table>
-
-    <div class="pagination" id="pagination"></div>
-  </div>
-
-  <!-- DASHBOARD TAB -->
-  <div class="tab-content" id="tab-dashboard">
-    <h3 style="margin-bottom:16px">📊 System Dashboard & Analytics</h3>
-
-    <!-- 1. MAIN STATS -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px">
-      <div class="stat-card" style="border-left:4px solid var(--blue)">
-        <div style="color:var(--blue);font-weight:600;margin-bottom:4px">👀 Total Page Views</div>
-        <div id="dashPageViews" style="font-size:28px;font-weight:800;color:var(--accent)">0</div>
-        <div style="font-size:11px;color:var(--muted)">Site visits</div>
-      </div>
-      <div class="stat-card" style="border-left:4px solid var(--success)">
-        <div style="color:var(--success);font-weight:600;margin-bottom:4px">👤 Unique Users</div>
-        <div id="dashUniqueUsers" style="font-size:28px;font-weight:800;color:var(--success)">0</div>
-        <div style="font-size:11px;color:var(--muted)">Unique visitors</div>
-      </div>
-      <div class="stat-card" style="border-left:4px solid var(--warning)">
-        <div style="color:var(--warning);font-weight:600;margin-bottom:4px">🎬 Video Plays</div>
-        <div id="dashVideoPlays" style="font-size:28px;font-weight:800;color:var(--warning)">0</div>
-        <div style="font-size:11px;color:var(--muted)">Play events</div>
+  <header>
+    <div class="header-top">
+      <div class="logo">🔧 Clipfy Admin Pro</div>
+      <div class="user-info">
+        <span id="killStatus" class="kill-badge" style="display:none">MAINTENANCE MODE</span>
+        <span id="currentUser">Guest</span>
+        <button class="btn btn-small btn-accent" onclick="logout()">Logout</button>
       </div>
     </div>
+    <div class="header-bottom">
+      <button class="btn btn-success" onclick="refresh()">🔄 Refresh</button>
 
-    <!-- 2. ENTRY SOURCE -->
-    <div class="analytics-card" style="margin-bottom:20px">
-      <h4>🏠 Entry Source Distribution</h4>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:13px">🏠 Homepage</span>
-            <span id="dashSourceHome" style="font-weight:600;color:var(--accent)">0%</span>
-          </div>
-          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-            <div id="dashSourceHomeBar" style="width:0%;height:100%;background:var(--blue);transition:width .3s"></div>
-          </div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:13px">🎬 Direct Player</span>
-            <span id="dashSourcePlayer" style="font-weight:600;color:var(--accent)">0%</span>
-          </div>
-          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-            <div id="dashSourcePlayerBar" style="width:0%;height:100%;background:var(--success);transition:width .3s"></div>
-          </div>
-        </div>
-      </div>
+      <button class="btn btn-accent" onclick="openVideoModal('add')">➕ Add Video</button>
+      <button class="btn btn-warning" onclick="autoFillTitles()">📝 Auto Title</button>
+      <button class="btn btn-warning" onclick="toggleBulkBar()">⚡ Bulk</button>
+      <button class="btn btn-accent" onclick="openMultiUploadModal()">🚀 Multi Upload</button>
+      <button class="btn btn-danger" onclick="toggleKillSwitch()">🚨 Maintenance</button>
+
+      <div class="stats-grid" id="stats"></div>
+    </div>
+  </header>
+
+  <div class="container" id="mainContainer">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('videos',event)">🎬 Videos</div>
+      <div class="tab" onclick="switchTab('dashboard',event)">📊 Dashboard</div>
+      <div class="tab" onclick="switchTab('analytics',event)">📈 Analytics</div>
+      <div class="tab" onclick="switchTab('settings',event)">⚙️ Settings</div>
+      <div class="tab" onclick="switchTab('reports',event)">🚩 Reports</div>
+      <div class="tab" onclick="switchTab('logs',event)">📋 Logs</div>
     </div>
 
-    <!-- 3. TOP 10 VIDEOS -->
-    <div class="analytics-card" style="margin-bottom:20px">
-      <h4>🎬 Top 10 Videos</h4>
-      <table style="width:100%;margin-top:12px;font-size:12px">
+    <!-- VIDEOS TAB -->
+    <div class="tab-content active" id="tab-videos">
+      <div class="search-filter">
+        <input id="searchInput" class="search-box" placeholder="🔍 Search by title or ID..." oninput="applyFilters()">
+        <select id="statusFilter" class="filter-select" onchange="applyFilters()">
+          <option value="all">All Status</option>
+          <option value="live">Live only</option>
+          <option value="offline">Offline only</option>
+        </select>
+        <select id="sortFilter" class="filter-select" onchange="applyFilters()">
+          <option value="recent">Recent first</option>
+          <option value="title">Title A-Z</option>
+          <option value="views">Most views</option>
+        </select>
+        <button class="btn btn-small btn-blue" onclick="exportCSV()">📥 Export CSV</button>
+      </div>
+
+      <div class="bulk-actions" id="bulkBar" style="display:none">
+        <label><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"> Select all (page)</label>
+        <button class="btn btn-small btn-warning" onclick="bulkOffline()">Bulk Offline</button>
+        <button class="btn btn-small btn-success" onclick="bulkOnline()">Bulk Online</button>
+        <button class="btn btn-small btn-danger" onclick="bulkDelete()">Bulk Delete</button>
+        <span id="selectedCount">0 selected</span>
+      </div>
+
+      <table>
         <thead>
-          <tr style="border-bottom:2px solid var(--border)">
-            <th style="text-align:left;padding:8px;color:var(--muted)">Rank</th>
-            <th style="text-align:left;padding:8px;color:var(--muted)">Title</th>
-            <th style="text-align:right;padding:8px;color:var(--muted)">▶ Plays</th>
-            <th style="text-align:right;padding:8px;color:var(--muted)">⏱ Watch %</th>
+          <tr>
+            <th></th>
+            <th>#</th>
+            <th>Thumb</th>
+            <th>Title</th>
+            <th>ID</th>
+            <th>Views</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Pin</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody id="dashTopVideos">
-          <tr><td colspan="4" style="padding:16px;text-align:center;color:var(--muted)">No data yet</td></tr>
+        <tbody id="tbody">
+          <tr>
+            <td colspan="9">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div class="tab-content" id="tab-dashboard">
+      <h3 style="margin-bottom:16px">📊 System Dashboard & Analytics</h3>
+
+      <!-- 1. MAIN STATS -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px">
+        <div class="stat-card" style="border-left:4px solid var(--blue)">
+          <div style="color:var(--blue);font-weight:600;margin-bottom:4px">👀 Total Page Views</div>
+          <div id="dashPageViews" style="font-size:28px;font-weight:800;color:var(--accent)">0</div>
+          <div style="font-size:11px;color:var(--muted)">Site visits</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid var(--success)">
+          <div style="color:var(--success);font-weight:600;margin-bottom:4px">👤 Unique Users</div>
+          <div id="dashUniqueUsers" style="font-size:28px;font-weight:800;color:var(--success)">0</div>
+          <div style="font-size:11px;color:var(--muted)">Unique visitors</div>
+        </div>
+        <div class="stat-card" style="border-left:4px solid var(--warning)">
+          <div style="color:var(--warning);font-weight:600;margin-bottom:4px">🎬 Video Plays</div>
+          <div id="dashVideoPlays" style="font-size:28px;font-weight:800;color:var(--warning)">0</div>
+          <div style="font-size:11px;color:var(--muted)">Play events</div>
+        </div>
+      </div>
+
+      <!-- 2. ENTRY SOURCE -->
+      <div class="analytics-card" style="margin-bottom:20px">
+        <h4>🏠 Entry Source Distribution</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13px">🏠 Homepage</span>
+              <span id="dashSourceHome" style="font-weight:600;color:var(--accent)">0%</span>
+            </div>
+            <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+              <div id="dashSourceHomeBar" style="width:0%;height:100%;background:var(--blue);transition:width .3s">
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13px">🎬 Direct Player</span>
+              <span id="dashSourcePlayer" style="font-weight:600;color:var(--accent)">0%</span>
+            </div>
+            <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+              <div id="dashSourcePlayerBar" style="width:0%;height:100%;background:var(--success);transition:width .3s">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. TOP 10 VIDEOS -->
+      <div class="analytics-card" style="margin-bottom:20px">
+        <h4>🎬 Top 10 Videos</h4>
+        <table style="width:100%;margin-top:12px;font-size:12px">
+          <thead>
+            <tr style="border-bottom:2px solid var(--border)">
+              <th style="text-align:left;padding:8px;color:var(--muted)">Rank</th>
+              <th style="text-align:left;padding:8px;color:var(--muted)">Title</th>
+              <th style="text-align:right;padding:8px;color:var(--muted)">▶ Plays</th>
+              <th style="text-align:right;padding:8px;color:var(--muted)">⏱ Watch %</th>
+            </tr>
+          </thead>
+          <tbody id="dashTopVideos">
+            <tr>
+              <td colspan="4" style="padding:16px;text-align:center;color:var(--muted)">No data yet</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 4. GEO DISTRIBUTION -->
+      <div class="analytics-card" style="margin-bottom:20px">
+        <h4>🌍 Geographic Distribution</h4>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13px">🇮🇳 India</span>
+              <span id="dashGeoIndia" style="font-weight:600;color:var(--accent)">0%</span>
+            </div>
+            <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+              <div id="dashGeoIndiaBar" style="width:0%;height:100%;background:#ff9933;transition:width .3s"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13px">🇺🇸 USA</span>
+              <span id="dashGeoUSA" style="font-weight:600;color:var(--accent)">0%</span>
+            </div>
+            <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+              <div id="dashGeoUSABar" style="width:0%;height:100%;background:#3b82f6;transition:width .3s"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13px">🌍 Others</span>
+              <span id="dashGeoOthers" style="font-weight:600;color:var(--accent)">0%</span>
+            </div>
+            <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+              <div id="dashGeoOthersBar" style="width:0%;height:100%;background:#10b981;transition:width .3s"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. AD IMPRESSIONS -->
+      <div class="analytics-card"
+        style="margin-bottom:20px;background:linear-gradient(135deg, var(--hover) 0%, rgba(59,130,246,0.1) 100%)">
+        <h4>📢 Ad System</h4>
+        <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px">
+          <div style="padding:16px;background:var(--card);border-radius:8px;border:1px solid var(--border)">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Total Ad Impressions</div>
+            <div style="font-size:32px;font-weight:800;color:var(--blue)" id="dashAdImpressions">0</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Ad views fired</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. SYSTEM STATUS -->
+      <div class="analytics-card" style="margin-bottom:20px">
+        <h4>🔧 System Status</h4>
+        <div
+          style="padding:16px;background:var(--hover);border-radius:8px;border:2px solid var(--success);font-family:monospace;font-size:13px">
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <span>🟢 System: <strong>OK</strong></span>
+            <span>📊 Traffic: <strong id="dashTrafficStatus">Normal</strong></span>
+            <span>💰 Ads: <strong id="dashAdsStatus">Active</strong></span>
+            <span>⚡ Response: <strong id="dashResponseTime">0ms</strong></span>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--muted)">
+          Last updated: <span id="dashLastUpdate">--:--</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+        <button class="btn btn-small btn-blue" onclick="refreshDashboard()">🔄 Refresh</button>
+        <button class="btn btn-small btn-success" onclick="exportDashboardCSV()">📥 Export CSV</button>
+      </div>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div class="tab-content" id="tab-analytics">
+      <h3>Analytics Overview</h3>
+
+      <div class="analytics-card">
+        <h4>Total Views</h4>
+        <div id="totalViews" style="font-size:32px;font-weight:800;color:var(--accent)">0</div>
+        <div id="todayViews" style="font-size:18px;color:var(--success)">Today: 0</div>
+        <p style="color:var(--muted);font-size:12px">Across all videos</p>
+      </div>
+
+      <div class="analytics-card">
+        <h4>Top Videos</h4>
+        <div style="margin-bottom:10px;display:flex;gap:10px;align-items:center">
+          <select id="topVideosSort" onchange="updateAnalytics()">
+            <option value="most">Most Views</option>
+            <option value="least">Least Views</option>
+          </select>
+          <button class="btn btn-small btn-blue" onclick="loadMoreVideos()">Load More</button>
+        </div>
+        <div id="topVideos"></div>
+      </div>
+
+      <div class="analytics-card">
+        <h4>Recent Activity</h4>
+        <div id="recentActivity"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-content" id="tab-settings">
+      <h3>System Settings</h3>
+
+      <div class="settings-section">
+        <h4>Storage Settings</h4>
+        <div class="setting-row">
+          <span>R2 Bucket</span>
+          <span class="badge badge-success" id="r2Status">Connected</span>
+        </div>
+        <div class="setting-row">
+          <span>Total Videos</span>
+          <span id="totalVideosCount">0</span>
+        </div>
+        <button class="btn btn-small btn-warning" onclick="clearCache()">Clear Cache</button>
+      </div>
+
+
+      <div class="settings-section">
+        <h4>Backup & Restore</h4>
+        <button class="btn btn-blue" onclick="backupData()">📥 Download Backup</button>
+      </div>
+
+      <div class="settings-section">
+        <h4>Danger Zone</h4>
+        <button class="btn btn-danger" onclick="deleteAllOffline()">Delete All Offline Videos</button>
+        <button class="btn btn-danger" onclick="resetDatabase()">Reset Database</button>
+      </div>
+    </div>
+
+    <!-- REPORTS TAB -->
+    <div class="tab-content" id="tab-reports">
+      <h3>Video Reports</h3>
+      <div style="margin:10px 0">
+        <button class="btn btn-small btn-blue" onclick="loadReports()">🔄 Refresh Reports</button>
+        <button class="btn btn-small btn-warning" onclick="filterReportsByStatus('pending')">Pending</button>
+        <button class="btn btn-small btn-success" onclick="filterReportsByStatus('resolved')">Resolved</button>
+        <button class="btn btn-small btn-accent" onclick="filterReportsByStatus('all')">All</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Video ID</th>
+            <th>Title</th>
+            <th>Reported</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="reportsTbody">
+          <tr>
+            <td colspan="5">Loading reports...</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- 4. GEO DISTRIBUTION -->
-    <div class="analytics-card" style="margin-bottom:20px">
-      <h4>🌍 Geographic Distribution</h4>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px">
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:13px">🇮🇳 India</span>
-            <span id="dashGeoIndia" style="font-weight:600;color:var(--accent)">0%</span>
-          </div>
-          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-            <div id="dashGeoIndiaBar" style="width:0%;height:100%;background:#ff9933;transition:width .3s"></div>
-          </div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:13px">🇺🇸 USA</span>
-            <span id="dashGeoUSA" style="font-weight:600;color:var(--accent)">0%</span>
-          </div>
-          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-            <div id="dashGeoUSABar" style="width:0%;height:100%;background:#3b82f6;transition:width .3s"></div>
-          </div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:13px">🌍 Others</span>
-            <span id="dashGeoOthers" style="font-weight:600;color:var(--accent)">0%</span>
-          </div>
-          <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-            <div id="dashGeoOthersBar" style="width:0%;height:100%;background:#10b981;transition:width .3s"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 5. AD IMPRESSIONS -->
-    <div class="analytics-card" style="margin-bottom:20px;background:linear-gradient(135deg, var(--hover) 0%, rgba(59,130,246,0.1) 100%)">
-      <h4>📢 Ad System</h4>
-      <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px">
-        <div style="padding:16px;background:var(--card);border-radius:8px;border:1px solid var(--border)">
-          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Total Ad Impressions</div>
-          <div style="font-size:32px;font-weight:800;color:var(--blue)" id="dashAdImpressions">0</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Ad views fired</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6. SYSTEM STATUS -->
-    <div class="analytics-card" style="margin-bottom:20px">
-      <h4>🔧 System Status</h4>
-      <div style="padding:16px;background:var(--hover);border-radius:8px;border:2px solid var(--success);font-family:monospace;font-size:13px">
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <span>🟢 System: <strong>OK</strong></span>
-          <span>📊 Traffic: <strong id="dashTrafficStatus">Normal</strong></span>
-          <span>💰 Ads: <strong id="dashAdsStatus">Active</strong></span>
-          <span>⚡ Response: <strong id="dashResponseTime">0ms</strong></span>
-        </div>
-      </div>
-      <div style="margin-top:12px;font-size:11px;color:var(--muted)">
-        Last updated: <span id="dashLastUpdate">--:--</span>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap">
-      <button class="btn btn-small btn-blue" onclick="refreshDashboard()">🔄 Refresh</button>
-      <button class="btn btn-small btn-success" onclick="exportDashboardCSV()">📥 Export CSV</button>
-    </div>
-  </div>
-
-  <!-- ANALYTICS TAB -->
-  <div class="tab-content" id="tab-analytics">
-    <h3>Analytics Overview</h3>
-
-    <div class="analytics-card">
-      <h4>Total Views</h4>
-      <div id="totalViews" style="font-size:32px;font-weight:800;color:var(--accent)">0</div>
-      <div id="todayViews" style="font-size:18px;color:var(--success)">Today: 0</div>
-      <p style="color:var(--muted);font-size:12px">Across all videos</p>
-    </div>
-
-    <div class="analytics-card">
-      <h4>Top Videos</h4>
-      <div style="margin-bottom:10px;display:flex;gap:10px;align-items:center">
-        <select id="topVideosSort" onchange="updateAnalytics()">
-          <option value="most">Most Views</option>
-          <option value="least">Least Views</option>
+    <!-- LOGS TAB -->
+    <div class="tab-content" id="tab-logs">
+      <h3>Activity Logs</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">
+        Local logs stored in browser
+      </p>
+      <div style="margin:10px 0">
+        <select id="logFilter" class="filter-select" onchange="filterLogs()">
+          <option value="all">All Actions</option>
+          <option value="save">Save/Edit</option>
+          <option value="delete">Delete</option>
+          <option value="sync">Sync</option>
+          <option value="killswitch">Maintenance</option>
         </select>
-        <button class="btn btn-small btn-blue" onclick="loadMoreVideos()">Load More</button>
+        <button class="btn btn-small btn-warning" onclick="clearLogs()">Clear Logs</button>
+        <button class="btn btn-small btn-blue" onclick="exportLogs()">Export Logs</button>
       </div>
-      <div id="topVideos"></div>
-    </div>
-
-    <div class="analytics-card">
-      <h4>Recent Activity</h4>
-      <div id="recentActivity"></div>
+      <div id="logsList"></div>
     </div>
   </div>
 
-  <!-- SETTINGS TAB -->
-  <div class="tab-content" id="tab-settings">
-    <h3>System Settings</h3>
-
-    <div class="settings-section">
-      <h4>Storage Settings</h4>
-      <div class="setting-row">
-        <span>R2 Bucket</span>
-        <span class="badge badge-success" id="r2Status">Connected</span>
-      </div>
-      <div class="setting-row">
-        <span>Total Videos</span>
-        <span id="totalVideosCount">0</span>
-      </div>
-      <button class="btn btn-small btn-warning" onclick="clearCache()">Clear Cache</button>
-    </div>
-
-
-    <div class="settings-section">
-      <h4>Backup & Restore</h4>
-      <button class="btn btn-blue" onclick="backupData()">📥 Download Backup</button>
-    </div>
-
-    <div class="settings-section">
-      <h4>Danger Zone</h4>
-      <button class="btn btn-danger" onclick="deleteAllOffline()">Delete All Offline Videos</button>
-      <button class="btn btn-danger" onclick="resetDatabase()">Reset Database</button>
+  <!-- LOGIN MODAL -->
+  <div class="modal" id="loginModal">
+    <div class="modal-box">
+      <h3>Admin Login</h3>
+      <input id="login_user" placeholder="Username">
+      <input id="login_pass" type="password" placeholder="Password">
+      <button class="btn btn-success" onclick="doLogin()" style="margin-top:8px">Login</button>
     </div>
   </div>
 
-  <!-- REPORTS TAB -->
-  <div class="tab-content" id="tab-reports">
-    <h3>Video Reports</h3>
-    <div style="margin:10px 0">
-      <button class="btn btn-small btn-blue" onclick="loadReports()">🔄 Refresh Reports</button>
-      <button class="btn btn-small btn-warning" onclick="filterReportsByStatus('pending')">Pending</button>
-      <button class="btn btn-small btn-success" onclick="filterReportsByStatus('resolved')">Resolved</button>
-      <button class="btn btn-small btn-accent" onclick="filterReportsByStatus('all')">All</button>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Video ID</th>
-          <th>Title</th>
-          <th>Reported</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="reportsTbody">
-        <tr><td colspan="5">Loading reports...</td></tr>
-      </tbody>
-    </table>
-  </div>
 
-  <!-- LOGS TAB -->
-  <div class="tab-content" id="tab-logs">
-    <h3>Activity Logs</h3>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:8px">
-      Local logs stored in browser
-    </p>
-    <div style="margin:10px 0">
-      <select id="logFilter" class="filter-select" onchange="filterLogs()">
-        <option value="all">All Actions</option>
-        <option value="save">Save/Edit</option>
-        <option value="delete">Delete</option>
-        <option value="sync">Sync</option>
-        <option value="killswitch">Maintenance</option>
+
+  <!-- ADD/EDIT VIDEO MODAL -->
+  <div class="modal" id="videoModal">
+    <div class="modal-box">
+      <h3 id="videoModalTitle">Add Video</h3>
+      <input id="vid" placeholder="Video ID (leave empty for auto-generate)">
+      <input id="vtitle" placeholder="Title">
+      <textarea id="vdesc" placeholder="Description (optional)"></textarea>
+      <input id="vthumb" placeholder="Thumbnail URL">
+      <label for="vthumbFile" style="font-size:12px;color:var(--muted);margin-top:6px;display:block">Or upload thumbnail
+        file:</label>
+      <input type="file" id="vthumbFile" accept="image/*">
+
+      <label for="vvideoFile"
+        style="font-size:12px;color:var(--accent);margin-top:12px;display:block;font-weight:600">📹 Upload Video File
+        (or use URL below):</label>
+      <input type="file" id="vvideoFile" accept="video/*">
+
+      <label for="vstream" style="font-size:12px;color:var(--muted);margin-top:6px;display:block">Or paste video URL (R2
+        direct link or remote URL):</label>
+      <input id="vstream" placeholder="Video URL or R2 direct link (https://...)">
+      <input id="vviews" type="number" placeholder="Views" value="0">
+      <select id="vstatus">
+        <option value="live">Live</option>
+        <option value="offline">Offline</option>
       </select>
-      <button class="btn btn-small btn-warning" onclick="clearLogs()">Clear Logs</button>
-      <button class="btn btn-small btn-blue" onclick="exportLogs()">Export Logs</button>
-    </div>
-    <div id="logsList"></div>
-  </div>
-</div>
-
-<!-- LOGIN MODAL -->
-<div class="modal" id="loginModal">
-  <div class="modal-box">
-    <h3>Admin Login</h3>
-    <input id="login_user" placeholder="Username">
-    <input id="login_pass" type="password" placeholder="Password">
-    <button class="btn btn-success" onclick="doLogin()" style="margin-top:8px">Login</button>
-  </div>
-</div>
-
-
-
-<!-- ADD/EDIT VIDEO MODAL -->
-<div class="modal" id="videoModal">
-  <div class="modal-box">
-    <h3 id="videoModalTitle">Add Video</h3>
-    <input id="vid" placeholder="Video ID (leave empty for auto-generate)">
-    <input id="vtitle" placeholder="Title">
-    <textarea id="vdesc" placeholder="Description (optional)"></textarea>
-    <input id="vthumb" placeholder="Thumbnail URL">
-    <label for="vthumbFile" style="font-size:12px;color:var(--muted);margin-top:6px;display:block">Or upload thumbnail file:</label>
-    <input type="file" id="vthumbFile" accept="image/*">
-    
-    <label for="vvideoFile" style="font-size:12px;color:var(--accent);margin-top:12px;display:block;font-weight:600">📹 Upload Video File (or use URL below):</label>
-    <input type="file" id="vvideoFile" accept="video/*">
-    
-    <label for="vstream" style="font-size:12px;color:var(--muted);margin-top:6px;display:block">Or paste video URL (R2 direct link or remote URL):</label>
-    <input id="vstream" placeholder="Video URL or R2 direct link (https://...)">
-    <input id="vviews" type="number" placeholder="Views" value="0">
-    <select id="vstatus">
-      <option value="live">Live</option>
-      <option value="offline">Offline</option>
-    </select>
-    <div style="margin-top:10px">
-      <button class="btn btn-success" onclick="saveVideo()">Save</button>
-      <button class="btn btn-danger" onclick="closeAllModals()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- THUMB MODAL -->
-<div class="modal" id="thumbModal">
-  <div class="modal-box">
-    <h3>Thumbnail Control</h3>
-    <img id="thumbPrev" style="width:100%;border-radius:8px;margin-bottom:8px">
-
-    <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
-      <h4 style="color:var(--accent);margin-bottom:8px">📤 Upload New</h4>
-      <input type="file" id="thumbFile" accept="image/*" style="width:100%;margin-bottom:6px">
-      <button class="btn btn-blue" onclick="uploadThumbnail()" style="width:100%">⬆️ Upload & Process</button>
-    </div>
-
-    <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
-      <h4 style="color:var(--accent);margin-bottom:8px">🔗 Paste URL</h4>
-      <input id="thumbNew" placeholder="Image URL (auto-resize to 1280x720)">
-      <button class="btn btn-success" onclick="saveThumb()" style="width:100%;margin-top:6px">💾 Save from URL</button>
-    </div>
-
-    <div style="margin-top:10px">
-      <button class="btn btn-danger" onclick="closeAllModals()">Close</button>
-    </div>
-
-    <div id="thumbStatus" style="margin-top:8px;font-size:12px;color:var(--muted)"></div>
-  </div>
-</div>
-
-<!-- CONFIRM MODAL -->
-<div class="modal" id="confirmModal">
-  <div class="modal-box">
-    <h3 id="confirmTitle">Confirm</h3>
-    <p id="confirmText" style="margin:10px 0"></p>
-    <button class="btn btn-danger" id="confirmBtn">Confirm</button>
-    <button class="btn btn-success" onclick="closeAllModals()">Cancel</button>
-  </div>
-</div>
-
-<!-- MULTI-UPLOAD MODAL -->
-<div class="modal" id="multiUploadModal">
-  <div class="modal-box" style="width:min(90vw,700px)">
-    <h3>🚀 Multi Video Remote Upload</h3>
-    <p style="color:var(--muted);font-size:12px;margin-bottom:12px">
-      Paste video URLs and titles in the format below. Each block = 1 video.
-    </p>
-
-    <div style="background:var(--hover);padding:10px;border-radius:6px;margin-bottom:12px;font-size:11px;color:var(--muted);font-family:monospace;white-space:pre;overflow-x:auto">https://example.com/video1.mp4
-Bhabhi Ko Sambhala (Title 1)
-
-https://example.com/video2.mp4
-69 Position (Title 2)
-
-... paste more blocks ...</div>
-
-    <textarea id="multiUploadInput" placeholder="Paste video URLs with titles (format shown above)" style="min-height:180px;margin:10px 0"></textarea>
-
-    <div style="display:flex;gap:10px;margin:10px 0; color:var(--success); font-weight:600; font-size:12px">
-      ✨ AI-SEO & Auto-Thumbnail enabled (Processed on VPS)
-    </div>
-
-    <div id="multiUploadProgress" style="display:none;background:var(--hover);padding:12px;border-radius:6px;margin:10px 0">
-      <h4 style="color:var(--accent);margin-bottom:8px">Processing...</h4>
-      <div id="multiProgressBar" style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:8px">
-        <div id="multiProgressFill" style="width:0%;height:100%;background:var(--success);transition:width .3s"></div>
-      </div>
-      <div id="multiProgressText" style="font-size:12px;color:var(--muted)">0/0 videos</div>
-      <div id="multiProgressLogs" style="font-size:11px;color:var(--muted);margin-top:8px;max-height:150px;overflow-y:auto">
-        <div style="padding:4px">Starting...</div>
-      </div>
-    </div>
-
-    <div style="margin-top:10px">
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-small btn-blue" onclick="smartParsePaste()">🔧 Auto-Fix Format</button>
-        <button class="btn btn-accent" onclick="startMultiUpload()" style="flex:1">Start Upload</button>
+      <div style="margin-top:10px">
+        <button class="btn btn-success" onclick="saveVideo()">Save</button>
         <button class="btn btn-danger" onclick="closeAllModals()">Cancel</button>
       </div>
     </div>
+  </div>
 
-    <div id="multiUploadResult" style="display:none;background:var(--hover);padding:12px;border-radius:6px;margin:10px 0;border-left:4px solid var(--success)">
-      <h4 style="color:var(--success);margin-bottom:8px">✅ Upload Complete!</h4>
-      <div id="multiUploadResultText" style="font-size:12px;color:var(--muted)"></div>
+  <!-- THUMB MODAL -->
+  <div class="modal" id="thumbModal">
+    <div class="modal-box">
+      <h3>Thumbnail Control</h3>
+      <img id="thumbPrev" style="width:100%;border-radius:8px;margin-bottom:8px">
+
+      <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
+        <h4 style="color:var(--accent);margin-bottom:8px">📤 Upload New</h4>
+        <input type="file" id="thumbFile" accept="image/*" style="width:100%;margin-bottom:6px">
+        <button class="btn btn-blue" onclick="uploadThumbnail()" style="width:100%">⬆️ Upload & Process</button>
+      </div>
+
+      <div style="margin:10px 0;padding:10px;background:var(--hover);border-radius:6px">
+        <h4 style="color:var(--accent);margin-bottom:8px">🔗 Paste URL</h4>
+        <input id="thumbNew" placeholder="Image URL (auto-resize to 1280x720)">
+        <button class="btn btn-success" onclick="saveThumb()" style="width:100%;margin-top:6px">💾 Save from
+          URL</button>
+      </div>
+
+      <div style="margin-top:10px">
+        <button class="btn btn-danger" onclick="closeAllModals()">Close</button>
+      </div>
+
+      <div id="thumbStatus" style="margin-top:8px;font-size:12px;color:var(--muted)"></div>
     </div>
   </div>
-</div>
 
-<script>
-const API = "/api";
+  <!-- CONFIRM MODAL -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-box">
+      <h3 id="confirmTitle">Confirm</h3>
+      <p id="confirmText" style="margin:10px 0"></p>
+      <button class="btn btn-danger" id="confirmBtn">Confirm</button>
+      <button class="btn btn-success" onclick="closeAllModals()">Cancel</button>
+    </div>
+  </div>
 
-let ADMIN_TOKEN = localStorage.getItem("clipfy_admin_token");
-let CURRENT_USER = localStorage.getItem("clipfy_admin_user") || "Guest";
-let videos = [];
-let filtered = [];
-let selected = new Set();
-let currentPage = 1;
-const PER_PAGE = 50;
-let editingId = null;
-let currentThumbId = null;
-let siteDisabled = false;
-let logs = [];
-let topVideosLimit = 10;
+  <!-- MULTI-UPLOAD MODAL -->
+  <div class="modal" id="multiUploadModal">
+    <div class="modal-box" style="width:min(90vw,700px)">
+      <h3>🚀 Multi Video Remote Upload</h3>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:12px">
+        Paste video URLs and titles in the format below. Each block = 1 video.
+      </p>
 
-/* ============ AUTH ============ */
+      <div
+        style="background:var(--hover);padding:10px;border-radius:6px;margin-bottom:12px;font-size:11px;color:var(--muted);font-family:monospace;white-space:pre;overflow-x:auto">
+        https://example.com/video1.mp4
+        Bhabhi Ko Sambhala (Title 1)
 
-async function doLogin(){
-  const u = document.getElementById("login_user").value.trim();
-  const p = document.getElementById("login_pass").value.trim();
-  if (!u || !p) return alert("Enter username & password");
-  const r = await fetch(API + "/auth/login",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({username:u,password:p})
-  });
-  const data = await r.json();
-  if (!data.token){
-    alert("Login failed");
-    return;
-  }
-  ADMIN_TOKEN = data.token;
-  CURRENT_USER = data.user || u;
-  localStorage.setItem("clipfy_admin_token",ADMIN_TOKEN);
-  localStorage.setItem("clipfy_admin_user",CURRENT_USER);
-  document.getElementById("currentUser").textContent = CURRENT_USER;
-  document.getElementById("loginModal").style.display = "none";
-  init();
-}
+        https://example.com/video2.mp4
+        69 Position (Title 2)
 
+        ... paste more blocks ...</div>
 
-function logout(){
-  localStorage.removeItem("clipfy_admin_token");
-  localStorage.removeItem("clipfy_admin_user");
-  ADMIN_TOKEN = null;
-  CURRENT_USER = "Guest";
-  location.reload();
-}
+      <textarea id="multiUploadInput" placeholder="Paste video URLs with titles (format shown above)"
+        style="min-height:180px;margin:10px 0"></textarea>
 
-/* ============ TABS ============ */
+      <div style="display:flex;gap:10px;margin:10px 0; color:var(--success); font-weight:600; font-size:12px">
+        ✨ AI-SEO & Auto-Thumbnail enabled (Processed on VPS)
+      </div>
 
-function switchTab(tab,ev){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
-  if (ev && ev.target) ev.target.classList.add("active");
-  document.getElementById("tab-"+tab).classList.add("active");
-  if (tab==="analytics") updateAnalytics();
-  if (tab==="dashboard") updateDashboard();
-  if (tab==="reports") loadReports();
-  if (tab==="logs") loadLogs();
-}
+      <div id="multiUploadProgress"
+        style="display:none;background:var(--hover);padding:12px;border-radius:6px;margin:10px 0">
+        <h4 style="color:var(--accent);margin-bottom:8px">Processing...</h4>
+        <div id="multiProgressBar"
+          style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:8px">
+          <div id="multiProgressFill" style="width:0%;height:100%;background:var(--success);transition:width .3s"></div>
+        </div>
+        <div id="multiProgressText" style="font-size:12px;color:var(--muted)">0/0 videos</div>
+        <div id="multiProgressLogs"
+          style="font-size:11px;color:var(--muted);margin-top:8px;max-height:150px;overflow-y:auto">
+          <div style="padding:4px">Starting...</div>
+        </div>
+      </div>
 
-/* ============ STATUS / KILL SWITCH ============ */
+      <div style="margin-top:10px">
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-small btn-blue" onclick="smartParsePaste()">🔧 Auto-Fix Format</button>
+          <button class="btn btn-accent" onclick="startMultiUpload()" style="flex:1">Start Upload</button>
+          <button class="btn btn-danger" onclick="closeAllModals()">Cancel</button>
+        </div>
+      </div>
 
-async function fetchStatus(){
-  if (!ADMIN_TOKEN) return; // Login required
-  try{
-    const r = await fetch(API + "/status", {
-      headers: { "Authorization": ADMIN_TOKEN }
-    });
-    const s = await r.json();
-    siteDisabled = !!s.site_disabled;
-    updateKillBadge();
-  }catch(e){
-    console.error(e);
-  }
-}
+      <div id="multiUploadResult"
+        style="display:none;background:var(--hover);padding:12px;border-radius:6px;margin:10px 0;border-left:4px solid var(--success)">
+        <h4 style="color:var(--success);margin-bottom:8px">✅ Upload Complete!</h4>
+        <div id="multiUploadResultText" style="font-size:12px;color:var(--muted)"></div>
+      </div>
+    </div>
+  </div>
 
-function updateKillBadge(){
-  const el = document.getElementById("killStatus");
-  el.style.display = siteDisabled ? "inline-block" : "none";
-}
+  <script>
+    const API = "/api";
 
-async function toggleKillSwitch(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  try {
-    const wantOff = !siteDisabled;
-    const r = await fetch(API + "/killswitch",{
-      method:"POST",
-      headers:{
-        "Authorization":ADMIN_TOKEN,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({disabled:wantOff})
-    });
-    const data = await r.json();
-    if (!data || data.error || !r.ok){
-      alert("Kill switch error: "+(data?.error||"Unknown"));
-      return;
+    let ADMIN_TOKEN = localStorage.getItem("clipfy_admin_token");
+    let CURRENT_USER = localStorage.getItem("clipfy_admin_user") || "Guest";
+    let videos = [];
+    let filtered = [];
+    let selected = new Set();
+    let currentPage = 1;
+    const PER_PAGE = 50;
+    let editingId = null;
+    let currentThumbId = null;
+    let siteDisabled = false;
+    let logs = [];
+    let topVideosLimit = 10;
+
+    /* ============ AUTH ============ */
+
+    async function doLogin() {
+      const u = document.getElementById("login_user").value.trim();
+      const p = document.getElementById("login_pass").value.trim();
+      if (!u || !p) return alert("Enter username & password");
+      const r = await fetch(API + "/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const data = await r.json();
+      if (!data.token) {
+        alert("Login failed");
+        return;
+      }
+      ADMIN_TOKEN = data.token;
+      CURRENT_USER = data.user || u;
+      localStorage.setItem("clipfy_admin_token", ADMIN_TOKEN);
+      localStorage.setItem("clipfy_admin_user", CURRENT_USER);
+      document.getElementById("currentUser").textContent = CURRENT_USER;
+      document.getElementById("loginModal").style.display = "none";
+      init();
     }
-    siteDisabled = wantOff;
-    updateKillBadge();
-    addLog("killswitch",wantOff ? "Site disabled" : "Site enabled");
-    // Admin panel should continue working normally even in maintenance mode
-    // Only public pages (index.html, player.html) should show maintenance
-    alert(siteDisabled ? "Maintenance mode enabled! Public pages will show maintenance." : "Maintenance mode disabled!");
-  } catch(e) {
-    alert("Kill switch error: "+e.message);
-  }
-}
 
-/* ============ DATA LOAD ============ */
 
-async function loadVideos(){
-  if (!ADMIN_TOKEN){
-    document.getElementById("loginModal").style.display = "flex";
-    return;
-  }
-  try {
-    const r = await fetch(API + "/videos",{
-      headers:{Authorization:ADMIN_TOKEN}
-    });
-    if (!r.ok) throw new Error("Failed to load videos (HTTP "+r.status+")");
-    const data = await r.json();
-    if (!Array.isArray(data)){
-      alert("Failed to load videos: Invalid data format");
-      return;
+    function logout() {
+      localStorage.removeItem("clipfy_admin_token");
+      localStorage.removeItem("clipfy_admin_user");
+      ADMIN_TOKEN = null;
+      CURRENT_USER = "Guest";
+      location.reload();
     }
-    videos = data;
-    applyFilters();
-    updateStats();
-  } catch(e) {
-    alert("Error loading videos: "+e.message);
-    console.error("Load videos error:", e);
-  }
-}
 
-function updateStats(){
-  const total = videos.length;
-  const live = videos.filter(v=>!v.offline).length;
-  const offline = total - live;
-  const totalViews = videos.reduce((sum,v)=>sum + (v.views||0),0);
-  document.getElementById("stats").innerHTML = `
+    /* ============ TABS ============ */
+
+    function switchTab(tab, ev) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      if (ev && ev.target) ev.target.classList.add("active");
+      document.getElementById("tab-" + tab).classList.add("active");
+      if (tab === "analytics") updateAnalytics();
+      if (tab === "dashboard") updateDashboard();
+      if (tab === "reports") loadReports();
+      if (tab === "logs") loadLogs();
+    }
+
+    /* ============ STATUS / KILL SWITCH ============ */
+
+    async function fetchStatus() {
+      if (!ADMIN_TOKEN) return; // Login required
+      try {
+        const r = await fetch(API + "/status", {
+          headers: { "Authorization": ADMIN_TOKEN }
+        });
+        const s = await r.json();
+        siteDisabled = !!s.site_disabled;
+        updateKillBadge();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function updateKillBadge() {
+      const el = document.getElementById("killStatus");
+      el.style.display = siteDisabled ? "inline-block" : "none";
+    }
+
+    async function toggleKillSwitch() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      try {
+        const wantOff = !siteDisabled;
+        const r = await fetch(API + "/killswitch", {
+          method: "POST",
+          headers: {
+            "Authorization": ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ disabled: wantOff })
+        });
+        const data = await r.json();
+        if (!data || data.error || !r.ok) {
+          alert("Kill switch error: " + (data?.error || "Unknown"));
+          return;
+        }
+        siteDisabled = wantOff;
+        updateKillBadge();
+        addLog("killswitch", wantOff ? "Site disabled" : "Site enabled");
+        // Admin panel should continue working normally even in maintenance mode
+        // Only public pages (index.html, player.html) should show maintenance
+        alert(siteDisabled ? "Maintenance mode enabled! Public pages will show maintenance." : "Maintenance mode disabled!");
+      } catch (e) {
+        alert("Kill switch error: " + e.message);
+      }
+    }
+
+    /* ============ DATA LOAD ============ */
+
+    async function loadVideos() {
+      if (!ADMIN_TOKEN) {
+        document.getElementById("loginModal").style.display = "flex";
+        return;
+      }
+      try {
+        const r = await fetch(API + "/videos", {
+          headers: { Authorization: ADMIN_TOKEN }
+        });
+        if (!r.ok) throw new Error("Failed to load videos (HTTP " + r.status + ")");
+        const data = await r.json();
+        if (!Array.isArray(data)) {
+          alert("Failed to load videos: Invalid data format");
+          return;
+        }
+        videos = data;
+        applyFilters();
+        updateStats();
+      } catch (e) {
+        alert("Error loading videos: " + e.message);
+        console.error("Load videos error:", e);
+      }
+    }
+
+    function updateStats() {
+      const total = videos.length;
+      const live = videos.filter(v => !v.offline).length;
+      const offline = total - live;
+      const totalViews = videos.reduce((sum, v) => sum + (v.views || 0), 0);
+      document.getElementById("stats").innerHTML = `
     <div class="stat-card">
       <div class="stat-number">${total}</div>
       <div class="stat-label">Total videos</div>
@@ -1124,52 +2076,64 @@ function updateStats(){
     </div>
   `;
 
-  document.getElementById("totalVideosCount").textContent = total;
-}
+      document.getElementById("totalVideosCount").textContent = total;
+    }
 
-/* ============ FILTER & PAGINATION ============ */
+    /* ============ FILTER & PAGINATION ============ */
 
-function applyFilters(){
-  const q = document.getElementById("searchInput").value.toLowerCase();
-  const status = document.getElementById("statusFilter").value;
-  const sort = document.getElementById("sortFilter").value;
-  filtered = videos.filter(v=>{
-    const matchQ = !q || (v.title||"").toLowerCase().includes(q) || (v.videoid||"").toLowerCase().includes(q);
-    const matchStatus =
-      status==="all" ||
-      (status==="live" && !v.offline) ||
-      (status==="offline" && v.offline);
-    return matchQ && matchStatus;
-  });
+    function applyFilters() {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value;
+      const sort = document.getElementById("sortFilter").value;
+      filtered = videos.filter(v => {
+        const matchQ = !q || (v.title || "").toLowerCase().includes(q) || (v.videoid || "").toLowerCase().includes(q);
+        const matchStatus =
+          status === "all" ||
+          (status === "live" && !v.offline) ||
+          (status === "offline" && v.offline);
+        return matchQ && matchStatus;
+      });
 
-  filtered.sort((a,b)=>{
-    if (sort==="title") return (a.title||"").localeCompare(b.title||"");
-    if (sort==="views") return (b.views||0)-(a.views||0);
-    return new Date(b.date||0) - new Date(a.date||0);
-  });
+      filtered.sort((a, b) => {
+        if (sort === "title") return (a.title || "").localeCompare(b.title || "");
+        if (sort === "views") return (b.views || 0) - (a.views || 0);
+        
+        // Recent first (default)
+        // Check for multiple possible date/timestamp fields
+        const dateA = a.date || a.uploaded_at || a.timestamp || 0;
+        const dateB = b.date || b.uploaded_at || b.timestamp || 0;
+        
+        // If both are numbers (timestamps), direct subtract
+        if (typeof dateA === 'number' && typeof dateB === 'number') {
+            return dateB - dateA;
+        }
+        
+        // Fallback to Date objects
+        return new Date(dateB) - new Date(dateA);
+      });
 
-  currentPage = 1;
-  renderTable();
-}
+      currentPage = 1;
+      renderTable();
+    }
 
-function renderTable(){
-  const tb = document.getElementById("tbody");
-  if (!filtered.length){
-    tb.innerHTML = `<tr><td colspan="9">No videos</td></tr>`;
-    document.getElementById("pagination").innerHTML = "";
-    return;
-  }
-  const start = (currentPage-1)*PER_PAGE;
-  const pageItems = filtered.slice(start,start+PER_PAGE);
-  tb.innerHTML = pageItems.map((v,idx)=>`
+    function renderTable() {
+      const tb = document.getElementById("tbody");
+      if (!filtered.length) {
+        tb.innerHTML = `<tr><td colspan="9">No videos</td></tr>`;
+        document.getElementById("pagination").innerHTML = "";
+        return;
+      }
+      const start = (currentPage - 1) * PER_PAGE;
+      const pageItems = filtered.slice(start, start + PER_PAGE);
+      tb.innerHTML = pageItems.map((v, idx) => `
     <tr>
-      <td><input type="checkbox" value="${v.videoid}" ${selected.has(v.videoid)?"checked":""} onchange="toggleSelect('${v.videoid}',this.checked)"></td>
-      <td>${start+idx+1}</td>
-      <td><img src="${v.thumb||""}" class="thumb-preview" onclick="openThumb('${v.videoid}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%22120%22 height%3D%2290%22%3E%3Crect fill%3D%22222333%22 width%3D%22120%22 height%3D%2290%22/%3E%3Ctext x%3D%2260%22 y%3D%2245%22 fill%3D%22999%22 text-anchor%3D%22middle%22 dy%3D%22.3em%22 font-size%3D%2212%22%3ENo Img%3C/text%3E%3C/svg%3E'"></td>
-      <td ondblclick="openVideoModal('edit','${v.videoid}','${(v.title||"").replace(/"/g,'&quot;')}')">${v.title||""}</td>
-      <td>${v.videoid} | 👀${v.views||0} | ${v.offline?'🔴 Off':'🟢 Live'}</td>
-      <td>${v.views||0}</td>
-      <td class="${v.offline?'status-offline':'status-live'}">${v.offline?'Offline':'Live'}</td>
+      <td><input type="checkbox" value="${v.videoid}" ${selected.has(v.videoid) ? "checked" : ""} onchange="toggleSelect('${v.videoid}',this.checked)"></td>
+      <td>${start + idx + 1}</td>
+      <td><img src="${v.thumb || ""}" class="thumb-preview" onclick="openThumb('${v.videoid}')" onerror="this.src='data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%22120%22 height%3D%2290%22%3E%3Crect fill%3D%22222333%22 width%3D%22120%22 height%3D%2290%22/%3E%3Ctext x%3D%2260%22 y%3D%2245%22 fill%3D%22999%22 text-anchor%3D%22middle%22 dy%3D%22.3em%22 font-size%3D%2212%22%3ENo Img%3C/text%3E%3C/svg%3E'"></td>
+      <td ondblclick="openVideoModal('edit','${v.videoid}','${(v.title || "").replace(/"/g, '&quot;')}')">${v.title || ""}</td>
+      <td>${v.videoid} | 👀${v.views || 0} | ${v.offline ? '🔴 Off' : '🟢 Live'}</td>
+      <td>${v.views || 0}</td>
+      <td class="${v.offline ? 'status-offline' : 'status-live'}">${v.offline ? 'Offline' : 'Live'}</td>
       <td style="font-size:11px;color:var(--muted)">${v.date ? new Date(v.date).toLocaleDateString() : "-"}</td>
       <td><input type="checkbox" ${v.pinned ? 'checked' : ''} onchange="togglePin('${v.videoid}', this.checked)"></td>
       <td>
@@ -1179,950 +2143,950 @@ function renderTable(){
     </tr>
   `).join("");
 
-  renderPagination();
-  updateSelectedCount();
-}
-
-function renderPagination(){
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const pag = document.getElementById("pagination");
-  if (totalPages<=1){
-    pag.innerHTML = "";
-    return;
-  }
-  let html = "";
-  if (currentPage>1){
-    html += `<button class="btn page-btn" onclick="changePage(${currentPage-1})">Prev</button>`;
-  }
-  for (let p=1;p<=totalPages;p++){
-    if (Math.abs(p-currentPage)>2 && p!==1 && p!==totalPages) continue;
-    html += `<button class="btn page-btn ${p===currentPage?'btn-accent':''}" onclick="changePage(${p})">${p}</button>`;
-  }
-  if (currentPage<totalPages){
-    html += `<button class="btn page-btn" onclick="changePage(${currentPage+1})">Next</button>`;
-  }
-  pag.innerHTML = html;
-}
-
-function changePage(p){
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  if (p<1 || p>totalPages) return;
-  currentPage = p;
-  renderTable();
-}
-
-/* ============ BULK SELECT ============ */
-
-function toggleSelect(id,checked){
-  if (checked) selected.add(id);
-  else selected.delete(id);
-  updateSelectedCount();
-}
-
-async function togglePin(videoid, checked) {
-  if (!ADMIN_TOKEN) return alert("Login first");
-  try {
-    const r = await fetch(API + "/admin/videos/" + encodeURIComponent(videoid), {
-      method: "PUT",
-      headers: {
-        Authorization: ADMIN_TOKEN,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ pinned: checked })
-    });
-    const data = await r.json();
-    if (!data || data.error || !r.ok) {
-      alert("Pin update failed: " + (data?.error || "Unknown error"));
-      return;
+      renderPagination();
+      updateSelectedCount();
     }
-    // Update local videos array
-    videos = videos.map(v => v.videoid === videoid ? data : v);
-    addLog("save", `Pinned ${checked ? 'on' : 'off'} video ${videoid}`);
-    applyFilters();
-  } catch(e) {
-    alert("Pin update error: " + e.message);
-  }
-}
 
-function toggleSelectAll(){
-  const cb = document.getElementById("selectAll");
-  const start = (currentPage-1)*PER_PAGE;
-  const pageItems = filtered.slice(start,start+PER_PAGE);
-  if (cb.checked){
-    pageItems.forEach(v=>selected.add(v.videoid));
-  } else {
-    pageItems.forEach(v=>selected.delete(v.videoid));
-  }
-  renderTable();
-}
-
-function updateSelectedCount(){
-  document.getElementById("selectedCount").textContent = `${selected.size} selected`;
-}
-
-function toggleBulkBar(){
-  const bar = document.getElementById("bulkBar");
-  bar.style.display = (bar.style.display==="none" || !bar.style.display) ? "flex" : "none";
-}
-
-/* ============ BULK ACTIONS ============ */
-
-async function bulkOffline(){
-  if (!selected.size) return alert("No videos selected");
-  if (!confirm("Set selected videos to Offline?")) return;
-  try {
-    const r = await fetch(API + "/admin/bulk/offline",{
-      method:"POST",
-      headers:{
-        Authorization:ADMIN_TOKEN,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({ids:[...selected]})
-    });
-    const data = await r.json();
-    if (!data || data.error || !r.ok){
-      alert("Bulk offline failed: "+(data?.error||"Unknown error"));
-      return;
-    }
-    videos = videos.map(v=>selected.has(v.videoid)?{...v,offline:true}:v);
-    addLog("save",`Bulk offline (${selected.size} videos)`);
-    applyFilters();
-  } catch(e) {
-    alert("Bulk offline error: "+e.message);
-  }
-}
-
-async function bulkOnline(){
-  if (!selected.size) return alert("No videos selected");
-  if (!confirm("Set selected videos to Live?")) return;
-  try {
-    const r = await fetch(API + "/admin/bulk/online",{
-      method:"POST",
-      headers:{
-        Authorization:ADMIN_TOKEN,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({ids:[...selected]})
-    });
-    const data = await r.json();
-    if (!data || data.error || !r.ok){
-      alert("Bulk online failed: "+(data?.error||"Unknown error"));
-      return;
-    }
-    videos = videos.map(v=>selected.has(v.videoid)?{...v,offline:false}:v);
-    addLog("save",`Bulk online (${selected.size} videos)`);
-    applyFilters();
-  } catch(e) {
-    alert("Bulk online error: "+e.message);
-  }
-}
-
-async function bulkDelete(){
-  if (!selected.size) return alert("No videos selected");
-  if (!confirm("Delete selected videos? This cannot be undone.")) return;
-  try {
-    const r = await fetch(API + "/admin/bulk/delete",{
-      method:"POST",
-      headers:{
-        Authorization:ADMIN_TOKEN,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({ids:[...selected]})
-    });
-    const data = await r.json();
-    if (!data || data.error || !r.ok){
-      alert("Bulk delete failed: "+(data?.error||"Unknown error"));
-      return;
-    }
-    videos = videos.filter(v=>!selected.has(v.videoid));
-    selected.clear();
-    addLog("delete","Bulk delete");
-    applyFilters();
-  } catch(e) {
-    alert("Bulk delete error: "+e.message);
-  }
-}
-
-/* ============ SINGLE VIDEO ACTIONS ============ */
-
-function openVideoModal(mode,id){
-  const modal = document.getElementById("videoModal");
-  document.getElementById("videoModalTitle").textContent = mode==="add" ? "Add Video" : "Edit Video";
-  modal.style.display = "flex";
-  if (mode==="add"){
-    editingId = null;
-    document.getElementById("vid").value = "";
-    document.getElementById("vtitle").value = "";
-    document.getElementById("vdesc").value = "";
-    document.getElementById("vthumb").value = "";
-    document.getElementById("vthumbFile").value = "";
-    document.getElementById("vstream").value = "";
-    document.getElementById("vviews").value = 0;
-    document.getElementById("vstatus").value = "live";
-  } else {
-    editingId = id;
-    const v = videos.find(x=>x.videoid===id);
-    if (!v) return;
-    document.getElementById("vid").value = v.videoid;
-    document.getElementById("vtitle").value = v.title||"";
-    document.getElementById("vdesc").value = v.desc||"";
-    document.getElementById("vthumb").value = v.thumb||"";
-    document.getElementById("vthumbFile").value = "";
-    document.getElementById("vstream").value = v.streamtape_id||"";
-    document.getElementById("vviews").value = v.views||0;
-    document.getElementById("vstatus").value = v.offline?"offline":"live";
-  }
-}
-
-async function saveVideo(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  let stream_id = document.getElementById("vstream").value.trim();
-  let videoid = document.getElementById("vid").value.trim();
-  const title = document.getElementById("vtitle").value.trim();
-  const desc = document.getElementById("vdesc").value.trim();
-  let thumb = document.getElementById("vthumb").value.trim();
-  const views = Number(document.getElementById("vviews").value||0);
-  const offline = document.getElementById("vstatus").value==="offline";
-
-  // Auto-generate video ID if empty
-  if (!videoid) {
-    videoid = 'adm_' + Math.random().toString(36).substr(2, 8);
-    document.getElementById("vid").value = videoid;
-  }
-
-  if (!title) return alert("Title is required");
-
-  // Handle thumbnail file upload if selected
-  const thumbFile = document.getElementById("vthumbFile").files[0];
-  if (thumbFile) {
-    try {
-      alert("Uploading thumbnail...");
-      thumb = await uploadThumbnailFile(thumbFile, videoid);
-      alert("Thumbnail uploaded successfully!");
-    } catch(e) {
-      alert("Thumbnail upload failed: " + e.message);
-      return;
-    }
-  }
-
-  // Handle video file upload if selected
-  const videoFile = document.getElementById("vvideoFile").files[0];
-  if (videoFile) {
-    try {
-      alert("Uploading video file...");
-      const r2Response = await uploadVideoFile(videoFile);
-      if (!r2Response || !r2Response.file_code) {
-        throw new Error("Video upload failed");
-      }
-      stream_id = r2Response.file_code;
-      alert("Video uploaded to R2 successfully!");
-    } catch(e) {
-      alert("Video upload failed: " + e.message);
-      return;
-    }
-  }
-  // If stream_id looks like a URL, check if it's an R2 direct link
-  else if (stream_id && stream_id.startsWith('http')) {
-    // Check if it's already an R2 direct link (contains /videos/)
-    const isR2DirectLink = stream_id.includes('/videos/') && stream_id.includes('.mp4');
-    
-    if (isR2DirectLink) {
-      // Extract file_code from R2 URL
-      // Example: https://r2.example.com/videos/tg_abc123.mp4 → tg_abc123
-      const fileCodeMatch = stream_id.match(/\/videos\/(.+?)(\.mp4)?$/);
-      if (fileCodeMatch) {
-        stream_id = fileCodeMatch[1]; // Just the file code without .mp4
-        addProgressLog?.(`✅ Using R2 direct link (no re-upload): ${stream_id}`);
-      }
-      // If already R2 link, don't re-upload
-    } else {
-      // Remote URL, upload to R2
-      try {
-        alert("Uploading video to R2...");
-        const r2Response = await remoteUploadToR2(stream_id);
-        if (!r2Response || !r2Response.file_code) {
-          throw new Error("R2 upload failed");
-        }
-        stream_id = r2Response.file_code;
-        alert("Video uploaded to R2 successfully!");
-      } catch(e) {
-        alert("R2 upload failed: " + e.message);
+    function renderPagination() {
+      const totalPages = Math.ceil(filtered.length / PER_PAGE);
+      const pag = document.getElementById("pagination");
+      if (totalPages <= 1) {
+        pag.innerHTML = "";
         return;
       }
+      let html = "";
+      if (currentPage > 1) {
+        html += `<button class="btn page-btn" onclick="changePage(${currentPage - 1})">Prev</button>`;
+      }
+      for (let p = 1; p <= totalPages; p++) {
+        if (Math.abs(p - currentPage) > 2 && p !== 1 && p !== totalPages) continue;
+        html += `<button class="btn page-btn ${p === currentPage ? 'btn-accent' : ''}" onclick="changePage(${p})">${p}</button>`;
+      }
+      if (currentPage < totalPages) {
+        html += `<button class="btn page-btn" onclick="changePage(${currentPage + 1})">Next</button>`;
+      }
+      pag.innerHTML = html;
     }
-  }
 
-  const body = {
-    videoid: videoid,
-    title: title,
-    desc: desc,
-    thumb: thumb,
-    stream_id: stream_id,
-    views: views,
-    offline: offline
-  };
-
-  try {
-    const url = API + "/admin/videos" + (editingId?"/"+encodeURIComponent(editingId):"");
-    const method = editingId ? "PUT" : "POST";
-    const r = await fetch(url,{
-      method,
-      headers:{
-        Authorization:ADMIN_TOKEN,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(body)
-    });
-    const data = await r.json();
-    if (!data || data.error || !r.ok){
-      alert("Save failed: "+(data?.error||"Unknown"));
-      return;
+    function changePage(p) {
+      const totalPages = Math.ceil(filtered.length / PER_PAGE);
+      if (p < 1 || p > totalPages) return;
+      currentPage = p;
+      renderTable();
     }
-    if (editingId){
-      videos = videos.map(v=>v.videoid===editingId?data:v);
-      addLog("save","Edited video "+editingId);
-    } else {
-      videos.unshift(data);
-      addLog("save","Added video "+body.videoid);
+
+    /* ============ BULK SELECT ============ */
+
+    function toggleSelect(id, checked) {
+      if (checked) selected.add(id);
+      else selected.delete(id);
+      updateSelectedCount();
     }
-    closeAllModals();
-    applyFilters();
-  } catch(e) {
-    alert("Save error: "+e.message);
-  }
-}
 
-function deleteSingle(id){
-  document.getElementById("confirmTitle").textContent = "Delete Video";
-  document.getElementById("confirmText").textContent = "Are you sure you want to delete "+id+" ?";
-  const btn = document.getElementById("confirmBtn");
-  btn.onclick = ()=>confirmDeleteSingle(id);
-  document.getElementById("confirmModal").style.display = "flex";
-}
-
-async function confirmDeleteSingle(id){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  try {
-    const r = await fetch(API + "/admin/videos/"+encodeURIComponent(id),{
-      method:"DELETE",
-      headers:{Authorization:ADMIN_TOKEN}
-    });
-    const data = await r.json();
-    if (!data || data.error || !r.ok){
-      alert("Delete failed: "+(data?.error||"Unknown error"));
-      return;
+    async function togglePin(videoid, checked) {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      try {
+        const r = await fetch(API + "/admin/videos/" + encodeURIComponent(videoid), {
+          method: "PUT",
+          headers: {
+            Authorization: ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ pinned: checked })
+        });
+        const data = await r.json();
+        if (!data || data.error || !r.ok) {
+          alert("Pin update failed: " + (data?.error || "Unknown error"));
+          return;
+        }
+        // Update local videos array
+        videos = videos.map(v => v.videoid === videoid ? data : v);
+        addLog("save", `Pinned ${checked ? 'on' : 'off'} video ${videoid}`);
+        applyFilters();
+      } catch (e) {
+        alert("Pin update error: " + e.message);
+      }
     }
-    videos = videos.filter(v=>v.videoid!==id);
-    selected.delete(id);
-    addLog("delete","Deleted video "+id);
-    closeAllModals();
-    applyFilters();
-  } catch(e) {
-    alert("Delete error: "+e.message);
-  }
-}
 
-/* ============ THUMBNAIL CONTROL ============ */
+    function toggleSelectAll() {
+      const cb = document.getElementById("selectAll");
+      const start = (currentPage - 1) * PER_PAGE;
+      const pageItems = filtered.slice(start, start + PER_PAGE);
+      if (cb.checked) {
+        pageItems.forEach(v => selected.add(v.videoid));
+      } else {
+        pageItems.forEach(v => selected.delete(v.videoid));
+      }
+      renderTable();
+    }
 
-function openThumb(id){
-  currentThumbId = id;
-  const v = videos.find(x=>x.videoid===id);
-  if (!v) return;
-  document.getElementById("thumbPrev").src = v.thumb||"";
-  document.getElementById("thumbNew").value = v.thumb||"";
-  document.getElementById("thumbModal").style.display = "flex";
-}
+    function updateSelectedCount() {
+      document.getElementById("selectedCount").textContent = `${selected.size} selected`;
+    }
 
-async function saveThumb(){
-  if (!currentThumbId) return;
-  const v = videos.find(x=>x.videoid===currentThumbId);
-  if (!v) return;
-  const url = document.getElementById("thumbNew").value.trim();
-  if (!url) return alert("Enter thumbnail URL");
-  if (!ADMIN_TOKEN) return alert("Login first");
-  const r = await fetch(API + "/admin/videos/"+encodeURIComponent(currentThumbId),{
-    method:"PUT",
-    headers:{
-      Authorization:ADMIN_TOKEN,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({...v,thumb:url})
-  });
-  const data = await r.json();
-  if (!data || data.error){
-    alert("Save failed: "+(data.error||"Unknown"));
-    return;
-  }
-  videos = videos.map(x=>x.videoid===currentThumbId?data:x);
-  addLog("save","Updated thumb "+currentThumbId);
-  applyFilters();
-  closeAllModals();
-}
+    function toggleBulkBar() {
+      const bar = document.getElementById("bulkBar");
+      bar.style.display = (bar.style.display === "none" || !bar.style.display) ? "flex" : "none";
+    }
 
-async function uploadThumbnail(){
-  if (!currentThumbId) return alert("No video selected");
-  const file = document.getElementById("thumbFile").files[0];
-  if (!file) return alert("Select a file");
-  if (file.size > 10*1024*1024) return alert("Max 10MB");
-  if (!file.type.startsWith("image/")) return alert("Image only");
+    /* ============ BULK ACTIONS ============ */
 
-  const status = document.getElementById("thumbStatus");
-  status.textContent = "⏳ Processing (1280x720 letterbox)...";
+    async function bulkOffline() {
+      if (!selected.size) return alert("No videos selected");
+      if (!confirm("Set selected videos to Offline?")) return;
+      try {
+        const r = await fetch(API + "/admin/bulk/offline", {
+          method: "POST",
+          headers: {
+            Authorization: ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ ids: [...selected] })
+        });
+        const data = await r.json();
+        if (!data || data.error || !r.ok) {
+          alert("Bulk offline failed: " + (data?.error || "Unknown error"));
+          return;
+        }
+        videos = videos.map(v => selected.has(v.videoid) ? { ...v, offline: true } : v);
+        addLog("save", `Bulk offline (${selected.size} videos)`);
+        applyFilters();
+      } catch (e) {
+        alert("Bulk offline error: " + e.message);
+      }
+    }
 
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const img = new Image();
-      img.onload = async () => {
-        const processed = await resizeToLetterbox(img);
-        processed.toBlob(async (blob) => {
-          const fd = new FormData();
-          fd.append("videoid", currentThumbId);
-          fd.append("image", blob, "thumbnail.jpg");
+    async function bulkOnline() {
+      if (!selected.size) return alert("No videos selected");
+      if (!confirm("Set selected videos to Live?")) return;
+      try {
+        const r = await fetch(API + "/admin/bulk/online", {
+          method: "POST",
+          headers: {
+            Authorization: ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ ids: [...selected] })
+        });
+        const data = await r.json();
+        if (!data || data.error || !r.ok) {
+          alert("Bulk online failed: " + (data?.error || "Unknown error"));
+          return;
+        }
+        videos = videos.map(v => selected.has(v.videoid) ? { ...v, offline: false } : v);
+        addLog("save", `Bulk online (${selected.size} videos)`);
+        applyFilters();
+      } catch (e) {
+        alert("Bulk online error: " + e.message);
+      }
+    }
 
-          status.textContent = "⏳ Uploading to R2...";
+    async function bulkDelete() {
+      if (!selected.size) return alert("No videos selected");
+      if (!confirm("Delete selected videos? This cannot be undone.")) return;
+      try {
+        const r = await fetch(API + "/admin/bulk/delete", {
+          method: "POST",
+          headers: {
+            Authorization: ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ ids: [...selected] })
+        });
+        const data = await r.json();
+        if (!data || data.error || !r.ok) {
+          alert("Bulk delete failed: " + (data?.error || "Unknown error"));
+          return;
+        }
+        videos = videos.filter(v => !selected.has(v.videoid));
+        selected.clear();
+        addLog("delete", "Bulk delete");
+        applyFilters();
+      } catch (e) {
+        alert("Bulk delete error: " + e.message);
+      }
+    }
 
-          const r = await fetch(API + "/admin/thumbnail", {
-            method: "POST",
-            headers: { Authorization: ADMIN_TOKEN },
-            body: fd
-          });
-          const res = await r.json();
-          if (res.ok) {
-            const v = videos.find(x=>x.videoid===currentThumbId);
-            if (v) v.thumb = res.thumb;
-            status.textContent = "✅ 1280x720 thumbnail saved!";
-            document.getElementById("thumbPrev").src = res.thumb;
-            setTimeout(()=>applyFilters(), 500);
-            addLog("save", `Thumbnail uploaded (1280x720) for ${currentThumbId}`);
-          } else {
-            status.textContent = "❌ " + (res.error || "Upload failed");
+    /* ============ SINGLE VIDEO ACTIONS ============ */
+
+    function openVideoModal(mode, id) {
+      const modal = document.getElementById("videoModal");
+      document.getElementById("videoModalTitle").textContent = mode === "add" ? "Add Video" : "Edit Video";
+      modal.style.display = "flex";
+      if (mode === "add") {
+        editingId = null;
+        document.getElementById("vid").value = "";
+        document.getElementById("vtitle").value = "";
+        document.getElementById("vdesc").value = "";
+        document.getElementById("vthumb").value = "";
+        document.getElementById("vthumbFile").value = "";
+        document.getElementById("vstream").value = "";
+        document.getElementById("vviews").value = 0;
+        document.getElementById("vstatus").value = "live";
+      } else {
+        editingId = id;
+        const v = videos.find(x => x.videoid === id);
+        if (!v) return;
+        document.getElementById("vid").value = v.videoid;
+        document.getElementById("vtitle").value = v.title || "";
+        document.getElementById("vdesc").value = v.desc || "";
+        document.getElementById("vthumb").value = v.thumb || "";
+        document.getElementById("vthumbFile").value = "";
+        document.getElementById("vstream").value = v.streamtape_id || "";
+        document.getElementById("vviews").value = v.views || 0;
+        document.getElementById("vstatus").value = v.offline ? "offline" : "live";
+      }
+    }
+
+    async function saveVideo() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      let stream_id = document.getElementById("vstream").value.trim();
+      let videoid = document.getElementById("vid").value.trim();
+      const title = document.getElementById("vtitle").value.trim();
+      const desc = document.getElementById("vdesc").value.trim();
+      let thumb = document.getElementById("vthumb").value.trim();
+      const views = Number(document.getElementById("vviews").value || 0);
+      const offline = document.getElementById("vstatus").value === "offline";
+
+      // Auto-generate video ID if empty
+      if (!videoid) {
+        videoid = 'adm_' + Math.random().toString(36).substr(2, 8);
+        document.getElementById("vid").value = videoid;
+      }
+
+      if (!title) return alert("Title is required");
+
+      // Handle thumbnail file upload if selected
+      const thumbFile = document.getElementById("vthumbFile").files[0];
+      if (thumbFile) {
+        try {
+          alert("Uploading thumbnail...");
+          thumb = await uploadThumbnailFile(thumbFile, videoid);
+          alert("Thumbnail uploaded successfully!");
+        } catch (e) {
+          alert("Thumbnail upload failed: " + e.message);
+          return;
+        }
+      }
+
+      // Handle video file upload if selected
+      const videoFile = document.getElementById("vvideoFile").files[0];
+      if (videoFile) {
+        try {
+          alert("Uploading video file...");
+          const r2Response = await uploadVideoFile(videoFile);
+          if (!r2Response || !r2Response.file_code) {
+            throw new Error("Video upload failed");
           }
-        }, "image/jpeg", 0.85);
+          stream_id = r2Response.file_code;
+          alert("Video uploaded to R2 successfully!");
+        } catch (e) {
+          alert("Video upload failed: " + e.message);
+          return;
+        }
+      }
+      // If stream_id looks like a URL, check if it's an R2 direct link
+      else if (stream_id && stream_id.startsWith('http')) {
+        // Check if it's already an R2 direct link (contains /videos/)
+        const isR2DirectLink = stream_id.includes('/videos/') && stream_id.includes('.mp4');
+
+        if (isR2DirectLink) {
+          // Extract file_code from R2 URL
+          // Example: https://r2.example.com/videos/tg_abc123.mp4 → tg_abc123
+          const fileCodeMatch = stream_id.match(/\/videos\/(.+?)(\.mp4)?$/);
+          if (fileCodeMatch) {
+            stream_id = fileCodeMatch[1]; // Just the file code without .mp4
+            addProgressLog?.(`✅ Using R2 direct link (no re-upload): ${stream_id}`);
+          }
+          // If already R2 link, don't re-upload
+        } else {
+          // Remote URL, upload to R2
+          try {
+            alert("Uploading video to R2...");
+            const r2Response = await remoteUploadToR2(stream_id);
+            if (!r2Response || !r2Response.file_code) {
+              throw new Error("R2 upload failed");
+            }
+            stream_id = r2Response.file_code;
+            alert("Video uploaded to R2 successfully!");
+          } catch (e) {
+            alert("R2 upload failed: " + e.message);
+            return;
+          }
+        }
+      }
+
+      const body = {
+        videoid: videoid,
+        title: title,
+        desc: desc,
+        thumb: thumb,
+        stream_id: stream_id,
+        views: views,
+        offline: offline
       };
-      img.onerror = () => {
-        status.textContent = "❌ Invalid image format";
+
+      try {
+        const url = API + "/admin/videos" + (editingId ? "/" + encodeURIComponent(editingId) : "");
+        const method = editingId ? "PUT" : "POST";
+        const r = await fetch(url, {
+          method,
+          headers: {
+            Authorization: ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body)
+        });
+        const data = await r.json();
+        if (!data || data.error || !r.ok) {
+          alert("Save failed: " + (data?.error || "Unknown"));
+          return;
+        }
+        if (editingId) {
+          videos = videos.map(v => v.videoid === editingId ? data : v);
+          addLog("save", "Edited video " + editingId);
+        } else {
+          videos.unshift(data);
+          addLog("save", "Added video " + body.videoid);
+        }
+        closeAllModals();
+        applyFilters();
+      } catch (e) {
+        alert("Save error: " + e.message);
+      }
+    }
+
+    function deleteSingle(id) {
+      document.getElementById("confirmTitle").textContent = "Delete Video";
+      document.getElementById("confirmText").textContent = "Are you sure you want to delete " + id + " ?";
+      const btn = document.getElementById("confirmBtn");
+      btn.onclick = () => confirmDeleteSingle(id);
+      document.getElementById("confirmModal").style.display = "flex";
+    }
+
+    async function confirmDeleteSingle(id) {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      try {
+        const r = await fetch(API + "/admin/videos/" + encodeURIComponent(id), {
+          method: "DELETE",
+          headers: { Authorization: ADMIN_TOKEN }
+        });
+        const data = await r.json();
+        if (!data || data.error || !r.ok) {
+          alert("Delete failed: " + (data?.error || "Unknown error"));
+          return;
+        }
+        videos = videos.filter(v => v.videoid !== id);
+        selected.delete(id);
+        addLog("delete", "Deleted video " + id);
+        closeAllModals();
+        applyFilters();
+      } catch (e) {
+        alert("Delete error: " + e.message);
+      }
+    }
+
+    /* ============ THUMBNAIL CONTROL ============ */
+
+    function openThumb(id) {
+      currentThumbId = id;
+      const v = videos.find(x => x.videoid === id);
+      if (!v) return;
+      document.getElementById("thumbPrev").src = v.thumb || "";
+      document.getElementById("thumbNew").value = v.thumb || "";
+      document.getElementById("thumbModal").style.display = "flex";
+    }
+
+    async function saveThumb() {
+      if (!currentThumbId) return;
+      const v = videos.find(x => x.videoid === currentThumbId);
+      if (!v) return;
+      const url = document.getElementById("thumbNew").value.trim();
+      if (!url) return alert("Enter thumbnail URL");
+      if (!ADMIN_TOKEN) return alert("Login first");
+      const r = await fetch(API + "/admin/videos/" + encodeURIComponent(currentThumbId), {
+        method: "PUT",
+        headers: {
+          Authorization: ADMIN_TOKEN,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ...v, thumb: url })
+      });
+      const data = await r.json();
+      if (!data || data.error) {
+        alert("Save failed: " + (data.error || "Unknown"));
+        return;
+      }
+      videos = videos.map(x => x.videoid === currentThumbId ? data : x);
+      addLog("save", "Updated thumb " + currentThumbId);
+      applyFilters();
+      closeAllModals();
+    }
+
+    async function uploadThumbnail() {
+      if (!currentThumbId) return alert("No video selected");
+      const file = document.getElementById("thumbFile").files[0];
+      if (!file) return alert("Select a file");
+      if (file.size > 10 * 1024 * 1024) return alert("Max 10MB");
+      if (!file.type.startsWith("image/")) return alert("Image only");
+
+      const status = document.getElementById("thumbStatus");
+      status.textContent = "⏳ Processing (1280x720 letterbox)...";
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const img = new Image();
+          img.onload = async () => {
+            const processed = await resizeToLetterbox(img);
+            processed.toBlob(async (blob) => {
+              const fd = new FormData();
+              fd.append("videoid", currentThumbId);
+              fd.append("image", blob, "thumbnail.jpg");
+
+              status.textContent = "⏳ Uploading to R2...";
+
+              const r = await fetch(API + "/admin/thumbnail", {
+                method: "POST",
+                headers: { Authorization: ADMIN_TOKEN },
+                body: fd
+              });
+              const res = await r.json();
+              if (res.ok) {
+                const v = videos.find(x => x.videoid === currentThumbId);
+                if (v) v.thumb = res.thumb;
+                status.textContent = "✅ 1280x720 thumbnail saved!";
+                document.getElementById("thumbPrev").src = res.thumb;
+                setTimeout(() => applyFilters(), 500);
+                addLog("save", `Thumbnail uploaded (1280x720) for ${currentThumbId}`);
+              } else {
+                status.textContent = "❌ " + (res.error || "Upload failed");
+              }
+            }, "image/jpeg", 0.85);
+          };
+          img.onerror = () => {
+            status.textContent = "❌ Invalid image format";
+          };
+          img.src = e.target.result;
+        } catch (er) {
+          status.textContent = "❌ Error: " + er.message;
+        }
       };
-      img.src = e.target.result;
-    } catch(er) {
-      status.textContent = "❌ Error: " + er.message;
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-function resizeToLetterbox(img) {
-  return new Promise(resolve => {
-    const TARGET_W = 1280;
-    const TARGET_H = 720;
-    const TARGET_RATIO = TARGET_W / TARGET_H; // 16:9 = 1.777...
-    const imgRatio = img.width / img.height;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = TARGET_W;
-    canvas.height = TARGET_H;
-    const ctx = canvas.getContext("2d");
-
-    // Fill with black background
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(0, 0, TARGET_W, TARGET_H);
-
-    // Calculate dimensions to fit image without crop/stretch
-    let drawWidth, drawHeight, drawX, drawY;
-
-    if (imgRatio > TARGET_RATIO) {
-      // Image wider than 16:9 → fit to height, center horizontally
-      drawHeight = TARGET_H;
-      drawWidth = Math.round(TARGET_H * imgRatio);
-      drawX = (TARGET_W - drawWidth) / 2;
-      drawY = 0;
-    } else {
-      // Image taller than 16:9 → fit to width, center vertically
-      drawWidth = TARGET_W;
-      drawHeight = Math.round(TARGET_W / imgRatio);
-      drawX = 0;
-      drawY = (TARGET_H - drawHeight) / 2;
+      reader.readAsDataURL(file);
     }
 
-    // Draw image on black background (letterbox style, no crop)
-    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+    function resizeToLetterbox(img) {
+      return new Promise(resolve => {
+        const TARGET_W = 1280;
+        const TARGET_H = 720;
+        const TARGET_RATIO = TARGET_W / TARGET_H; // 16:9 = 1.777...
+        const imgRatio = img.width / img.height;
 
-    resolve(canvas);
-  });
-}
+        const canvas = document.createElement("canvas");
+        canvas.width = TARGET_W;
+        canvas.height = TARGET_H;
+        const ctx = canvas.getContext("2d");
 
-function autoFillTitles(){
-  let updated = 0;
-  videos.forEach(v=>{
-    if (!v.title || v.title.trim()===""){
-      v.title = "Clip " + v.videoid.slice(0,8);
-      updated++;
+        // Fill with black background
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, TARGET_W, TARGET_H);
+
+        // Calculate dimensions to fit image without crop/stretch
+        let drawWidth, drawHeight, drawX, drawY;
+
+        if (imgRatio > TARGET_RATIO) {
+          // Image wider than 16:9 → fit to height, center horizontally
+          drawHeight = TARGET_H;
+          drawWidth = Math.round(TARGET_H * imgRatio);
+          drawX = (TARGET_W - drawWidth) / 2;
+          drawY = 0;
+        } else {
+          // Image taller than 16:9 → fit to width, center vertically
+          drawWidth = TARGET_W;
+          drawHeight = Math.round(TARGET_W / imgRatio);
+          drawX = 0;
+          drawY = (TARGET_H - drawHeight) / 2;
+        }
+
+        // Draw image on black background (letterbox style, no crop)
+        ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+
+        resolve(canvas);
+      });
     }
-  });
-  if (updated===0) return alert("All videos have titles");
-  alert(`Auto-filled ${updated} titles`);
-  applyFilters();
-  addLog("save", `Auto-filled ${updated} missing titles`);
-}
+
+    function autoFillTitles() {
+      let updated = 0;
+      videos.forEach(v => {
+        if (!v.title || v.title.trim() === "") {
+          v.title = "Clip " + v.videoid.slice(0, 8);
+          updated++;
+        }
+      });
+      if (updated === 0) return alert("All videos have titles");
+      alert(`Auto-filled ${updated} titles`);
+      applyFilters();
+      addLog("save", `Auto-filled ${updated} missing titles`);
+    }
 
 
 
-/* ============ ANALYTICS & DASHBOARD ============ */
+    /* ============ ANALYTICS & DASHBOARD ============ */
 
-function updateAnalytics(){
-  const totalViews = videos.reduce((sum,v)=>sum + (v.views||0),0);
-  document.getElementById("totalViews").textContent = totalViews.toLocaleString();
+    function updateAnalytics() {
+      const totalViews = videos.reduce((sum, v) => sum + (v.views || 0), 0);
+      document.getElementById("totalViews").textContent = totalViews.toLocaleString();
 
-  // Calculate today views
-  const today = new Date().toDateString();
-  const todayViews = videos.filter(v => v.date && new Date(v.date).toDateString() === today).reduce((sum,v)=>sum + (v.views||0),0);
-  document.getElementById("todayViews").textContent = `Today: ${todayViews.toLocaleString()}`;
+      // Calculate today views
+      const today = new Date().toDateString();
+      const todayViews = videos.filter(v => v.date && new Date(v.date).toDateString() === today).reduce((sum, v) => sum + (v.views || 0), 0);
+      document.getElementById("todayViews").textContent = `Today: ${todayViews.toLocaleString()}`;
 
-  const sortBy = document.getElementById("topVideosSort").value;
-  const sorted = [...videos].sort((a,b)=> sortBy === 'most' ? (b.views||0)-(a.views||0) : (a.views||0)-(b.views||0)).slice(0, topVideosLimit);
-  const topDiv = document.getElementById("topVideos");
-  if (!sorted.length){
-    topDiv.innerHTML = "<p style='color:var(--muted);font-size:12px'>No data</p>";
-  } else {
-    topDiv.innerHTML = sorted.map(v=>`
+      const sortBy = document.getElementById("topVideosSort").value;
+      const sorted = [...videos].sort((a, b) => sortBy === 'most' ? (b.views || 0) - (a.views || 0) : (a.views || 0) - (b.views || 0)).slice(0, topVideosLimit);
+      const topDiv = document.getElementById("topVideos");
+      if (!sorted.length) {
+        topDiv.innerHTML = "<p style='color:var(--muted);font-size:12px'>No data</p>";
+      } else {
+        topDiv.innerHTML = sorted.map(v => `
       <div class="top-video-item">
-        <span>${v.title||""} (${v.videoid})</span>
-        <span>${(v.views||0).toLocaleString()} views</span>
+        <span>${v.title || ""} (${v.videoid})</span>
+        <span>${(v.views || 0).toLocaleString()} views</span>
       </div>
     `).join("");
-  }
-  const recentDiv = document.getElementById("recentActivity");
-  if (!logs.length){
-    recentDiv.innerHTML = "<p style='color:var(--muted);font-size:12px'>No activity</p>";
-  } else {
-    recentDiv.innerHTML = logs.slice(-10).reverse().map(l=>`
+      }
+      const recentDiv = document.getElementById("recentActivity");
+      if (!logs.length) {
+        recentDiv.innerHTML = "<p style='color:var(--muted);font-size:12px'>No activity</p>";
+      } else {
+        recentDiv.innerHTML = logs.slice(-10).reverse().map(l => `
       <div class="log-item">
         <span>${l.action} - ${l.note}</span>
         <span class="log-time">${new Date(l.time).toLocaleString()}</span>
       </div>
     `).join("");
-  }
-}
-
-function loadMoreVideos(){
-  topVideosLimit += 10;
-  updateAnalytics();
-}
-
-function refreshDashboard(){
-  updateDashboard();
-  alert("Dashboard refreshed!");
-}
-
-function updateDashboard(){
-  try {
-    if (!ADMIN_TOKEN) {
-      console.warn("Not logged in - dashboard unavailable");
-      return;
+      }
     }
 
-    // Fetch analytics from backend with Authorization header
-    fetch(API + "/analytics", {
-      headers: {
-        "Authorization": ADMIN_TOKEN,
-        "Content-Type": "application/json"
-      }
-    })
-      .then(r => {
-        if (r.status === 401) {
-          console.error("Token invalid or expired - please login again");
-          return null;
+    function loadMoreVideos() {
+      topVideosLimit += 10;
+      updateAnalytics();
+    }
+
+    function refreshDashboard() {
+      updateDashboard();
+      alert("Dashboard refreshed!");
+    }
+
+    function updateDashboard() {
+      try {
+        if (!ADMIN_TOKEN) {
+          console.warn("Not logged in - dashboard unavailable");
+          return;
         }
-        return r.json();
-      })
-      .then(data => {
-        if (!data) return;
 
-        // 1. MAIN STATS
-        document.getElementById("dashPageViews").textContent = (data.pageViews || 0).toLocaleString();
-        document.getElementById("dashUniqueUsers").textContent = (data.uniqueUsers || 0).toLocaleString();
-        document.getElementById("dashVideoPlays").textContent = (data.videoPlays || 0).toLocaleString();
+        // Fetch analytics from backend with Authorization header
+        fetch(API + "/analytics", {
+          headers: {
+            "Authorization": ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          }
+        })
+          .then(r => {
+            if (r.status === 401) {
+              console.error("Token invalid or expired - please login again");
+              return null;
+            }
+            return r.json();
+          })
+          .then(data => {
+            if (!data) return;
 
-        // 2. ENTRY SOURCE
-        const sourceTotal = (data.sources?.homepage || 0) + (data.sources?.player || 0) || 1;
-        const homepagePercent = Math.round(((data.sources?.homepage || 0) / sourceTotal) * 100);
-        const playerPercent = Math.round(((data.sources?.player || 0) / sourceTotal) * 100);
+            // 1. MAIN STATS
+            document.getElementById("dashPageViews").textContent = (data.pageViews || 0).toLocaleString();
+            document.getElementById("dashUniqueUsers").textContent = (data.uniqueUsers || 0).toLocaleString();
+            document.getElementById("dashVideoPlays").textContent = (data.videoPlays || 0).toLocaleString();
 
-        document.getElementById("dashSourceHome").textContent = homepagePercent + "%";
-        document.getElementById("dashSourcePlayer").textContent = playerPercent + "%";
-        document.getElementById("dashSourceHomeBar").style.width = homepagePercent + "%";
-        document.getElementById("dashSourcePlayerBar").style.width = playerPercent + "%";
+            // 2. ENTRY SOURCE
+            const sourceTotal = (data.sources?.homepage || 0) + (data.sources?.player || 0) || 1;
+            const homepagePercent = Math.round(((data.sources?.homepage || 0) / sourceTotal) * 100);
+            const playerPercent = Math.round(((data.sources?.player || 0) / sourceTotal) * 100);
 
-        // 3. TOP 10 VIDEOS
-        const topVideos = data.topVideos || [];
-        const topVideosHTML = topVideos.length ? topVideos.map((v, i) => {
-          const videoTitle = videos.find(x => x.videoid === v.videoid)?.title || v.videoid;
-          return `<tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:10px;color:var(--accent);font-weight:600">${i+1}</td>
+            document.getElementById("dashSourceHome").textContent = homepagePercent + "%";
+            document.getElementById("dashSourcePlayer").textContent = playerPercent + "%";
+            document.getElementById("dashSourceHomeBar").style.width = homepagePercent + "%";
+            document.getElementById("dashSourcePlayerBar").style.width = playerPercent + "%";
+
+            // 3. TOP 10 VIDEOS
+            const topVideos = data.topVideos || [];
+            const topVideosHTML = topVideos.length ? topVideos.map((v, i) => {
+              const videoTitle = videos.find(x => x.videoid === v.videoid)?.title || v.videoid;
+              return `<tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px;color:var(--accent);font-weight:600">${i + 1}</td>
             <td style="padding:10px;text-align:left">${(videoTitle || "").substring(0, 40)}</td>
             <td style="padding:10px;text-align:right;color:var(--success)">${v.plays || 0}</td>
             <td style="padding:10px;text-align:right;color:var(--warning)">${v.avgWatch || 0}%</td>
           </tr>`;
-        }).join("") : "<tr><td colspan='4' style='padding:16px;text-align:center;color:var(--muted)'>No data</td></tr>";
+            }).join("") : "<tr><td colspan='4' style='padding:16px;text-align:center;color:var(--muted)'>No data</td></tr>";
 
-        document.getElementById("dashTopVideos").innerHTML = topVideosHTML;
+            document.getElementById("dashTopVideos").innerHTML = topVideosHTML;
 
-        // 4. GEO DISTRIBUTION
-        const geoTotal = (data.geo?.india || 0) + (data.geo?.usa || 0) + (data.geo?.others || 0) || 100;
-        const indiaPercent = Math.round(((data.geo?.india || 0) / geoTotal) * 100);
-        const usaPercent = Math.round(((data.geo?.usa || 0) / geoTotal) * 100);
-        const othersPercent = Math.round(((data.geo?.others || 0) / geoTotal) * 100);
+            // 4. GEO DISTRIBUTION
+            const geoTotal = (data.geo?.india || 0) + (data.geo?.usa || 0) + (data.geo?.others || 0) || 100;
+            const indiaPercent = Math.round(((data.geo?.india || 0) / geoTotal) * 100);
+            const usaPercent = Math.round(((data.geo?.usa || 0) / geoTotal) * 100);
+            const othersPercent = Math.round(((data.geo?.others || 0) / geoTotal) * 100);
 
-        document.getElementById("dashGeoIndia").textContent = indiaPercent + "%";
-        document.getElementById("dashGeoUSA").textContent = usaPercent + "%";
-        document.getElementById("dashGeoOthers").textContent = othersPercent + "%";
-        document.getElementById("dashGeoIndiaBar").style.width = indiaPercent + "%";
-        document.getElementById("dashGeoUSABar").style.width = usaPercent + "%";
-        document.getElementById("dashGeoOthersBar").style.width = othersPercent + "%";
+            document.getElementById("dashGeoIndia").textContent = indiaPercent + "%";
+            document.getElementById("dashGeoUSA").textContent = usaPercent + "%";
+            document.getElementById("dashGeoOthers").textContent = othersPercent + "%";
+            document.getElementById("dashGeoIndiaBar").style.width = indiaPercent + "%";
+            document.getElementById("dashGeoUSABar").style.width = usaPercent + "%";
+            document.getElementById("dashGeoOthersBar").style.width = othersPercent + "%";
 
-        // 5. AD IMPRESSIONS
-        document.getElementById("dashAdImpressions").textContent = (data.adImpressions || 0).toLocaleString();
+            // 5. AD IMPRESSIONS
+            document.getElementById("dashAdImpressions").textContent = (data.adImpressions || 0).toLocaleString();
 
-        // 6. SYSTEM STATUS
-        const plays = data.videoPlays || 0;
-        const trafficLevel = plays > 100 ? "Heavy 🔴" : plays > 50 ? "Moderate 🟡" : "Normal 🟢";
-        document.getElementById("dashTrafficStatus").textContent = trafficLevel;
-        document.getElementById("dashAdsStatus").textContent = (data.adImpressions || 0) > 0 ? "Active ✅" : "Idle";
-        document.getElementById("dashResponseTime").textContent = Math.floor(Math.random() * 200 + 50) + "ms";
-        document.getElementById("dashLastUpdate").textContent = new Date().toLocaleTimeString();
-      })
-      .catch(e => {
-        console.error("Analytics fetch error:", e);
-      });
-  } catch(e) {
-    console.error("Dashboard update error:", e);
-  }
-}
+            // 6. SYSTEM STATUS
+            const plays = data.videoPlays || 0;
+            const trafficLevel = plays > 100 ? "Heavy 🔴" : plays > 50 ? "Moderate 🟡" : "Normal 🟢";
+            document.getElementById("dashTrafficStatus").textContent = trafficLevel;
+            document.getElementById("dashAdsStatus").textContent = (data.adImpressions || 0) > 0 ? "Active ✅" : "Idle";
+            document.getElementById("dashResponseTime").textContent = Math.floor(Math.random() * 200 + 50) + "ms";
+            document.getElementById("dashLastUpdate").textContent = new Date().toLocaleTimeString();
+          })
+          .catch(e => {
+            console.error("Analytics fetch error:", e);
+          });
+      } catch (e) {
+        console.error("Dashboard update error:", e);
+      }
+    }
 
-function trackPageView(){
-  if (!ADMIN_TOKEN) return; // Only track when logged in
-  // Send to backend instead of localStorage
-  fetch(API + "/track/pageview", {
-    method: "POST",
-    headers: { 
-      "Authorization": ADMIN_TOKEN,
-      "Content-Type": "application/json" 
-    },
-    body: JSON.stringify({ source: "admin" })
-  }).catch(() => {});
-  
-  // Track geo location
-  try {
-    fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
-      .then(r => r.json())
-      .then(data => {
-        fetch(API + "/track/geo", {
-          method: "POST",
-          headers: { 
-            "Authorization": ADMIN_TOKEN,
-            "Content-Type": "application/json" 
-          },
-          body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
-        }).catch(() => {});
-      })
-      .catch(() => {});
-  } catch(e) {}
-}
+    function trackPageView() {
+      if (!ADMIN_TOKEN) return; // Only track when logged in
+      // Send to backend instead of localStorage
+      fetch(API + "/track/pageview", {
+        method: "POST",
+        headers: {
+          "Authorization": ADMIN_TOKEN,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ source: "admin" })
+      }).catch(() => { });
 
-function trackVideoPlay(videoid){
-  // Send to backend
-  fetch(API + "/track/play", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      videoid: videoid,
-      source: "admin",
-      watchPercent: 100
-    })
-  }).catch(() => {});
-}
+      // Track geo location
+      try {
+        fetch('https://ipapi.co/json/', { headers: { 'Accept': 'application/json' } })
+          .then(r => r.json())
+          .then(data => {
+            fetch(API + "/track/geo", {
+              method: "POST",
+              headers: {
+                "Authorization": ADMIN_TOKEN,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ country: data.country_code || 'UNKNOWN' })
+            }).catch(() => { });
+          })
+          .catch(() => { });
+      } catch (e) { }
+    }
 
-function trackAdImpression(){
-  // Send to backend
-  fetch(API + "/track/adimpression", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ videoid: "unknown", adType: "admin_view" })
-  }).catch(() => {});
-}
+    function trackVideoPlay(videoid) {
+      // Send to backend
+      fetch(API + "/track/play", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          videoid: videoid,
+          source: "admin",
+          watchPercent: 100
+        })
+      }).catch(() => { });
+    }
 
-function exportDashboardCSV(){
-  try {
-    // Fetch current analytics data
-    fetch(API + "/analytics")
-      .then(r => r.json())
-      .then(data => {
-        if (!data) return alert("No data to export");
+    function trackAdImpression() {
+      // Send to backend
+      fetch(API + "/track/adimpression", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoid: "unknown", adType: "admin_view" })
+      }).catch(() => { });
+    }
 
-        // Prepare CSV rows
-        const rows = [];
-        rows.push(["Dashboard Analytics Export", new Date().toLocaleString()]);
-        rows.push([]);
+    function exportDashboardCSV() {
+      try {
+        // Fetch current analytics data
+        fetch(API + "/analytics")
+          .then(r => r.json())
+          .then(data => {
+            if (!data) return alert("No data to export");
 
-        // Main Stats
-        rows.push(["MAIN STATS"]);
-        rows.push(["Total Page Views", data.pageViews || 0]);
-        rows.push(["Unique Users", data.uniqueUsers || 0]);
-        rows.push(["Total Video Plays", data.videoPlays || 0]);
-        rows.push([]);
+            // Prepare CSV rows
+            const rows = [];
+            rows.push(["Dashboard Analytics Export", new Date().toLocaleString()]);
+            rows.push([]);
 
-        // Entry Source
-        rows.push(["ENTRY SOURCE"]);
-        rows.push(["Homepage", data.sources?.homepage || 0]);
-        rows.push(["Direct Player", data.sources?.player || 0]);
-        rows.push([]);
+            // Main Stats
+            rows.push(["MAIN STATS"]);
+            rows.push(["Total Page Views", data.pageViews || 0]);
+            rows.push(["Unique Users", data.uniqueUsers || 0]);
+            rows.push(["Total Video Plays", data.videoPlays || 0]);
+            rows.push([]);
 
-        // Top Videos
-        rows.push(["TOP 10 VIDEOS"]);
-        rows.push(["Rank", "Video ID", "Plays", "Avg Watch %"]);
-        (data.topVideos || []).forEach((v, i) => {
-          rows.push([i+1, v.videoid, v.plays || 0, v.avgWatch || 0]);
-        });
-        rows.push([]);
+            // Entry Source
+            rows.push(["ENTRY SOURCE"]);
+            rows.push(["Homepage", data.sources?.homepage || 0]);
+            rows.push(["Direct Player", data.sources?.player || 0]);
+            rows.push([]);
 
-        // Geo
-        rows.push(["GEOGRAPHIC DISTRIBUTION"]);
-        rows.push(["India", data.geo?.india || 0]);
-        rows.push(["USA", data.geo?.usa || 0]);
-        rows.push(["Others", data.geo?.others || 0]);
-        rows.push([]);
+            // Top Videos
+            rows.push(["TOP 10 VIDEOS"]);
+            rows.push(["Rank", "Video ID", "Plays", "Avg Watch %"]);
+            (data.topVideos || []).forEach((v, i) => {
+              rows.push([i + 1, v.videoid, v.plays || 0, v.avgWatch || 0]);
+            });
+            rows.push([]);
 
-        // Ads
-        rows.push(["AD SYSTEM"]);
-        rows.push(["Total Ad Impressions", data.adImpressions || 0]);
-        rows.push([]);
+            // Geo
+            rows.push(["GEOGRAPHIC DISTRIBUTION"]);
+            rows.push(["India", data.geo?.india || 0]);
+            rows.push(["USA", data.geo?.usa || 0]);
+            rows.push(["Others", data.geo?.others || 0]);
+            rows.push([]);
 
-        rows.push(["Generated", new Date().toLocaleString()]);
+            // Ads
+            rows.push(["AD SYSTEM"]);
+            rows.push(["Total Ad Impressions", data.adImpressions || 0]);
+            rows.push([]);
 
-        // Convert to CSV
-        const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+            rows.push(["Generated", new Date().toLocaleString()]);
 
-        // Download
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        const kolkataDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
-        a.download = `dashboard-analytics-${kolkataDate}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+            // Convert to CSV
+            const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
 
-        addLog("export", "Exported dashboard analytics to CSV");
-        alert("✅ Dashboard exported to CSV!");
-      })
-      .catch(e => alert("Export failed: " + e.message));
-  } catch(e) {
-    alert("Export error: " + e.message);
-  }
-}
+            // Download
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const kolkataDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
+            a.download = `dashboard-analytics-${kolkataDate}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
 
-/* ============ SETTINGS ============ */
+            addLog("export", "Exported dashboard analytics to CSV");
+            alert("✅ Dashboard exported to CSV!");
+          })
+          .catch(e => alert("Export failed: " + e.message));
+      } catch (e) {
+        alert("Export error: " + e.message);
+      }
+    }
 
-async function clearCache(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  if (!confirm("Clear cache?")) return;
-  await fetch(API + "/admin/cache/clear",{
-    method:"POST",
-    headers:{Authorization:ADMIN_TOKEN}
-  }).catch(()=>{});
-  alert("Cache cleared");
-}
+    /* ============ SETTINGS ============ */
+
+    async function clearCache() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      if (!confirm("Clear cache?")) return;
+      await fetch(API + "/admin/cache/clear", {
+        method: "POST",
+        headers: { Authorization: ADMIN_TOKEN }
+      }).catch(() => { });
+      alert("Cache cleared");
+    }
 
 
-async function backupData(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  const blob = new Blob([JSON.stringify(videos,null,2)],{type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "clipfy-backup.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
+    async function backupData() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      const blob = new Blob([JSON.stringify(videos, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "clipfy-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
 
-async function deleteAllOffline(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  if (!confirm("Delete ALL offline videos? This cannot be undone.")) return;
-  await fetch(API + "/admin/offline/delete-all",{
-    method:"POST",
-    headers:{Authorization:ADMIN_TOKEN}
-  }).catch(()=>{});
-  videos = videos.filter(v=>!v.offline);
-  applyFilters();
-  addLog("delete","Deleted all offline");
-}
+    async function deleteAllOffline() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      if (!confirm("Delete ALL offline videos? This cannot be undone.")) return;
+      await fetch(API + "/admin/offline/delete-all", {
+        method: "POST",
+        headers: { Authorization: ADMIN_TOKEN }
+      }).catch(() => { });
+      videos = videos.filter(v => !v.offline);
+      applyFilters();
+      addLog("delete", "Deleted all offline");
+    }
 
-async function resetDatabase(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  if (!confirm("Reset entire database? This is VERY dangerous.")) return;
-  await fetch(API + "/admin/reset",{
-    method:"POST",
-    headers:{Authorization:ADMIN_TOKEN}
-  }).catch(()=>{});
-  videos = [];
-  applyFilters();
-  addLog("delete","Database reset");
-}
+    async function resetDatabase() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      if (!confirm("Reset entire database? This is VERY dangerous.")) return;
+      await fetch(API + "/admin/reset", {
+        method: "POST",
+        headers: { Authorization: ADMIN_TOKEN }
+      }).catch(() => { });
+      videos = [];
+      applyFilters();
+      addLog("delete", "Database reset");
+    }
 
-/* ============ LOGS ============ */
+    /* ============ LOGS ============ */
 
-function addLog(action,note){
-  const item = {action,note,time:Date.now()};
-  logs.push(item);
-  localStorage.setItem("clipfy_admin_logs",JSON.stringify(logs));
-}
+    function addLog(action, note) {
+      const item = { action, note, time: Date.now() };
+      logs.push(item);
+      localStorage.setItem("clipfy_admin_logs", JSON.stringify(logs));
+    }
 
-function loadLogs(){
-  const saved = localStorage.getItem("clipfy_admin_logs");
-  if (saved && !logs.length){
-    try{logs = JSON.parse(saved)||[]}catch(e){logs=[];}
-  }
-  renderLogs();
-}
+    function loadLogs() {
+      const saved = localStorage.getItem("clipfy_admin_logs");
+      if (saved && !logs.length) {
+        try { logs = JSON.parse(saved) || [] } catch (e) { logs = []; }
+      }
+      renderLogs();
+    }
 
-function renderLogs(){
-  const filter = document.getElementById("logFilter").value;
-  const list = document.getElementById("logsList");
-  const arr = logs.filter(l=>filter==="all" || l.action===filter);
-  if (!arr.length){
-    list.innerHTML = "<p style='color:var(--muted);font-size:12px'>No logs</p>";
-    return;
-  }
-  list.innerHTML = arr.slice().reverse().map(l=>`
+    function renderLogs() {
+      const filter = document.getElementById("logFilter").value;
+      const list = document.getElementById("logsList");
+      const arr = logs.filter(l => filter === "all" || l.action === filter);
+      if (!arr.length) {
+        list.innerHTML = "<p style='color:var(--muted);font-size:12px'>No logs</p>";
+        return;
+      }
+      list.innerHTML = arr.slice().reverse().map(l => `
     <div class="log-item">
       <span>[${l.action}] ${l.note}</span>
       <span class="log-time">${new Date(l.time).toLocaleString()}</span>
     </div>
   `).join("");
-}
+    }
 
-function filterLogs(){
-  renderLogs();
-}
+    function filterLogs() {
+      renderLogs();
+    }
 
-function clearLogs(){
-  if (!confirm("Clear all logs?")) return;
-  logs = [];
-  localStorage.removeItem("clipfy_admin_logs");
-  renderLogs();
-}
+    function clearLogs() {
+      if (!confirm("Clear all logs?")) return;
+      logs = [];
+      localStorage.removeItem("clipfy_admin_logs");
+      renderLogs();
+    }
 
-function exportLogs(){
-  const blob = new Blob([JSON.stringify(logs,null,2)],{type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "clipfy-logs.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
+    function exportLogs() {
+      const blob = new Blob([JSON.stringify(logs, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "clipfy-logs.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
 
-/* ============ CSV EXPORT ============ */
+    /* ============ CSV EXPORT ============ */
 
-function exportCSV(){
-  if (!videos.length) return alert("No videos to export");
-  const header = ["videoid","title","views","offline","date","thumb","streamtape_id"];
-  const rows = videos.map(v=>[
-    v.videoid,
-    (v.title||"").replace(/"/g,'""'),
-    v.views||0,
-    v.offline?"1":"0",
-    v.date||"",
-    v.thumb||"",
-    v.streamtape_id||""
-  ]);
-  const csv = [header.join(",")].concat(
-    rows.map(r=>r.map(x=>`"${String(x)}"`).join(","))
-  ).join("\n");
-  const blob = new Blob([csv],{type:"text/csv"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "clipfy-videos.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-}
+    function exportCSV() {
+      if (!videos.length) return alert("No videos to export");
+      const header = ["videoid", "title", "views", "offline", "date", "thumb", "streamtape_id"];
+      const rows = videos.map(v => [
+        v.videoid,
+        (v.title || "").replace(/"/g, '""'),
+        v.views || 0,
+        v.offline ? "1" : "0",
+        v.date || "",
+        v.thumb || "",
+        v.streamtape_id || ""
+      ]);
+      const csv = [header.join(",")].concat(
+        rows.map(r => r.map(x => `"${String(x)}"`).join(","))
+      ).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "clipfy-videos.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
 
-/* ============ MISC ============ */
+    /* ============ MISC ============ */
 
-function closeAllModals(){
-  document.querySelectorAll(".modal").forEach(m=>m.style.display="none");
-}
+    function closeAllModals() {
+      document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
+    }
 
-function refresh(){
-  loadVideos();
-  fetchStatus();
-}
+    function refresh() {
+      loadVideos();
+      fetchStatus();
+    }
 
-/* ============ INIT ============ */
+    /* ============ INIT ============ */
 
-function init(){
-  document.getElementById("currentUser").textContent = CURRENT_USER;
-  trackPageView();
-  fetchStatus();
-  loadVideos();
-  loadLogs();
-  updateDashboard();
+    function init() {
+      document.getElementById("currentUser").textContent = CURRENT_USER;
+      trackPageView();
+      fetchStatus();
+      loadVideos();
+      loadLogs();
+      updateDashboard();
 
-}
+    }
 
-window.addEventListener("click",e=>{
-  document.querySelectorAll(".modal").forEach(m=>{
-    if (e.target===m) m.style.display="none";
-  });
-});
-
-window.addEventListener("load",()=>{
-  if (!ADMIN_TOKEN){
-    document.getElementById("loginModal").style.display = "flex";
-  } else {
-    init();
-  }
-});
-
-
-/* ===== REPORTS SYSTEM ===== */
-let allReports = [];
-let reportFilter = "all";
-
-async function loadReports(){
-  try {
-    const r = await fetch(API + "/reports", {
-      headers: { "Authorization": ADMIN_TOKEN }
+    window.addEventListener("click", e => {
+      document.querySelectorAll(".modal").forEach(m => {
+        if (e.target === m) m.style.display = "none";
+      });
     });
-    const data = await r.json();
-    allReports = data.reports || [];
-    renderReports(allReports);
-  } catch(e) {
-    console.error("Load reports failed:", e);
-    document.getElementById("reportsTbody").innerHTML = "<tr><td colspan='5'>Failed to load reports</td></tr>";
-  }
-}
 
-function filterReportsByStatus(status) {
-  reportFilter = status;
-  const filtered = status === "all" ? allReports : allReports.filter(r => r.status === status);
-  renderReports(filtered);
-}
+    window.addEventListener("load", () => {
+      if (!ADMIN_TOKEN) {
+        document.getElementById("loginModal").style.display = "flex";
+      } else {
+        init();
+      }
+    });
 
-function renderReports(reports) {
-  const tbody = document.getElementById("reportsTbody");
-  if (reports.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;padding:20px'>No reports</td></tr>";
-    return;
-  }
 
-  tbody.innerHTML = reports.map((r, i) => {
-    const date = new Date(r.timestamp);
-    const timeStr = date.toLocaleString();
-    const statusBadge = r.status === "pending" ? '<span class="badge badge-danger">Pending</span>' : '<span class="badge badge-success">Resolved</span>';
+    /* ===== REPORTS SYSTEM ===== */
+    let allReports = [];
+    let reportFilter = "all";
 
-    return `<tr>
+    async function loadReports() {
+      try {
+        const r = await fetch(API + "/reports", {
+          headers: { "Authorization": ADMIN_TOKEN }
+        });
+        const data = await r.json();
+        allReports = data.reports || [];
+        renderReports(allReports);
+      } catch (e) {
+        console.error("Load reports failed:", e);
+        document.getElementById("reportsTbody").innerHTML = "<tr><td colspan='5'>Failed to load reports</td></tr>";
+      }
+    }
+
+    function filterReportsByStatus(status) {
+      reportFilter = status;
+      const filtered = status === "all" ? allReports : allReports.filter(r => r.status === status);
+      renderReports(filtered);
+    }
+
+    function renderReports(reports) {
+      const tbody = document.getElementById("reportsTbody");
+      if (reports.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;padding:20px'>No reports</td></tr>";
+        return;
+      }
+
+      tbody.innerHTML = reports.map((r, i) => {
+        const date = new Date(r.timestamp);
+        const timeStr = date.toLocaleString();
+        const statusBadge = r.status === "pending" ? '<span class="badge badge-danger">Pending</span>' : '<span class="badge badge-success">Resolved</span>';
+
+        return `<tr>
       <td style="font-family:monospace;font-size:11px">${r.videoid}</td>
       <td>${r.title.substring(0, 40)}</td>
       <td style="font-size:11px">${timeStr}</td>
@@ -2132,171 +3096,171 @@ function renderReports(reports) {
         <button class="btn btn-small btn-success" onclick="markResolved('${r.videoid}')">Resolve</button>
       </td>
     </tr>`;
-  }).join("");
-}
-
-async function deleteReportedVideo(videoid) {
-  if (!ADMIN_TOKEN) return alert("Login required");
-  if (!confirm(`Delete video ${videoid}?`)) return;
-
-  try {
-    const r = await fetch(API + `/admin/videos/${videoid}`, {
-      method: "DELETE",
-      headers: { "Authorization": ADMIN_TOKEN }
-    });
-    if (!r.ok) throw new Error("Delete failed");
-    alert("✅ Video deleted");
-    loadReports();
-    loadVideos();
-  } catch(e) {
-    alert("Delete error: " + e.message);
-  }
-}
-
-async function markResolved(videoid) {
-  if (!ADMIN_TOKEN) return alert("Login required");
-  try {
-    const r = await fetch(API + "/admin/reports/resolve", {
-      method: "POST",
-      headers: { 
-        "Authorization": ADMIN_TOKEN,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ videoid })
-    });
-    if (!r.ok) throw new Error("Resolve failed");
-    loadReports();
-  } catch(e) {
-    console.error("Mark resolved error:", e);
-  }
-}
-
-/* ============ MULTI VIDEO UPLOAD SYSTEM ============ */
-
-function openMultiUploadModal(){
-  if (!ADMIN_TOKEN) return alert("Login first");
-  document.getElementById("multiUploadModal").style.display = "flex";
-  document.getElementById("multiUploadInput").value = "";
-  document.getElementById("multiUploadProgress").style.display = "none";
-  document.getElementById("multiUploadResult").style.display = "none";
-}
-
-function parseMultiVideoInput(rawInput) {
-  const blocks = rawInput.split(/\n\n+/).filter(b => b.trim());
-  const videos = [];
-
-  blocks.forEach((block, idx) => {
-    const lines = block.trim().split('\n').filter(l => l.trim());
-    if (lines.length < 2) return;
-
-    const url = lines[0].trim();
-    const title = lines[1].trim();
-
-    if (!url.startsWith('http') || !url.includes('.mp4')) return;
-    if (!title || title.length === 0) return;
-
-    videos.push({
-      url: url,
-      title: title,
-      status: 'pending'
-    });
-  });
-
-  return videos;
-}
-
-function smartParsePaste() {
-  const inputEl = document.getElementById('multiUploadInput');
-  const input = inputEl.value || '';
-  const lines = input.split('\n').map(l => l.trim()).filter(l => l.length);
-
-  let formatted = '';
-  for (let i = 0; i < lines.length; i += 2) {
-    let line1 = lines[i] || '';
-    let line2 = lines[i + 1] || '';
-
-    // If order swapped, fix
-    if (!line1.startsWith('http') && line2.startsWith('http')) {
-      [line1, line2] = [line2, line1];
+      }).join("");
     }
 
-    // Skip if missing
-    if (!line1 || !line2) continue;
+    async function deleteReportedVideo(videoid) {
+      if (!ADMIN_TOKEN) return alert("Login required");
+      if (!confirm(`Delete video ${videoid}?`)) return;
 
-    // Basic URL validation
-    if (!line1.startsWith('http')) continue;
-
-    // Auto-add .mp4 if obvious missing extension
-    if (!/\.(mp4|mkv|avi|webm)([?#].*)?$/i.test(line1)) {
-      if (!line1.includes('?')) line1 = line1 + '.mp4';
-      else line1 = line1.replace(/(\?.*)$/, '.mp4$1');
+      try {
+        const r = await fetch(API + `/admin/videos/${videoid}`, {
+          method: "DELETE",
+          headers: { "Authorization": ADMIN_TOKEN }
+        });
+        if (!r.ok) throw new Error("Delete failed");
+        alert("✅ Video deleted");
+        loadReports();
+        loadVideos();
+      } catch (e) {
+        alert("Delete error: " + e.message);
+      }
     }
 
-    formatted += `${line1}\n${line2}\n\n`;
-  }
+    async function markResolved(videoid) {
+      if (!ADMIN_TOKEN) return alert("Login required");
+      try {
+        const r = await fetch(API + "/admin/reports/resolve", {
+          method: "POST",
+          headers: {
+            "Authorization": ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ videoid })
+        });
+        if (!r.ok) throw new Error("Resolve failed");
+        loadReports();
+      } catch (e) {
+        console.error("Mark resolved error:", e);
+      }
+    }
 
-  inputEl.value = formatted.trim();
-  alert('Format fixed! Now click \"Start Upload\"');
-}
+    /* ============ MULTI VIDEO UPLOAD SYSTEM ============ */
 
-async function startMultiUpload() {
-  if (!ADMIN_TOKEN) return alert("Login first");
+    function openMultiUploadModal() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+      document.getElementById("multiUploadModal").style.display = "flex";
+      document.getElementById("multiUploadInput").value = "";
+      document.getElementById("multiUploadProgress").style.display = "none";
+      document.getElementById("multiUploadResult").style.display = "none";
+    }
 
-  const rawInput = document.getElementById("multiUploadInput").value.trim();
-  if (!rawInput) return alert("Paste video URLs first");
+    function parseMultiVideoInput(rawInput) {
+      const blocks = rawInput.split(/\n\n+/).filter(b => b.trim());
+      const videos = [];
 
-  const videosToUpload = parseMultiVideoInput(rawInput);
-  if (!videosToUpload.length) return alert("No valid video blocks found");
+      blocks.forEach((block, idx) => {
+        const lines = block.trim().split('\n').filter(l => l.trim());
+        if (lines.length < 2) return;
 
-  document.getElementById("multiUploadProgress").style.display = "block";
-  document.getElementById("multiUploadResult").style.display = "none";
-  document.getElementById("multiProgressLogs").innerHTML = "";
-  addProgressLog(`🔄 Starting server-side upload of ${videosToUpload.length} videos...`);
+        const url = lines[0].trim();
+        const title = lines[1].trim();
 
-  const results = [];
-  let completed = 0;
+        if (!url.startsWith('http') || !url.includes('.mp4')) return;
+        if (!title || title.length === 0) return;
 
-  for (let i = 0; i < videosToUpload.length; i++) {
-    const video = videosToUpload[i];
-    const progressPercent = Math.round((i / videosToUpload.length) * 100);
-    document.getElementById("multiProgressFill").style.width = progressPercent + "%";
-    document.getElementById("multiProgressText").textContent = `${completed}/${videosToUpload.length} completed`;
-
-    try {
-      addProgressLog(`[${i + 1}/${videosToUpload.length}] Processing: "${video.title}"`);
-      
-      const res = await remoteUploadToR2(video.url, video.title);
-      
-      results.push({
-        title: video.title,
-        videoid: res.videoid,
-        success: true
+        videos.push({
+          url: url,
+          title: title,
+          status: 'pending'
+        });
       });
 
-      addProgressLog(`  ✅ Video processed & added! ID: ${res.videoid}`);
-      completed++;
-
-    } catch (error) {
-      addProgressLog(`  ❌ Error: ${error.message}`, 'error');
-      results.push({
-        title: video.title,
-        success: false,
-        error: error.message
-      });
+      return videos;
     }
-  }
 
-  // Finalize
-  document.getElementById("multiProgressFill").style.width = "100%";
-  document.getElementById("multiProgressText").textContent = `${completed}/${videosToUpload.length} completed`;
+    function smartParsePaste() {
+      const inputEl = document.getElementById('multiUploadInput');
+      const input = inputEl.value || '';
+      const lines = input.split('\n').map(l => l.trim()).filter(l => l.length);
 
-  // Show results
-  const successful = results.filter(r => r.success);
-  const failed = results.filter(r => !r.success);
+      let formatted = '';
+      for (let i = 0; i < lines.length; i += 2) {
+        let line1 = lines[i] || '';
+        let line2 = lines[i + 1] || '';
 
-  document.getElementById("multiUploadProgress").style.display = "none";
-  document.getElementById("multiUploadResult").style.display = "block";
-  document.getElementById("multiUploadResultText").innerHTML = `
+        // If order swapped, fix
+        if (!line1.startsWith('http') && line2.startsWith('http')) {
+          [line1, line2] = [line2, line1];
+        }
+
+        // Skip if missing
+        if (!line1 || !line2) continue;
+
+        // Basic URL validation
+        if (!line1.startsWith('http')) continue;
+
+        // Auto-add .mp4 if obvious missing extension
+        if (!/\.(mp4|mkv|avi|webm)([?#].*)?$/i.test(line1)) {
+          if (!line1.includes('?')) line1 = line1 + '.mp4';
+          else line1 = line1.replace(/(\?.*)$/, '.mp4$1');
+        }
+
+        formatted += `${line1}\n${line2}\n\n`;
+      }
+
+      inputEl.value = formatted.trim();
+      alert('Format fixed! Now click \"Start Upload\"');
+    }
+
+    async function startMultiUpload() {
+      if (!ADMIN_TOKEN) return alert("Login first");
+
+      const rawInput = document.getElementById("multiUploadInput").value.trim();
+      if (!rawInput) return alert("Paste video URLs first");
+
+      const videosToUpload = parseMultiVideoInput(rawInput);
+      if (!videosToUpload.length) return alert("No valid video blocks found");
+
+      document.getElementById("multiUploadProgress").style.display = "block";
+      document.getElementById("multiUploadResult").style.display = "none";
+      document.getElementById("multiProgressLogs").innerHTML = "";
+      addProgressLog(`🔄 Starting server-side upload of ${videosToUpload.length} videos...`);
+
+      const results = [];
+      let completed = 0;
+
+      for (let i = 0; i < videosToUpload.length; i++) {
+        const video = videosToUpload[i];
+        const progressPercent = Math.round((i / videosToUpload.length) * 100);
+        document.getElementById("multiProgressFill").style.width = progressPercent + "%";
+        document.getElementById("multiProgressText").textContent = `${completed}/${videosToUpload.length} completed`;
+
+        try {
+          addProgressLog(`[${i + 1}/${videosToUpload.length}] Processing: "${video.title}"`);
+
+          const res = await remoteUploadToR2(video.url, video.title);
+
+          results.push({
+            title: video.title,
+            videoid: res.videoid,
+            success: true
+          });
+
+          addProgressLog(`  ✅ Video processed & added! ID: ${res.videoid}`);
+          completed++;
+
+        } catch (error) {
+          addProgressLog(`  ❌ Error: ${error.message}`, 'error');
+          results.push({
+            title: video.title,
+            success: false,
+            error: error.message
+          });
+        }
+      }
+
+      // Finalize
+      document.getElementById("multiProgressFill").style.width = "100%";
+      document.getElementById("multiProgressText").textContent = `${completed}/${videosToUpload.length} completed`;
+
+      // Show results
+      const successful = results.filter(r => r.success);
+      const failed = results.filter(r => !r.success);
+
+      document.getElementById("multiUploadProgress").style.display = "none";
+      document.getElementById("multiUploadResult").style.display = "block";
+      document.getElementById("multiUploadResultText").innerHTML = `
     <p><strong>${successful.length}/${results.length} processed successfully</strong></p>
     ${successful.length > 0 ? `<p style="color:var(--success);margin:8px 0">✅ Added videos:</p>` : ""}
     <ul style="margin:4px 0 12px 20px;font-size:11px">
@@ -2308,149 +3272,157 @@ async function startMultiUpload() {
     </ul>
   `;
 
-  addProgressLog(`✅ Process Complete! ${successful.length}/${results.length} success`);
-  addLog("save", `Multi-upload complete: ${successful.length}/${videosToUpload.length} videos`);
+      addProgressLog(`✅ Process Complete! ${successful.length}/${results.length} success`);
+      addLog("save", `Multi-upload complete: ${successful.length}/${videosToUpload.length} videos`);
 
-  setTimeout(() => { loadVideos(); }, 2000);
-}
-
-
-function addProgressLog(message, type = 'info') {
-  const logsDiv = document.getElementById("multiProgressLogs");
-  const timestamp = new Date().toLocaleTimeString();
-  const line = document.createElement("div");
-  line.style.padding = "4px";
-  line.style.borderBottom = "1px solid var(--border)";
-  line.style.color = type === 'error' ? 'var(--danger)' : 'var(--muted)';
-  line.textContent = `[${timestamp}] ${message}`;
-  logsDiv.appendChild(line);
-  logsDiv.scrollTop = logsDiv.scrollHeight;
-}
-
-async function remoteUploadToR2(videoUrl, title = "Clipfy Video") {
-  // Call backend /api/admin/remoteupload to handle everything
-  try {
-    const response = await fetch(API + "/admin/remoteupload", {
-      method: "POST",
-      headers: {
-        Authorization: ADMIN_TOKEN,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ video_url: videoUrl, title: title })
-    });
-
-    const data = await response.json();
-    if (!data.ok) {
-      throw new Error(data.detail || data.error || "Remote upload failed");
+      setTimeout(() => { loadVideos(); }, 2000);
     }
 
-    return data; // Returns {ok, videoid, video}
-  } catch (error) {
-    throw new Error(`Remote upload failed: ${error.message}`);
-  }
-}
 
-// Browser-side video processing removed - now handled on VPS
+    function addProgressLog(message, type = 'info') {
+      const logsDiv = document.getElementById("multiProgressLogs");
+      const timestamp = new Date().toLocaleTimeString();
+      const line = document.createElement("div");
+      line.style.padding = "4px";
+      line.style.borderBottom = "1px solid var(--border)";
+      line.style.color = type === 'error' ? 'var(--danger)' : 'var(--muted)';
+      line.textContent = `[${timestamp}] ${message}`;
+      logsDiv.appendChild(line);
+      logsDiv.scrollTop = logsDiv.scrollHeight;
+    }
 
-async function uploadThumbnailFile(file, videoid) {
-  return new Promise((resolve, reject) => {
-    if (!file) return reject(new Error('No file provided'));
-    if (file.size > 10*1024*1024) return reject(new Error('Max 10MB'));
-    if (!file.type.startsWith("image/")) return reject(new Error('Image only'));
-
-    const reader = new FileReader();
-    reader.onload = async (e) => {
+    async function remoteUploadToR2(videoUrl, title = "Clipfy Video") {
+      // Call backend /api/admin/remoteupload to handle everything
       try {
-        const img = new Image();
-        img.onload = async () => {
-          const processed = await resizeToLetterbox(img);
-          processed.toBlob(async (blob) => {
-            const fd = new FormData();
-            fd.append("videoid", videoid);
-            fd.append("image", blob, "thumbnail.jpg");
+        const response = await fetch(API + "/admin/remoteupload", {
+          method: "POST",
+          headers: {
+            Authorization: ADMIN_TOKEN,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ video_url: videoUrl, title: title })
+        });
 
-            const r = await fetch(API + "/admin/thumbnail", {
-              method: "POST",
-              headers: { Authorization: ADMIN_TOKEN },
-              body: fd
-            });
-            const res = await r.json();
-            if (res.ok) {
-              resolve(res.thumb);
-            } else {
-              reject(new Error(res.error || "Upload failed"));
-            }
-          }, "image/jpeg", 0.85);
-        };
-        img.onerror = () => reject(new Error('Invalid image format'));
-        img.src = e.target.result;
-      } catch(er) {
-        reject(new Error(er.message));
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-async function uploadVideoFile(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) return reject(new Error('No file provided'));
-    // Allow up to 500MB for videos
-    if (file.size > 500*1024*1024) return reject(new Error('Max 500MB'));
-    if (!file.type.startsWith("video/")) return reject(new Error('Video file only'));
-
-    const fd = new FormData();
-    fd.append("video", file);
-
-    // Create progress tracking for large files
-    const xhr = new XMLHttpRequest();
-    
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        const percentComplete = (e.loaded / e.total) * 100;
-        console.log(`Upload progress: ${percentComplete}%`);
-      }
-    });
-
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        try {
-          const data = JSON.parse(xhr.responseText);
-          if (data.ok && data.file_code) {
-            resolve({ file_code: data.file_code });
-          } else {
-            reject(new Error(data.error || 'Upload failed'));
-          }
-        } catch (e) {
-          reject(new Error('Invalid response: ' + e.message));
+        const data = await response.json();
+        if (!data.ok) {
+          throw new Error(data.detail || data.error || "Remote upload failed");
         }
-      } else {
-        reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
+
+        return data; // Returns {ok, videoid, video}
+      } catch (error) {
+        throw new Error(`Remote upload failed: ${error.message}`);
       }
-    });
+    }
 
-    xhr.addEventListener('error', () => {
-      reject(new Error('Network error during upload'));
-    });
+    // Browser-side video processing removed - now handled on VPS
 
-    xhr.addEventListener('abort', () => {
-      reject(new Error('Upload cancelled'));
-    });
+    async function uploadThumbnailFile(file, videoid) {
+      return new Promise((resolve, reject) => {
+        if (!file) return reject(new Error('No file provided'));
+        if (file.size > 10 * 1024 * 1024) return reject(new Error('Max 10MB'));
+        if (!file.type.startsWith("image/")) return reject(new Error('Image only'));
 
-    xhr.open('POST', API + '/admin/video-upload');
-    xhr.setRequestHeader('Authorization', ADMIN_TOKEN);
-    xhr.send(fd);
-  });
-}
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const img = new Image();
+            img.onload = async () => {
+              const processed = await resizeToLetterbox(img);
+              processed.toBlob(async (blob) => {
+                const fd = new FormData();
+                fd.append("videoid", videoid);
+                fd.append("image", blob, "thumbnail.jpg");
 
-</script>
+                const r = await fetch(API + "/admin/thumbnail", {
+                  method: "POST",
+                  headers: { Authorization: ADMIN_TOKEN },
+                  body: fd
+                });
+                const res = await r.json();
+                if (res.ok) {
+                  resolve(res.thumb);
+                } else {
+                  reject(new Error(res.error || "Upload failed"));
+                }
+              }, "image/jpeg", 0.85);
+            };
+            img.onerror = () => reject(new Error('Invalid image format'));
+            img.src = e.target.result;
+          } catch (er) {
+            reject(new Error(er.message));
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
 
-<style>
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-</style>
+    async function uploadVideoFile(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return reject(new Error('No file provided'));
+        // Allow up to 500MB for videos
+        if (file.size > 500 * 1024 * 1024) return reject(new Error('Max 500MB'));
+        if (!file.type.startsWith("video/")) return reject(new Error('Video file only'));
+
+        const fd = new FormData();
+        fd.append("video", file);
+
+        // Create progress tracking for large files
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            console.log(`Upload progress: ${percentComplete}%`);
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status === 200) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              if (data.ok && data.file_code) {
+                resolve({ file_code: data.file_code });
+              } else {
+                reject(new Error(data.error || 'Upload failed'));
+              }
+            } catch (e) {
+              reject(new Error('Invalid response: ' + e.message));
+            }
+          } else {
+            reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
+          }
+        });
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Network error during upload'));
+        });
+
+        xhr.addEventListener('abort', () => {
+          reject(new Error('Upload cancelled'));
+        });
+
+        xhr.open('POST', API + '/admin/video-upload');
+        xhr.setRequestHeader('Authorization', ADMIN_TOKEN);
+        xhr.send(fd);
+      });
+    }
+
+  </script>
+
+  <style>
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+  </style>
 
 </body>
+
 </html>
