@@ -591,7 +591,9 @@
             });
 
         function initPlayer() {
-            // ---- CONFIG ----
+            // 🔥 API CONFIG
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://api.clipfy.store';
+            
             const DATA_URL = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/index.json";
             const R2_STREAM_BASE = "https://pub-a3ad4cec48664940879fc5dd37a07293.r2.dev/";
 
@@ -978,7 +980,7 @@
                         viewCountedFlag = true;
 
                         // Track view on backend
-                        fetch(`/api/track/play`, {
+                        fetch(API_BASE + `/api/track/play`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -990,7 +992,7 @@
                         }).catch(err => console.error("Track error:", err));
 
                         // Also increment views in old endpoint for compatibility
-                        fetch(`/api/watch`, {
+                        fetch(API_BASE + `/api/watch`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ videoid: id })
